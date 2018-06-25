@@ -1,15 +1,30 @@
 library(shiny)
 library(shinyjs)
+library(shinyWidgets)
 library(intermahpr)
 library(tidyverse)
 
 source("helper.R") # Have helpers available
 
 ui <- fluidPage(
+  title = "InterMAHP",
   
-  # Application title
-  titlePanel("InterMAHP"),
-  
+  fluidRow(
+    column(6, h1("InterMAHP")),
+    column(
+      6,
+      div(
+        radioGroupButtons(
+          inputId = "view",
+          label = "",
+          choices = c("High Level" = "high", "Analyst" = "analyst"),
+          selected = "analyst", size = "normal",
+          direction = "horizontal"),
+        style = "float:right"
+      )
+    )
+  ),
+
   # Add custom JS and CSS
   shiny::singleton(tags$head(includeCSS(file.path("www", "intermahp.css")))),
   
@@ -19,21 +34,21 @@ ui <- fluidPage(
       3,
       wellPanel(
         fileInput(
-          inputId = "uploaded_rr", label = "Relative Risk Data",
-          accept = c("text/csv", "text/comma-separated-values", "text/plain", ".csv"),
-          buttonLabel = "Choose File", placeholder = "RelRisks.csv"
-        ),
-        uiOutput("rr_validation"),
-        fileInput(
           inputId = "uploaded_pc", label = "Prevalence and Consumption Data",
           accept = c("text/csv", "text/comma-separated-values", "text/plain", ".csv"),
           buttonLabel = "Choose File", placeholder = "PrevCons.csv"
         ),
         uiOutput("pc_validation"),
         fileInput(
+          inputId = "uploaded_rr", label = "Relative Risk Data",
+          accept = c("text/csv", "text/comma-separated-values", "text/plain", ".csv"),
+          buttonLabel = "Choose File", placeholder = "RelRisks.csv"
+        ),
+        uiOutput("rr_validation"),
+        fileInput(
           inputId = "uploaded_dh", label = "Morbidity and Mortality Data",
           accept = c("text/csv", "text/comma-separated-values", "text/plain", ".csv"),
-          buttonLabel = "Choose File", placeholder = "DeathsHosps.csv"
+          buttonLabel = "Choose File", placeholder = "MorbMort.csv"
         ),
         uiOutput("dh_validation"),
         numericInput(inputId = "bb_f", label = "Female Binge Barrier", value = 50, min = 0, step = 1),
@@ -42,31 +57,44 @@ ui <- fluidPage(
         selectInput(
           inputId = "ext", label = "Dose Response Extrapolation Method",
           c("Linear" = T, "Capped" = F), selected = T),
-        actionButton(inputId = "new_model", label = "Generate Model")
-      ),
-      wellPanel(
-        textInput("scenario_name", "Scenario Name"),
-        numericInput(inputId = "scenario_diff", label = "Percent Change in Consumption", value = 0.00),
-        actionButton(inputId = "new_scenario", label = "Generate Scenario"
-        )
+        actionButton(inputId = "new_model", label = "Generate Estimates")
       )
+      ## This is not the functionality you're looking for
+      # , wellPanel(
+      #     textInput("scenario_name", "Scenario Name"),
+      #     numericInput(inputId = "scenario_diff", label = "Percent Change in Consumption", value = 0.00),
+      #     actionButton(inputId = "new_scenario", label = "Generate Scenario"
+      #     )
+      #   )
     ),
     column(
       9,
-      tabsetPanel(
-        tabPanel(
-          title = "Scenarios",
-          hr(),
-          wellPanel(
-            uiOutput("scenario_tabs")
-          )
-        ),
-        tabPanel(
-          title = "Summary",
-          hr(),
-          wellPanel(
-            uiOutput("dl_summary_btn"),
-            DT::dataTableOutput("summary")
+      conditionalPanel(
+        condition = "input.view == 'high'"
+        
+      ),
+      conditionalPanel(
+        condition = "input.view == 'analyst'",
+        tabsetPanel(uiOutput("analyst_tabs"))
+        
+        tabsetPanel(
+          
+          
+          tabPanel(
+            title = "Scenarios",
+            hr(),
+            wellPanel(
+              uiOutput("scenario_tabs")
+            )
+          ),
+          tabPanel(
+            title = "Summaries",
+            hr(),
+            wellPanel(
+              # uiOutput("summary_tabs")
+              uiOutput("dl_summary_btn"),
+              DT::dataTableOutput("summary")
+            )
           )
         )
       )
@@ -153,22 +181,18 @@ server <- function(input, output) {
     
   }
   
-  newModel <- observeEvent(input$new_model, {
-    validate(
-      need(!is.null(input$uploaded_rr), "Relative risk data required to build a model."),
-      need(!is.null(input$uploaded_pc), "Prevalence and consumption data required to build a model.")
-    )
-    
+  observeEvent(input$new_model, {
+    if(is.null(input$uploaded_rr) | is.null(input$uploaded_pc)) return(NULL)
     if(is.null(input$uploaded_dh)) showNotification("Morbidity/Mortality counts were not uploaded for the current model. They are required for some InterMAHP features.")
 
     rv$model <- intermahpr::makeNewModel(rrPrepped(), pcPrepped(), dhPrepped())
     setTable("base", intermahpr::formatForShinyOutput(rv$model$scenarios$base))
   })
   
-  newScenario <- observeEvent(input$new_scenario, {
+  observeEvent(input$new_scenario, {
     validate(
       need(!is.null(input$scenario_name), "Please provide a unique name for your new scenario."),
-      need(!(input$uploaded_pc %in% names(rv$model$scenarios)), "There is already a scenario with the given name.")
+      need(is.null(rv$model$scenarios[[input$scenario_name]]), "There is already a scenario with the given name.")
     )
     
     scale <- 1+(0.01*input$scenario_diff)
@@ -197,7 +221,7 @@ server <- function(input, output) {
   })
   
   output$dl_summary_btn <- renderUI({
-    if(is.null(rv$model) | length(rv$model$scenarios)) return(NULL)
+    if(is.null(rv$model) | (length(rv$model$scenarios))<2) return(NULL)
     list(
       downloadButton(outputId = "dl_summary", "Download"),
       hr()
@@ -206,8 +230,19 @@ server <- function(input, output) {
   
   output$rr_validation <- renderUI({
     validate(
-    need(!is.null(input$uploaded_rr), "Relative risk data required to build a model."),
-    
+      need(!(is.null(input$uploaded_rr) & input$new_model), "Relative risk data required to build a model.")
+    )
+  })
+  
+  output$pc_validation <- renderUI({
+    validate(
+      need(!(is.null(input$uploaded_pc) & input$new_model), "Prevalence and Consumption data required to build a model.")
+    )
+  })
+  
+  output$show_dl_master <- renderUI({
+    if(is.null(rv$model)) return(NULL)
+    actionButton(inputId = "dl_master", label = "Download", icon = icon(name = "download"))
   })
 }
 
