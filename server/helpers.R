@@ -11,8 +11,8 @@ base_options <- list(
 # * columnDefs elements ----
 
 cd_hide0 <- list(
-      targets = 0,
-      visible = FALSE
+  targets = 0,
+  visible = FALSE
 )
 
 cd_hidex <- function(target) {
@@ -53,5 +53,32 @@ reformat <- function(tbl, type, col) {
   }
   tbl
 }
+
+# * Dummy and reference tables ----
+
+condition_category_ref <- tibble(
+  cc = paste0("(", 1:9, ")"),
+  condition_category = c(
+    "Communicable diseases",
+    "Cancer",
+    "Endocrine conditions",
+    "Neuropsychiatric conditions",
+    "Cardiovascular conditions",
+    "Digestive conditions",
+    "Motor vehicle collisions",
+    "Unintentional injuries",
+    "Intentional injuries"
+  )
+)
+
+dh_replacement <- tibble(
+  im = "(0).(0)", 
+  region = "Unspecified", 
+  year = 0, 
+  gender = "None",
+  age_group = "None", 
+  outcome = "None", 
+  count = 0
+)
 
 ### Plot production ----
