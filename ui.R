@@ -7,6 +7,7 @@ library(shinyjs)
 library(shinyWidgets)
 library(intermahpr)
 library(tidyverse)
+library(rCharts)
 
 source(file.path("ui", "helpers.R"))
 
@@ -22,7 +23,7 @@ fluidPage(
           inputId = "view",
           label = "",
           choices = c("High Level" = "high", "Analyst" = "analyst"),
-          selected = "analyst", size = "normal",
+          selected = "high", size = "normal",
           direction = "horizontal"),
         style = "float:right"
       )
@@ -37,6 +38,8 @@ fluidPage(
     column(
       3,
       wellPanel(
+        actionButton(inputId = "test", label = "Test, default params"),
+        hr(),
         fileInput(
           inputId = "uploaded_pc", label = "Prevalence and Consumption Data",
           accept = c("text/csv", "text/comma-separated-values", "text/plain", ".csv"),
@@ -54,6 +57,7 @@ fluidPage(
           accept = c("text/csv", "text/comma-separated-values", "text/plain", ".csv"),
           buttonLabel = "Choose File", placeholder = "MorbMort.csv"
         ),
+        checkboxInput(inputId = "impute_missing_dh", label = "Impute missing values as 0", value = T),
         uiOutput("dh_validation"),
         numericInput(inputId = "bb_f", label = "Female Binge Barrier", value = 50, min = 0, step = 1),
         numericInput(inputId = "bb_m", label = "Male Binge Barrier", value = 65, min = 0, step = 1),
@@ -75,9 +79,62 @@ fluidPage(
       9,
       conditionalPanel(
         condition = "input.view == 'high'",
-        uiOutput("high_level")
-      ),
-      conditionalPanel(
+        fluidRow(
+          dropdownButton(
+            tags$h3("Y:"),
+            selectInput(
+              inputId = "hl_y1",
+              label = "Outcome", 
+              choices = c("Morbidity", "Mortality"), 
+              selected = "Morbidity"),
+            selectInput(
+              inputId = "hl_y2",
+              label = "Metric", 
+              choices = c(
+                "Count"
+                # , "Weighted AAF"
+              ), 
+              selected = "Count"),
+            selectInput(
+              inputId = "hl_y3",
+              label = "Population",
+              choices = c("Entire Population" = "aaf", "Current drinkers" = "aaf_cd", "Former drinkers" = "aaf_fd"),
+              selected = "Entire Population"
+            ),
+            tags$h3("X:"),
+            selectInput(
+              inputId = "hl_x1",
+              label = "Major",
+              choices = c(
+                "Condition Category" = "condition_category",
+                "Region" = "region",
+                "Year" = "year",
+                "Gender" = "gender",
+                "Age Group" = "age_group"
+              ),
+              selected = "Condition Category"
+            ),
+            selectInput(
+              inputId = "hl_x2",
+              label = "Minor",
+              choices = c(
+                "None" = "none",
+                "Condition Category" = "condition_category",
+                "Region" = "region",
+                "Year" = "year",
+                "Gender" = "gender",
+                "Age Group" = "age_group"
+              ),
+              selected = "None"
+            ),
+            circle = TRUE, status = "danger", icon = icon("gear"), width = "300px",
+            tooltip = tooltipOptions(title = "Variable Selection")
+          ) ## end dropdownButton
+          , showOutput("hl_chart", "nvd3")
+          , uiOutput("hl_build_inspector")
+        ) ## end fluidRow
+      ) ## end conditionalPanel
+      , conditionalPanel(
         condition = "input.view == 'analyst'",
         tabsetPanel(
           tabPanel(
@@ -110,6 +167,6 @@ fluidPage(
           )
         )
       )
-    )
-  )
-)
+    ) ## end column
+  ) ## end fluidRow
+) ## end fluidPage

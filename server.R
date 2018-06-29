@@ -3,12 +3,13 @@ library(shinyjs)
 library(shinyWidgets)
 library(intermahpr)
 library(tidyverse)
+library(rCharts)
 
 source(file.path("server", "helpers.R"))
 
 
-function(input, output) {
-  rv <- reactiveValues()
+function(input, output, session) {
+  rv <- reactiveValues(interactive = list())
   
   rrUpped <- reactive({
     inFile <- input$uploaded_rr
@@ -71,6 +72,7 @@ function(input, output) {
   }
   
   setTable <- function(label, .data) {
+    if(is.null(label) | is.null(.data)) return(NULL)
     if(("im" %in% names(.data)) & !("cc" %in% names(.data))) {
       .data <- mutate(.data, cc = substring(im, first = 1, last = 3))
       .data <- right_join(condition_category_ref, .data, by = "cc")
@@ -96,6 +98,30 @@ function(input, output) {
     
     output[[label]] <- renderStandardDataTable(.data)
   }
+  
+  observeEvent(input$test, {
+    pc <- preparePC(readr::read_csv("C:/Users/samuelch.UVIC/Documents/shiny-inputs/pc_master.csv"))
+    rr <- prepareRR(readr::read_csv("C:/Users/samuelch.UVIC/Documents/shiny-inputs/rr_master.csv"), T)
+    dh <- prepareDH(readr::read_csv("C:/Users/samuelch.UVIC/Documents/shiny-inputs/dh_master.csv"))
+    
+    rv$model <- intermahpr::makeNewModel(rr, pc, dh)
+    
+    base_table <- left_join(
+      intermahpr::formatForShinyOutput(rv$model$scenarios$base), 
+      rv$model$dh, 
+      by = c("region", "year", "gender", "age_group", "im", "outcome")
+    )
+    
+    base_table$count <- ifelse(is.na(base_table$count) && input$impute_missing_dh, 0, base_table$count)
+    
+    to_factor <- c("region", "year", "gender", "age_group", "condition")
+    base_table[to_factor] <- lapply(base_table[to_factor], factor)
+    base_morb <- dplyr::filter(base_table, grepl("Morb", outcome))
+    base_mort <- dplyr::filter(base_table, grepl("Mort", outcome))
+    setTable(label = "Combined AAFs", .data = base_table)
+    setTable(label = "Morbidity AAFs", .data = base_morb)
+    setTable(label = "Mortality AAFs", .data = base_mort)
+  })
   
   observeEvent(input$new_model, {
     if(is.null(input$uploaded_rr) | is.null(input$uploaded_pc)) return(NULL)
@@ -238,44 +264,74 @@ function(input, output) {
     return_list
   })
   
-  y2_choices <- reactive({
-    if(nrow(dhUpped()) > 1) {
-      return(c("Weighted AAF", "Count"))
-    } else {
-      return("Weighted AAF")
+  highLevelSummary <- reactive({
+    if(
+      (is.null(rv$interactive[["Combined AAFs"]]) | nrow(dhUpped()) <= 1) &
+      input$test < 1
+    ) {
+      return(NULL) 
     }
-  })
-  
-  output$high_level <- renderUI({
+    
     .data <- rv$interactive[["Combined AAFs"]]$.data
     
-    y1 <- selectInput(
-      inputId = "hl_y1",
-      label = "Outcome",
-      choices = .data$outcome
+    .data <- dplyr::filter(.data, grepl(input$hl_y1, outcome))
+    
+    .data$metric = .data$count * .data[[input$hl_y3]]
+    
+    .data
+  })
+  
+  output$hl_chart <- renderChart({
+    .data <- highLevelSummary()
+    
+    if(is.null(.data)) return(function(...) NULL)
+    
+    .data_ <- .data %>%
+      group_by_(input$hl_x1) %>%
+      summarise(metric = sum(metric))
+    
+    hl <- nPlot(
+      x = "metric" ~ input$hl_x1,
+      data = .data_,
+      type = "multiBarChart",
+      dom = "hl_chart"
     )
     
-    y2 <- selectInput(
-      inputId = "hl_y2",
-      label = "Metric",
-      choices = y2_choices()
-    )
+    browser()
+    return(hl)
+  })
+  
+  
+  output$hl_build_inspector <- renderUI({
+    .data <- highLevelSummary()
+    label <- "hl_choices"
     
-    y3 <- selectInput(
-      inputId = "hl_y3",
-      label = "Population",
-      choices = c("Former drinkers", "Current drinkers"),
-      selectize = T,
-      multiple = T
-    )
     
-    y_selection_row <- fluidRow(
-      column(4, y1),
-      column(4, y2),
-      column(4, y3)
-    )
     
-    list(h4("Y-variable selection:"), y_selection_row)
+    
+    setTable(.data = .data, label = label)
+    tagList(
+      DT::dataTableOutput("hl_choices")
+    )
+  })
+  
+  x1_x2_choices <- c(
+    "Region" = "region",
+    "Year" = "year",
+    "Gender" = "gender",
+    "Age Group" = "age_group",
+    "Condition Category" = "condition_category"
+  )
+  
+  observe({
+    x1 <- input$hl_x1
+    x2 <- input$hl_x2
+    
+    choice1 <- x1_x2_choices[!(x1_x2_choices %in% x2)]
+    choice2 <- c("None" = "none", x1_x2_choices[!(x1_x2_choices %in% x1)])
+
+    updateSelectInput(session, "hl_x1", choices = choice1, selected = x1)
+    updateSelectInput(session, "hl_x2", choices = choice2, selected = x2)
   })
   
 }
