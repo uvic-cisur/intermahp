@@ -54,21 +54,57 @@ reformat <- function(tbl, type, col) {
   tbl
 }
 
-# * Dummy and reference tables ----
+# * Dummy, grammar, and reference tables ----
+
+x1_choices <- c(
+  "Condition Category" = "condition_category",
+  "Region" = "region",
+  "Year" = "year",
+  "Gender" = "gender",
+  "Age Group" = "age_group"
+)
+
+x2_choices <- c(
+  "None" = "none",
+  "Condition Category" = "condition_category",
+  "Region" = "region",
+  "Year" = "year",
+  "Gender" = "gender",
+  "Age Group" = "age_group"
+)
+
+pluralise <- function(var) {
+  switch(
+    var,
+    "Condition Category" = "Categories",
+    "Age Group" = "Age Groups",
+    "Region" = "Regions",
+    "Gender" = "Genders",
+    "Year" = "Years"
+  )
+}
 
 condition_category_ref <- tibble(
   cc = paste0("(", 1:9, ")"),
   condition_category = c(
-    "Communicable diseases",
+    "Communicable",
     "Cancer",
-    "Endocrine conditions",
-    "Neuropsychiatric conditions",
-    "Cardiovascular conditions",
-    "Digestive conditions",
-    "Motor vehicle collisions",
-    "Unintentional injuries",
-    "Intentional injuries"
+    "Endocrine",
+    "Neuro",
+    "Cardio",
+    "Digestive",
+    "Collisions",
+    "Unintentional",
+    "Intentional"
   )
+)
+
+analysis_vars <- c(
+  "Condition Category" = "condition_category",
+  "Region" = "region",
+  "Year" = "year",
+  "Gender" = "gender",
+  "Age Group" = "age_group"
 )
 
 dh_replacement <- tibble(
