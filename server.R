@@ -9,18 +9,40 @@ source("helpers.R")
 
 
 function(input, output, session) {
-  shinyjs::disable(id = "new_model")
+  ## Startup code ----
   
+  ## server side reactive data store
   rv <- reactiveValues(
+    ## store for all datasets.
+    ## an element is a list whose name is the UI label and whose elements are
+    ##    .data (tibble)
+    ##    .downloadable (boolean flag)
+    ##    .chartable (boolean flag)
+    ##    .viewable (boolean flag)
+    datasets = list(),
     interactive = list(),
     show_hl_chart_panel = FALSE)
 
+  
+  
+  
+  
+  
+  
+  ## disable estimation generation button initially
+  shinyjs::disable(id = "new_model")
+  ## enable estimation when valid, using "pc and rr uploaded" as validity proxy
   dataPrepped <- observe({
     if(!is.null(pcUpped()) && !is.null(rrUpped())) {
       shinyjs::enable("new_model")
     }
   })
   
+  
+
+  ## Upload ----
+  ## TODO: Combine upload/prep into a single function that throws errors on
+  ## data that does not conform to our data standards
   rrUpped <- reactive({
     inFile <- input$uploaded_rr
     if(is.null(inFile)) {return(NULL)}
@@ -49,6 +71,7 @@ function(input, output, session) {
     )
   })
   
+  ## TODO: conform to new data structure
   observeEvent(input$uploaded_pc, {
     setTable(
       label = "Prevalence and Consumption",
@@ -68,6 +91,7 @@ function(input, output, session) {
     intermahpr::prepareDH(dhUpped())
   })
   
+  ## computations and prep ----
   renderStandardDataTable <- function(.data) {
     DT::renderDataTable({
       options <- base_options
@@ -81,6 +105,7 @@ function(input, output, session) {
     })
   }
   
+  ## TODO: Conform to new data standards
   setTable <- function(label, .data) {
     if(is.null(label) | is.null(.data)) return(NULL)
     if(("im" %in% names(.data)) & !("cc" %in% names(.data))) {
@@ -109,6 +134,7 @@ function(input, output, session) {
     output[[label]] <- renderStandardDataTable(.data)
   }
   
+  ## TODO: either make this work in general or delete it entirely
   observeEvent(input$test, {
     pc <- preparePC(readr::read_csv("C:/Users/samuelch.UVIC/Documents/shiny-inputs/pc_master.csv"))
     rr <- prepareRR(readr::read_csv("C:/Users/samuelch.UVIC/Documents/shiny-inputs/rr_master.csv"), T)
@@ -129,6 +155,7 @@ function(input, output, session) {
     setTable(label = "Mortality AAFs", .data = base_mort)
   })
   
+  ## TODO: Conform to new data standards
   observeEvent(input$new_model, {
     
     if(is.null(input$uploaded_rr) | is.null(input$uploaded_pc)) return(NULL)
@@ -149,6 +176,9 @@ function(input, output, session) {
     setTable(label = "Mortality AAFs", .data = base_mort)
   })
   
+  ## TODO:
+  ##    Conform to new data standards
+  ##    change scenario name as discussed w/ adam
   observeEvent(input$new_scenario, {
     validate(
       need(!is.null(input$scenario_name), "Please provide a unique name for your new scenario."),
@@ -162,6 +192,9 @@ function(input, output, session) {
     setTable("summary", intermahpr::distillModel(rv$model))
   })
   
+  ## render UI
+  
+  ## TODO:
   output$scenario_tabs <- renderUI({
     if(is.null(rv$model)) return(NULL)
     
