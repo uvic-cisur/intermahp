@@ -1,5 +1,53 @@
+## disable estimation generation button initially
+shinyjs::disable(id = "new_model")
+
+## TODO: Conform to new data standards
+observeEvent(input$new_model, {
+  rv$model <- intermahpr::makeNewModel(
+    pc = intermahpr::preparePC(dataValues$pc_in),
+    rr = intermahpr::prepareRR(dataValues$rr_in),
+    dh = intermahpr::prepareDH(dataValues$dh_in)
+  )
+  
+  processNewScenario(.data = rv$model$scenarios$base, .plabel = "Base")
+
+  base_table <- left_join(
+    intermahpr::formatForShinyOutput(rv$model$scenarios$base), 
+    rv$model$dh, 
+    by = c("region", "year", "gender", "age_group", "im", "outcome")
+  )
+  
+  base_morb <- dplyr::filter(base_table, grepl("Morb", outcome))
+  base_mort <- dplyr::filter(base_table, grepl("Mort", outcome))
+  setTable(label = "Combined AAFs", .data = base_table)
+  setTable(label = "Morbidity AAFs", .data = base_morb)
+  setTable(label = "Mortality AAFs", .data = base_mort)
+})
+
+
+processNewScenario <- function(.data, .plabel) {
+  .data_long <- intermahpr::renderScenarioLong(.data, groups = input$drinking_groups)
+  
+  .data_wide <- intermahpr::renderScenarioWide(.data, groups = input$drinking_groups)
+  
+
+  
+}
+
+
+
+
+
+
+
+
+
+
 ## computations and prep ----
-renderStandardDataTable <- function(.data) {
+renderStandardDataTable <- function(.label, .data) {
+  .data <- dataValues[[.]]
+  
+  
   DT::renderDataTable({
     options <- base_options
     DT::datatable(
@@ -13,7 +61,7 @@ renderStandardDataTable <- function(.data) {
 }
 
 ## TODO: Conform to new data standards
-setTable <- function(label, .data) {
+setTable <- function(.label, .data, .downloadable, .chartable, .viewable) {
   if(is.null(label) | is.null(.data)) return(NULL)
   if(("im" %in% names(.data)) & !("cc" %in% names(.data))) {
     .data <- mutate(.data, cc = substring(im, first = 1, last = 3))
@@ -63,29 +111,6 @@ observeEvent(input$test, {
 })
 
 
-## disable estimation generation button initially
-shinyjs::disable(id = "new_model")
-
-## TODO: Conform to new data standards
-observeEvent(input$new_model, {
-  
-  if(is.null(input$uploaded_rr) | is.null(input$uploaded_pc)) return(NULL)
-  if(is.null(input$uploaded_dh)) showNotification("Morbidity/Mortality counts were not uploaded for the current model. They are required for some InterMAHP features.")
-  
-  rv$model <- intermahpr::makeNewModel(rrPrepped(), pcPrepped(), dhPrepped())
-  
-  base_table <- left_join(
-    intermahpr::formatForShinyOutput(rv$model$scenarios$base), 
-    rv$model$dh, 
-    by = c("region", "year", "gender", "age_group", "im", "outcome")
-  )
-  
-  base_morb <- dplyr::filter(base_table, grepl("Morb", outcome))
-  base_mort <- dplyr::filter(base_table, grepl("Mort", outcome))
-  setTable(label = "Combined AAFs", .data = base_table)
-  setTable(label = "Morbidity AAFs", .data = base_morb)
-  setTable(label = "Mortality AAFs", .data = base_mort)
-})
 
 ## TODO:
 ##    Conform to new data standards

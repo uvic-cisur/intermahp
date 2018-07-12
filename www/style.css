@@ -31,8 +31,9 @@ table {
   color: #FFFFFF;
 }
 
+
 .popover {
-  max-width: 600px;
+  width: 400px;
 }
 
 .popover-title {
@@ -44,6 +45,24 @@ table {
   font-size: 16px;
 }
 
-.popover-link > .fa {
+.popover-link {
   vertical-align: top;
 }
+
+.popover-link {
+  position: relative;
+  z-index: 1;
+}
+
+.popover-link {
+  font-size: 14px;
+}
+
+
+#errorDiv {
+  margin-top: 10px;
+  color: red;
+  font-size: 1.2em;
+}
+
+.dropdown-menu { width: 100%; }

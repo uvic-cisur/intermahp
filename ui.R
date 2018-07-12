@@ -9,14 +9,14 @@ library(intermahpr)
 library(tidyverse)
 library(rCharts)
 
-source("helpers.R")
+source(file.path("ui", "helpers.R"))
+source("popover_fns.R")
 
 tagList(
   useShinyjs(),
   
   # Add custom JS and CSS ----
   tags$head(
-    tags$script(src = "intermahpr.js"),
     tags$link(href = "style.css", rel = "stylesheet")
   ),
   

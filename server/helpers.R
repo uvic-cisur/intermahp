@@ -117,11 +117,44 @@ dh_replacement <- tibble(
   count = 0
 )
 
-#### Error message display ----
+# Button with "busy" indicator ----
+# Adapted from the ddPCR R package written by Dean Attali
+  
+# For better user experience, when a button is pressed this will disable
+# the button while the action is being taken, show a loading indicator, and
+# show a checkmark when it's done. If an error occurs, show the error message. 
+# This works best if the given button was set up with `withBusyIndicator` in
+# the UI (otherwise it will only disable the button and take care of errors,
+# but won't show the loading/done indicators)
+withBusyIndicator <- function(buttonId, expr) {
+  
+  loadingEl <- sprintf("[data-for-btn=%s] .btn-loading-indicator", buttonId)
+  doneEl <- sprintf("[data-for-btn=%s] .btn-done-indicator", buttonId)
+  disable(buttonId)
+  show(selector = loadingEl)
+  hide(selector = doneEl)
+  hide("errorDiv")
+  on.exit({
+    enable(buttonId)
+    hide(selector = loadingEl)
+  })
+  
+  # tryCatch({
+    value <- expr
+    show(selector = doneEl)
+    delay(2000, hide(
+      selector = doneEl, anim = TRUE, animType = "fade",
+      time = 0.5))
+    value
+  # }, error = errorFunc)
+}
 
+# Error message display ----
+# Adapted from the ddPCR R package written by Dean Attali
+
+# Error handler that gets used in many tryCatch blocks
 errorShow <- function(err) {
-  errMessage <- gsub("^InterMAHPr: (.*)", "\\1", err$message)
-  html("errorMsg", errMessage)
+  html("errorMsg", err$message)
   show("errorDiv", TRUE, "fade")
 }
 
