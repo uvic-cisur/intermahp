@@ -117,4 +117,14 @@ dh_replacement <- tibble(
   count = 0
 )
 
-### Plot production ----
+#### Error message display ----
+
+errorShow <- function(err) {
+  errMessage <- gsub("^InterMAHPr: (.*)", "\\1", err$message)
+  html("errorMsg", errMessage)
+  show("errorDiv", TRUE, "fade")
+}
+
+errorHide <- function() {
+  showNotification("errorHide() called")
+}

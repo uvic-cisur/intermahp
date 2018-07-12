@@ -1,0 +1,49 @@
+.scrollable {
+	overflow-x: hidden, scroll;
+	overflow-y: hidden, scroll;
+}
+
+.has-feedback .form-control {
+  padding-right: 0;
+}
+
+table {
+  white-space: nowrap;
+}
+
+#logo_img img {
+  max-width: 100%;
+  width: 100%; 
+  height: auto;
+}
+
+#loading-content {
+  position: fixed;
+  background: #000000;
+  z-index: 10000;
+  left: 0;
+  right: 0;
+  top: 0;
+  padding-top: 50px;
+  bottom: 0;
+  font-size: 50px;
+  text-align: center;
+  color: #FFFFFF;
+}
+
+.popover {
+  max-width: 600px;
+}
+
+.popover-title {
+  font-weight: bold;
+}
+
+.popover-link {
+  color: #444;
+  font-size: 16px;
+}
+
+.popover-link > .fa {
+  vertical-align: top;
+}
