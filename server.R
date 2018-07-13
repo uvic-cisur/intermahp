@@ -14,16 +14,11 @@ source("popover_fns.R")
 function(input, output, session) {
   # server side reactive data store ----
   dataValues <- reactiveValues(
-    ## store for all datasets.
-    ## an element is a list whose name is the UI label and whose elements are
-    ##    .data (tibble)
-    ##    .download (download handler or NULL)
-    ##    .chart (long, chartable form of data or NULL)
-    ##    .view (wide, viewable form of data or NULL)
-    datasets = list(),
-    show_hl_chart_panel = FALSE)
+    wide = list(),
+    long = list())
   
-  rv <- reactiveValues(interactive = list())
+  rv <- reactiveValues(interactive = list(),
+                       show_hl_chart_panel = FALSE)
 
   # we need to have a quasi-variable flag to indicate whether or not
   # we have a dataset to work with or if we're waiting for dataset to be chosen

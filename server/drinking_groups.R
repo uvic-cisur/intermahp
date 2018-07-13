@@ -1,8 +1,20 @@
+## disable estimation generation button initially
+shinyjs::disable(id = "add_group_btn")
+
+checkGroupNameValidity <- function(string) {
+  !(grepl("[^[:alnum:] ]", string) || nchar(string) == 0)
+}
+
+observe({
+  if(!is.null(input$new_group_name) && checkGroupNameValidity(input$new_group_name)) shinyjs::enable(id = "add_group_btn")
+})
+
+
 dataValues$drinking_groups <- list(
   "Former Drinkers" = list(
     .label = "Former Drinkers",
     .command = function(.data) {
-      intermahpr::addFormerFraction(.data, var_name = "AAF - Former Drinkers")
+      intermahpr::computeFormerFraction(.data)
     },
     .popover = paste(
       "Former drinkers are people who have consumed one standard drink or more",
@@ -13,7 +25,7 @@ dataValues$drinking_groups <- list(
   "Current Drinkers" = list(
     .label = "Current Drinkers",
     .command = function(.data) {
-      intermahpr::addCurrentFraction(.data, var_name = "AAF - Current Drinkers")
+      intermahpr::computeCurrentFraction(.data)
     },
     .popover = paste(
       "Current drinkers are people who have consumed one standard drink or",
@@ -23,7 +35,7 @@ dataValues$drinking_groups <- list(
   "Entire Population" = list(
     .label = "Entire Population",
     .command = function(.data) {
-      intermahpr::addTotalFraction(.data, var_name = "AAF - Entire Population")
+      intermahpr::computeTotalFraction(.data)
     },
     .popover = paste(
       "The entire population stratified by gender and age subgrouping."
@@ -35,7 +47,7 @@ output$group_checkboxes <- renderUI({
   boxes <- lapply(
     dataValues$drinking_groups,
     function(group) {
-      id <- paste0("Include", gsub(" ", "", group$.label, fixed = TRUE))
+      id <- paste("Include", group$.label)
       
       tags$div(
         checkboxInput(
@@ -43,7 +55,8 @@ output$group_checkboxes <- renderUI({
           label = div(
             group$.label,
             popover(content = group$.popover, pos = "right", icon("question-circle"))
-          )   
+          ),
+          value = if(is.null(input[[id]])) TRUE else input[[id]]
         )
       )
     }
@@ -51,84 +64,23 @@ output$group_checkboxes <- renderUI({
   tagList(boxes)
 })
 
-checkGroupNameValidity <- function(string) {
-  length(string > 0) && !grepl("[^[:alnum:] ]", string)
-}
-
-output$add_group_ui <- renderUI({
-  enter_name <- textInput(
-    inputId = "new_group_name",
-    label = div(
-      "Group name",
-      popover(content = "Only alphanumeric group names accepted.", pos = "right", icon("question-circle"))
-    ),
-    placeholder = "Light/Heavy Drinkers")
-  
-  male_bounds <- fluidRow(
-    column(
-      6,
-      numericInput(
-        inputId = "m_lb",
-        label = "Male Lower Bound",
-        value = 15,
-        min = 0, 
-        max = 250,
-        step = 1)
-    ),
-    column(
-      6,
-      numericInput(
-        inputId = "m_ub",
-        label = "Male Upper Bound",
-        value = 30,
-        min = 0, 
-        max = 250,
-        step = 1)
-    )
-  )
-  
-  female_bounds <- fluidRow(
-    column(
-      6,
-      numericInput(
-        inputId = "f_lb",
-        label = "Female Lower Bound",
-        value = if(is.null(input$f_lb)) 10 else input$f_lb,
-        min = 0, 
-        max = 250,
-        step = 1)
-    ),
-    column(
-      6,
-      numericInput(
-        inputId = "f_ub",
-        label = "Female Upper Bound",
-        value = if(is.null(input$f_ub)) 20 else input$f_ub,
-        min = 0, 
-        max = 250,
-        step = 1)
-    )
-  )
-  
-  button <- actionButton(
-    inputId = "add_group_btn", 
-    label = "Add new group", 
-    icon = icon("plus"),
-    class = "btn-danger btn-block"
-  )
-  
-  
-  ## disable estimation generation button initially
-  shinyjs::disable(id = "add_group_btn")
-  if(!is.null(input$new_group_name) && checkGroupNameValidity(input$new_group_name)) shinyjs::enable(id = "add_group_btn")
-  
-  tagList(enter_name, female_bounds, male_bounds, button)
-})
+# Make sure the checkboxes and their values always exist
+outputOptions(output, 'group_checkboxes', suspendWhenHidden = FALSE)
 
 observeEvent(input$add_group_btn, {
-  dataValues$drinking_groups[[input$newgroup_name]] <- list(
-    
-    
+  dataValues$drinking_groups[[input$new_group_name]] <- list(
+    .label = input$new_group_name,
+    .command = function(.data) {
+      intermahpr::computeGenderStratifiedIntervalFraction(
+        .data, 
+        lower_strata = list(Female = input$f_lb, Male = input$m_lb),
+        upper_strata = list(Female = input$f_ub, Male = input$m_ub)
+      )
+    },
+    .popover = paste(
+      "Membership in the user defined group", input$new_group_name, "is", 
+      "defined by an average daily consumption of between", input$f_lb, "and",
+      input$f_ub, "for Females and between", input$m_lb, "and", input$m_ub,
+      "for Males.")
   )
-  
 })

@@ -7,33 +7,33 @@ output$hl_data_selector <- renderUI({
   dataset_selector <- selectInput(
     inputId = "hl_current",
     label = "Dataset",
-    choices = names(rv$interactive),
+    choices = names(dataValues$long),
     selected = input$hl_current
   )
   
-  outcome_selector <- selectInput(
-    inputId = "hl_y1",
-    label = "Outcome",
-    choices = current_outcomes(),
-    selected = input$hl_y1
-  )
+  # outcome_selector <- selectInput(
+  #   inputId = "hl_y1",
+  #   label = "Outcome",
+  #   choices = current_outcomes(),
+  #   selected = input$hl_y1
+  # )
   
-  metric_selector <- selectInput(
-    inputId = "hl_y2",
-    label = "Metric",
-    choices = c("Count"),
-    selected = input$hl_y2
-  )
+  # metric_selector <- selectInput(
+  #   inputId = "hl_y2",
+  #   label = "Metric",
+  #   choices = c("Count"),
+  #   selected = input$hl_y2
+  # )
   
-  pop_selector <- selectInput(
-    inputId = "hl_y3",
-    label = "Population",
-    choices = c(
-      "Entire Population" = "aaf",
-      "Current drinkers" = "aaf_cd",
-      "Former drinkers" = "aaf_fd"),
-    selected = input$hl_y3
-  )
+  # pop_selector <- selectInput(
+  #   inputId = "hl_y3",
+  #   label = "Population",
+  #   choices = c(
+  #     "Entire Population" = "aaf",
+  #     "Current drinkers" = "aaf_cd",
+  #     "Former drinkers" = "aaf_fd"),
+  #   selected = input$hl_y3
+  # )
   
   major_selector <- selectInput(
     inputId = "hl_x1",
@@ -53,10 +53,10 @@ output$hl_data_selector <- renderUI({
     fluidRow(
       column(4, dataset_selector),
       column(4, major_selector),
-      column(4, minor_selector),
-      column(4, outcome_selector),
-      column(4, metric_selector),
-      column(4, pop_selector)
+      column(4, minor_selector)
+      # column(4, outcome_selector),
+      # column(4, metric_selector),
+      # column(4, pop_selector)
     )
   )
 })
@@ -64,7 +64,7 @@ output$hl_data_selector <- renderUI({
 
 current_data <- reactive({
   if(is.null(input$hl_current)) return(NULL)
-  rv$interactive[[input$hl_current]]$.data
+  dataValues$long[[input$hl_current]]
 })
 
 current_var <- function(var) {levels(current_data()[[var]])}
@@ -75,6 +75,7 @@ current_genders <- reactive({current_var("gender")})
 current_age_groups <- reactive({current_var("age_group")})
 current_outcomes <- reactive({current_var("outcome")})
 current_condition_categories <- reactive({current_var("condition_category")})
+current_popuation <- reactive({current_var("population")})
 
 output$hl_filtration_systems <- renderUI({
   pickers <- lapply(
@@ -111,8 +112,6 @@ highLevelSummary <- reactive({
   
   if(is.null(.data)) return(NULL)
   
-  .data <- dplyr::filter(.data, grepl(input$hl_y1, outcome))
-  
   for(var in analysis_vars) {
     id <- paste("hl", var, "filter", sep = "_")
     var_sym <- rlang::sym(var)
@@ -121,9 +120,9 @@ highLevelSummary <- reactive({
     }
   }
   
-  .data$metric = .data$count * .data[[input$hl_y3]]
+  .data$metric = .data$count * .data$aaf
   
-  rv$current_total <- sum(.data$metric, na.rm = TRUE)
+  dataValues$current_total <- sum(.data$metric, na.rm = TRUE)
   
   .data
 })
@@ -143,11 +142,11 @@ output$hl_chart <- renderChart({
   
   .data_ <- if(input$hl_x2 == "none") group_by(.data, !!x1) else group_by(.data, !!x1, !!x2)
   .data_ <- summarise(.data_, metric = sum(metric, na.rm = T))
-  .data_[[input$hl_y2]] <- .data_$metric
+  .data_$Count <- .data_$metric
   .data_$metric <-  NULL
   
   hl <- nPlot(
-    y = input$hl_y2,
+    y = "Count",
     x = x1,
     group = x2,
     data = .data_,
@@ -170,25 +169,13 @@ output$show_hl_chart_panel <- reactive({
 
 
 output$hl_chart_title <- renderUI({
-  number <- if(is.null(rv$current_total)) 0 else rv$current_total
+  number <- if(is.null(dataValues$current_total)) 0 else dataValues$current_total
   
   tags$div(
     style = "text-align: center;",
     h3(paste("Total:", round(number)))
   )
 })
-
-output$hl_build_inspector <- renderUI({
-  .data <- highLevelSummary()
-  label <- "hl_choices"
-  
-  setTable(.data = .data, label = label)
-  tagList(
-    DT::dataTableOutput("hl_choices")
-  )
-})
-
-
 
 
 outputOptions(output, "show_hl_chart_panel", suspendWhenHidden = FALSE)

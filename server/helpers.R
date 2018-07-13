@@ -56,22 +56,18 @@ reformat <- function(tbl, type, col) {
 
 # * Dummy, grammar, and reference tables ----
 
-x1_choices <- c(
+analysis_vars <- c(
   "Condition Category" = "condition_category",
   "Region" = "region",
   "Year" = "year",
   "Gender" = "gender",
-  "Age Group" = "age_group"
+  "Age Group" = "age_group",
+  "Population" = "population"
 )
 
-x2_choices <- c(
-  "None" = "none",
-  "Condition Category" = "condition_category",
-  "Region" = "region",
-  "Year" = "year",
-  "Gender" = "gender",
-  "Age Group" = "age_group"
-)
+x1_choices <- analysis_vars
+
+x2_choices <- c("None" = "none", x1_choices)
 
 pluralise <- function(var) {
   switch(
@@ -97,14 +93,6 @@ condition_category_ref <- tibble(
     "Unintentional",
     "Intentional"
   )
-)
-
-analysis_vars <- c(
-  "Condition Category" = "condition_category",
-  "Region" = "region",
-  "Year" = "year",
-  "Gender" = "gender",
-  "Age Group" = "age_group"
 )
 
 dh_replacement <- tibble(
