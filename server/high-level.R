@@ -1,7 +1,9 @@
 # intermahpr-shiny - Sam Churchill 2018
 # --- High Level view server --- #
 
-output$hl_download_chart <- renderUI({return(NULL)})
+output$hl_download_chart <- renderUI({
+  fluidRow()
+})
 
 output$hl_data_selector <- renderUI({
   dataset_selector <- selectInput(
@@ -10,31 +12,7 @@ output$hl_data_selector <- renderUI({
     choices = names(dataValues$long),
     selected = input$hl_current
   )
-  
-  # outcome_selector <- selectInput(
-  #   inputId = "hl_y1",
-  #   label = "Outcome",
-  #   choices = current_outcomes(),
-  #   selected = input$hl_y1
-  # )
-  
-  # metric_selector <- selectInput(
-  #   inputId = "hl_y2",
-  #   label = "Metric",
-  #   choices = c("Count"),
-  #   selected = input$hl_y2
-  # )
-  
-  # pop_selector <- selectInput(
-  #   inputId = "hl_y3",
-  #   label = "Population",
-  #   choices = c(
-  #     "Entire Population" = "aaf",
-  #     "Current drinkers" = "aaf_cd",
-  #     "Former drinkers" = "aaf_fd"),
-  #   selected = input$hl_y3
-  # )
-  
+
   major_selector <- selectInput(
     inputId = "hl_x1",
     label = "Major Grouping",
@@ -54,9 +32,6 @@ output$hl_data_selector <- renderUI({
       column(4, dataset_selector),
       column(4, major_selector),
       column(4, minor_selector)
-      # column(4, outcome_selector),
-      # column(4, metric_selector),
-      # column(4, pop_selector)
     )
   )
 })
@@ -75,23 +50,29 @@ current_genders <- reactive({current_var("gender")})
 current_age_groups <- reactive({current_var("age_group")})
 current_outcomes <- reactive({current_var("outcome")})
 current_condition_categories <- reactive({current_var("condition_category")})
-current_popuation <- reactive({current_var("population")})
+current_population <- reactive({current_var("population")})
 
 output$hl_filtration_systems <- renderUI({
   pickers <- lapply(
     names(analysis_vars),
     function(.label) {
-      .data <- current_data()
+      # check all implications if flag logic changes
+      flag <- if(.label != "Population" || grouped_by_popn()) T else F
       factors <- current_var(analysis_vars[.label])
+      use_id <- paste("hl", analysis_vars[.label], "filter", sep = "_")
       list(
         column(
           4,
           pickerInput(
-            inputId = paste("hl", analysis_vars[.label], "filter", sep = "_"),
+            inputId = use_id,
             label = .label,
-            choices = current_var(analysis_vars[.label]),
-            selected = factors,
-            multiple = T,
+            choices = factors,
+            # playing a bit fast&loose with this logic... 
+            selected =
+              if(.label != "Population") {
+                if(is.null(isolate(input[[use_id]]))) factors else isolate(input[[use_id]])
+              } else if(grouped_by_popn()) factors else "Entire Population",
+            multiple = flag,
             options = list(
               `actions-box` = TRUE, 
               `selected-text-format` = "count > 2",
@@ -102,9 +83,18 @@ output$hl_filtration_systems <- renderUI({
       )
     }
   )
-  
+
   fluidRow(pickers)
 })
+
+grouped_by_popn <- reactive({
+  if(!is.null(input$hl_x1) && input$hl_x1 == "population") return(T)
+  else if(!is.null(input$hl_x2) && input$hl_x2 == "population") return(T)
+  else return(FALSE)
+})
+
+# update filtration systems when not visible
+outputOptions(output, "hl_filtration_systems", suspendWhenHidden = FALSE)
 
 
 highLevelSummary <- reactive({
@@ -122,7 +112,9 @@ highLevelSummary <- reactive({
   
   .data$metric = .data$count * .data$aaf
   
-  dataValues$current_total <- sum(.data$metric, na.rm = TRUE)
+  dataValues$current_total <- .data %>%
+    group_by(population) %>%
+    summarise(total = sum(metric, na.rm = TRUE))
   
   .data
 })
@@ -154,7 +146,7 @@ output$hl_chart <- renderChart({
     dom = "hl_chart"
   )
   
-  rv$show_hl_chart_panel <- TRUE
+  dataValues$show_hl_chart_panel <- TRUE
   
   hl$set(width = 0.95*session$clientData$output_dummy_width)
   
@@ -164,19 +156,53 @@ output$hl_chart <- renderChart({
 })
 
 output$show_hl_chart_panel <- reactive({
-  rv$show_hl_chart_panel
+  dataValues$show_hl_chart_panel
 })
 
 
 output$hl_chart_title <- renderUI({
-  number <- if(is.null(dataValues$current_total)) 0 else dataValues$current_total
+  .data <- current_data()
+  
+  if(is.null(.data) || is.null(input$hl_x1) || is.null(input$hl_x2)) return(NULL)
+  # number <- if(is.null(dataValues$current_total)) 0 else dataValues$current_total
   
   tags$div(
     style = "text-align: center;",
-    h3(paste("Total:", round(number)))
+    h3(
+      paste(
+        pluralise(as.character(.data$outcome[[1]])),
+        "grouped by",
+        vars_analysis[input$hl_x1],
+        if(input$hl_x2 != "none" && input$hl_x2 != input$hl_x1) paste("and", vars_analysis[input$hl_x2])
+      )
+    )
   )
 })
 
+output$hl_popn_summaries <- renderUI({
+  .data <- dataValues$current_total
+  
+  if(is.null(.data)) return(NULL)
+  
+  section_title <- tags$div(
+    style = "text-align: center;", 
+    h3("Population Totals")
+  )
+  
+  values <- map2(
+    .x = .data$population, 
+    .y = .data$total,
+    .f = ~tagList(
+      br(),
+      paste0(.x, ": ", round(.y, 0))
+    )
+  )
+  
+  tagList(section_title, values)
+})
 
+# update chart panel when not visible
 outputOptions(output, "show_hl_chart_panel", suspendWhenHidden = FALSE)
+
+# update chart when not visible
 outputOptions(output, "hl_chart", suspendWhenHidden = FALSE)

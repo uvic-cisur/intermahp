@@ -1,56 +1,100 @@
-
-output$analyst_dl_tab <- renderUI({
-  if(input$analyst_dl_type == "zip") {
-    if(length(rv$interactive) < 1) return(NULL)
-    files <- pickerInput(
-      inputId = "dl_as_zip",
-      label = "Choose Files",
-      choices = names(rv$interactive),
-      selected = names(rv$interactive),
-      multiple = T,
-      options = list(
-        `actions-box` = TRUE, 
-        `selected-text-format` = "count > 2",
-        `count-selected-text` = "{0}/{1} Files"
-      )
+output$a_data_selector <- renderUI({
+  dataset_selector <- selectInput(
+    inputId = "a_current",
+    label = "Dataset",
+    choices = names(dataValues$wide),
+    selected = input$a_current
+  )
+  
+  list(
+    fluidRow(
+      column(4, dataset_selector)
     )
-    save_as <- textInput(inputId = "save_zip_as", label = "Save as", value = paste0("InterMAHP-", format(Sys.time(),  "%Y-%m-%d-%H%M")))
-    button <- downloadButton(outputId = "analyst_dl_zip")
-    return_list <- list(files, hr(), save_as, button)
-  } else {
-    files <- lapply(
-      names(rv$interactive),
-      function(.label) {
-        list(
-          downloadButton(outputId = paste0("dl_", .label), label = .label),
-          br(), br()
-        )
-      }
-    )
-    return_list <- list(files)
-  }
-  return_list
+  )
 })
 
+output$a_filtration_systems <- renderUI({
+  
+  
+})
 
+output$a_download_table <- renderUI({
+  zip_picker <- pickerInput(
+    inputId = "zip_these",
+    label = "Choose files",
+    choices = names(dataValues$wide),
+    selected = names(dataValues$wide),
+    multiple = T,
+    options = list(
+      `actions-box` = TRUE, 
+      `selected-text-format` = "count > 2",
+      `count-selected-text` = paste("{0}/{1}", "Tables")
+    )
+  )
+  
+  zip_dl_btn <- downloadButton(outputId = "dl_zipped", label = "Download")
+  
+  first_in_list_of_single_dl_buttons = T
+  
+  single_btns <- lapply(
+    names(dataValues$wide),
+    function(.label) {
+      tags$div(
+        if(first_in_list_of_single_dl_buttons) {
+          # an irresposible use of <<-
+          first_in_list_of_single_dl_buttons <<- F
+          NULL
+        } else {
+          br()
+        },
+        downloadButton(outputId = paste0("Download ", .label), label = .label)
+      )
+    }
+  )
+  
+  tagList(
+    if(!is.null(input$a_dl_as_zip) && input$a_dl_as_zip) {
+      tagList(
+        zip_picker,
+        hr(),
+        zip_dl_btn
+      )
+    } else {
+      single_btns
+    }
+  )
+})
 
-output$analyst_dl_zip <- downloadHandler(
+output$dl_zipped <- downloadHandler(
   filename = function() {
-    paste0(input$save_zip_as, ".zip")
+    paste0("InterMAHP tables-", Sys.Date(), ".zip")
   },
   content = function(fname) {
-    owd <- setwd(tempdir())
-    on.exit(setwd(owd))
-    fs <- NULL;
-    to_zip <- input$dl_as_zip
-    fs <- paste0(to_zip, ".csv")
-    for(i in seq_len(length(fs))) {
-      write.csv(rv$interactive[[to_zip[i]]]$.data, file = fs[i])
+    fs <- c()
+    tmpdir <- tempdir()
+    old <- setwd(tempdir())
+    on.exit(setwd(old))
+    
+    for(.label in input$zip_these) {
+      path <- paste0("InterMAHP ", .label, ".csv")
+      fs <- c(fs, path)
+      write_csv(dataValues$wide[[.label]], path)
     }
-    zip(zipfile = fname, files = fs)
+    zip(zipfile=fname, files=fs)
   },
   contentType = "application/zip"
 )
 
+output$a_table <- renderUI({
+  DT::dataTableOutput(paste0("View ", input$a_current))
+})
 
+output$show_a_table_panel <- reactive({
+  dataValues$show_a_table_panel
+})
 
+# update table panel when not visible
+outputOptions(output, "show_a_table_panel", suspendWhenHidden = FALSE)
+
+# update table when not visible
+outputOptions(output, "a_table", suspendWhenHidden = FALSE)

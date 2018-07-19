@@ -14,10 +14,10 @@ conditionalPanel(
   br(), 
   
   # panels to show when display/filter/download selected ----
-  fluidRow(
-    tags$div(id = "hl_ds_div", wellPanel(uiOutput("hl_data_selector"))),
-    tags$div(id = "hl_fs_div", wellPanel(uiOutput("hl_filtration_systems"))),
-    tags$div(id = "hl_dc_div", wellPanel(uiOutput("hl_download_chart")))
+  wellPanel(
+      tags$div(id = "hl_ds_div", uiOutput("hl_data_selector")),
+      tags$div(id = "hl_fs_div", uiOutput("hl_filtration_systems")),
+      tags$div(id = "hl_dc_div", uiOutput("hl_download_chart"))
   ),
   
   # Panel that contains the chart output ----
@@ -25,8 +25,11 @@ conditionalPanel(
     condition = "output.show_hl_chart_panel",
     wellPanel(
       uiOutput("hl_chart_title"),
-      showOutput("hl_chart", "nvd3"),
-      plotOutput("dummy")
-    )
+      showOutput("hl_chart", "nvd3")
+    ),
+    wellPanel(
+      uiOutput("hl_popn_summaries")
+    ),
+    plotOutput("dummy")
   )
 )

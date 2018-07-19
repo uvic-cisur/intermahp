@@ -65,6 +65,15 @@ analysis_vars <- c(
   "Population" = "population"
 )
 
+vars_analysis <- c(
+  "condition_category" = "Condition Category",
+  "region" = "Region",
+  "year" = "Year",
+  "gender" = "Gender",
+  "age_group" = "Age Group",
+  "population" = "Population"
+)
+
 x1_choices <- analysis_vars
 
 x2_choices <- c("None" = "none", x1_choices)
@@ -76,12 +85,14 @@ pluralise <- function(var) {
     "Age Group" = "Age Groups",
     "Region" = "Regions",
     "Gender" = "Genders",
-    "Year" = "Years"
+    "Year" = "Years",
+    "Morbidity" = "Morbidities",
+    "Mortality" = "Mortalities"
   )
 }
 
 condition_category_ref <- tibble(
-  cc = paste0("(", 1:9, ")"),
+  cc = as.character(1:9),
   condition_category = c(
     "Communicable",
     "Cancer",

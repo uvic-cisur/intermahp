@@ -15,10 +15,12 @@ function(input, output, session) {
   # server side reactive data store ----
   dataValues <- reactiveValues(
     wide = list(),
-    long = list())
+    long = list(),
+    show_hl_chart_panel = FALSE,
+    show_a_table_panel = FALSE)
   
-  rv <- reactiveValues(interactive = list(),
-                       show_hl_chart_panel = FALSE)
+  # rv <- reactiveValues(interactive = list(),
+  #                      show_hl_chart_panel = FALSE)
 
   # we need to have a quasi-variable flag to indicate whether or not
   # we have a dataset to work with or if we're waiting for dataset to be chosen

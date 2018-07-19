@@ -94,7 +94,7 @@ processNewScenario <- function(name, scale, updateProgress = NULL) {
   .data[c("current_fraction", "former_fraction")] <- NULL
 
   .data <- left_join(.data, dataValues$model$dh, by = c("region", "year", "gender", "age_group", "im", "outcome"))
-  .data <- mutate(.data, cc = substring(im, first = 1, last = 3))
+  .data <- mutate(.data, cc = substring(im, first = 2, last = 2))
   .data <- right_join(condition_category_ref, .data, by = "cc")
   .data <- factorizeVars(.data)
   
@@ -110,6 +110,7 @@ processNewScenario <- function(name, scale, updateProgress = NULL) {
 
 # Add long tables to dataValues
 setLongScenarioTable <- function(.data, name, status = "Ready", gather_vars) {
+  if(is.null(.data) | nrow(.data) == 0) return(NULL)
   if(status == "Combined") {
     setLongScenarioTable(filter(.data, grepl("Morb", outcome)), name = paste(name, "Morbidity"), status = "Ready", gather_vars = gather_vars)
     setLongScenarioTable(filter(.data, grepl("Mort", outcome)), name = paste(name, "Mortality"), status = "Ready", gather_vars = gather_vars)
@@ -128,6 +129,7 @@ setLongScenarioTable <- function(.data, name, status = "Ready", gather_vars) {
 
 # Add wide tables to output
 setWideTable <- function(.data, name, status = "Ready", is.scenario = F) {
+  if(is.null(.data) | nrow(.data) == 0) return(NULL)
   if(status == "Combined") {
     setWideTable(filter(.data, grepl("Morb", outcome)), name = paste(name, "Morbidity"), status = "Ready")
     setWideTable(filter(.data, grepl("Mort", outcome)), name = paste(name, "Mortality"), status = "Ready")
@@ -141,7 +143,7 @@ setWideTable <- function(.data, name, status = "Ready", is.scenario = F) {
         paste(prefix, name, ".csv", sep = "")
       },
       content = function(file) {
-        write.csv(x = .data, file = file)
+        write.csv(x = .data, row.names = F, file = file)
       }
     )
   }
