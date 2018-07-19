@@ -1,6 +1,9 @@
 ## disable estimation generation button initially
 shinyjs::disable(id = "new_model")
 
+## disable estimation generation button initially
+shinyjs::disable(id = "add_scenario_btn")
+
 ## TODO: Conform to new data standards
 observeEvent(input$new_model, {
   style <- "notification"
@@ -62,11 +65,38 @@ observeEvent(input$new_model, {
   dataValues$model <- list(model = model, scenarios = list(), rr = rr, pc = pc, dh = dh)
       
   processNewScenario(name = "Base", scale = 1, updateProgress = updateProgress)
+  
+  shinyjs::enable(id = "add_scenario_btn")
 })
 
 include_group <- function(group) {
   input[[paste("Include", group)]]
 }
+
+observeEvent(input$add_scenario_btn, {
+  scale <- 1 + (0.01 * input$new_scenario_rescale_percent)
+  
+  style <- "notification"
+  # Create a Progress object
+  progress <- shiny::Progress$new(style = style)
+  progress$set(message = paste("Adding New Scenario (rescale consumption by ", input$new_scenario_rescale_percent, " percent)"), value = 0)
+  # Close the progress when this reactive exits (regardless of why)
+  on.exit(progress$close())
+  
+  # Closure that updates progress.
+  # Each time this is called, if 'value' is NULL it will push the progress bar
+  # 1/5 of the remaining distance.  Else, it will set the bar to that value.
+  # Also accepts optional detail text.
+  updateProgress <- function(value = NULL, detail = NULL) {
+    if(is.null(value)) {
+      value <- progress$getValue()
+      value <- value + (progress$getMax() - value) / 5
+    }
+    progress$set(value = value, detail = detail)
+  }
+  
+  processNewScenario(paste("Scenario - Rescale consumption by ", input$new_scenario_rescale_percent, " percent"), scale = scale, updateProgress = updateProgress)
+})
 
 # Create a new scenario
 processNewScenario <- function(name, scale, updateProgress = NULL) {

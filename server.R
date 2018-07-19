@@ -16,6 +16,7 @@ function(input, output, session) {
   dataValues <- reactiveValues(
     wide = list(),
     long = list(),
+    charts = list(),
     show_hl_chart_panel = FALSE,
     show_a_table_panel = FALSE)
   
@@ -25,8 +26,11 @@ function(input, output, session) {
   # we need to have a quasi-variable flag to indicate whether or not
   # we have a dataset to work with or if we're waiting for dataset to be chosen
   # Adapted from the ddPCR R package written by Dean Attali
-  output$datasetsChosen <- reactive({ FALSE })
-  outputOptions(output, 'datasetsChosen', suspendWhenHidden = FALSE)
+  # output$datasetsChosen <- reactive({
+  #   if(!is.null(input$hl_current)) return(TRUE)
+  #   FALSE
+  # })
+  # outputOptions(output, 'datasetsChosen', suspendWhenHidden = FALSE)
   
   # Set logo image
   output$logo_img <- renderUI({

@@ -20,7 +20,7 @@ output$a_filtration_systems <- renderUI({
 
 output$a_download_table <- renderUI({
   zip_picker <- pickerInput(
-    inputId = "zip_these",
+    inputId = "a_zip_these",
     label = "Choose files",
     choices = names(dataValues$wide),
     selected = names(dataValues$wide),
@@ -32,7 +32,7 @@ output$a_download_table <- renderUI({
     )
   )
   
-  zip_dl_btn <- downloadButton(outputId = "dl_zipped", label = "Download")
+  zip_dl_btn <- downloadButton(outputId = "a_dl_zipped", label = "Download")
   
   first_in_list_of_single_dl_buttons = T
   
@@ -41,7 +41,7 @@ output$a_download_table <- renderUI({
     function(.label) {
       tags$div(
         if(first_in_list_of_single_dl_buttons) {
-          # an irresposible use of <<-
+          # an irresposible use of <<-?
           first_in_list_of_single_dl_buttons <<- F
           NULL
         } else {
@@ -53,19 +53,20 @@ output$a_download_table <- renderUI({
   )
   
   tagList(
-    if(!is.null(input$a_dl_as_zip) && input$a_dl_as_zip) {
+    if(!is.null(input$a_dl_type) && input$a_dl_type == "zip") {
       tagList(
         zip_picker,
         hr(),
         zip_dl_btn
       )
-    } else {
+    }, 
+    if(!is.null(input$a_dl_type) && input$a_dl_type == "ind") {
       single_btns
     }
   )
 })
 
-output$dl_zipped <- downloadHandler(
+output$a_dl_zipped <- downloadHandler(
   filename = function() {
     paste0("InterMAHP tables-", Sys.Date(), ".zip")
   },
@@ -75,7 +76,7 @@ output$dl_zipped <- downloadHandler(
     old <- setwd(tempdir())
     on.exit(setwd(old))
     
-    for(.label in input$zip_these) {
+    for(.label in input$a_zip_these) {
       path <- paste0("InterMAHP ", .label, ".csv")
       fs <- c(fs, path)
       write_csv(dataValues$wide[[.label]], path)

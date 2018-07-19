@@ -110,6 +110,29 @@ wellPanel(
   
   # Estimate Generation ----
   # TODO: Add working scenario generation
-  actionButton(inputId = "new_model", label = "Generate Estimates", class = "btn-block")
-  # actionButton(inputId = "test", label = "Test with default parameters", class = "btn-danger btn-block")
+  actionButton(inputId = "new_model", label = "Generate Estimates", class = "btn-block"),
+  
+  hr(),
+  
+  dropdownButton(
+    circle = F,
+    status = "primary btn-block", 
+    label = "New Scenarios",
+    inputId = "scenarios_dropdown_button",
+    
+    numericInput(
+      inputId = "new_scenario_rescale_percent",
+      label = "Percent Change in Consumption",
+      value = 0,
+      min = -100,
+      max = 1000,
+      step = 1
+    ),
+    actionButton(
+      inputId = "add_scenario_btn",
+      label = "Add Scenario",
+      icon = icon("plus"),
+      class = "btn-danger btn-block"
+    )
+  )
 )

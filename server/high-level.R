@@ -2,8 +2,75 @@
 # --- High Level view server --- #
 
 output$hl_download_chart <- renderUI({
-  fluidRow()
+  if(is.null(dataValues$charts$reserved)) return(NULL)
+  
+  zip_picker <- pickerInput(
+    inputId = "hl_zip_these",
+    label = "Choose files",
+    choices = names(dataValues$charts$reserved),
+    selected = names(dataValues$charts$reserved),
+    multiple = T,
+    options = list(
+      `actions-box` = TRUE, 
+      `selected-text-format` = "count > 2",
+      `count-selected-text` = paste("{0}/{1}", "Charts")
+    )
+  )
+  
+  zip_dl_btn <- downloadButton(outputId = "hl_dl_zipped", label = "Download")
+  
+  hl_first_in_list_of_single_dl_buttons = T
+  
+  single_btns <- lapply(
+    names(dataValues$charts$reserved),
+    function(.label) {
+      tags$div(
+        if(hl_first_in_list_of_single_dl_buttons) {
+          # an irresposible use of <<-?
+          hl_first_in_list_of_single_dl_buttons <<- F
+          NULL
+        } else {
+          br()
+        },
+        downloadButton(outputId = paste0("Download ", .label), label = .label)
+      )
+    }
+  )
+  
+  tagList(
+    if(!is.null(input$hl_dl_type) && input$hl_dl_type == "zip") {
+      tagList(
+        zip_picker,
+        hr(),
+        zip_dl_btn
+      )
+    }, 
+    if(!is.null(input$hl_dl_type) && input$hl_dl_type == "ind") {
+      single_btns
+    }
+  )
 })
+
+output$hl_dl_zipped <- downloadHandler(
+  filename = function() {
+    paste0("InterMAHP charts-", Sys.Date(), ".zip")
+  },
+  content = function(fname) {
+    fs <- c()
+    tmpdir <- tempdir()
+    old <- setwd(tempdir())
+    on.exit(setwd(old))
+    
+    for(.label in input$hl_zip_these) {
+      path <- paste0("InterMAHP ", .label, ".html")
+      fs <- c(fs, path)
+      dataValues$charts$reserved[[.label]]$save(fs, standalone = TRUE)
+    }
+    zip(zipfile=fname, files=fs)
+  },
+  contentType = "application/zip"
+)
+
 
 output$hl_data_selector <- renderUI({
   dataset_selector <- selectInput(
@@ -119,18 +186,16 @@ highLevelSummary <- reactive({
   .data
 })
 
-output$hl_chart <- renderChart({
-  hideElement("hl_chart_div")
-  
+
+currentChart <- reactive({
   .data <- highLevelSummary()
   
   if(is.null(.data)) {
-    return(rCharts$new())
+    return(FALSE)
   }
   
   x1 <- rlang::sym(input$hl_x1)
   x2 <- if(input$hl_x2 == "none") NULL else rlang::sym(input$hl_x2)
-  
   
   .data_ <- if(input$hl_x2 == "none") group_by(.data, !!x1) else group_by(.data, !!x1, !!x2)
   .data_ <- summarise(.data_, metric = sum(metric, na.rm = T))
@@ -146,36 +211,87 @@ output$hl_chart <- renderChart({
     dom = "hl_chart"
   )
   
-  dataValues$show_hl_chart_panel <- TRUE
-  
   hl$set(width = 0.95*session$clientData$output_dummy_width)
   
-  showElement("hl_chart_div")
+  hl
+})
+
+output$hl_chart <- renderChart({
+  hideElement("hl_chart_div")
   
-  return(hl)
+  if(is.null(current_data())) {
+    return(rCharts$new())
+  } else {
+    hl <- currentChart()
+    dataValues$show_hl_chart_panel <- TRUE
+    showElement("hl_chart_div")
+    
+    return(hl)
+  }
+  
+  # .data <- highLevelSummary()
+  # 
+  # if(is.null(.data)) {
+  #   return(rCharts$new())
+  # }
+  # 
+  # x1 <- rlang::sym(input$hl_x1)
+  # x2 <- if(input$hl_x2 == "none") NULL else rlang::sym(input$hl_x2)
+  # 
+  # 
+  # .data_ <- if(input$hl_x2 == "none") group_by(.data, !!x1) else group_by(.data, !!x1, !!x2)
+  # .data_ <- summarise(.data_, metric = sum(metric, na.rm = T))
+  # .data_$Count <- .data_$metric
+  # .data_$metric <-  NULL
+  # 
+  # hl <- nPlot(
+  #   y = "Count",
+  #   x = x1,
+  #   group = x2,
+  #   data = .data_,
+  #   type = "multiBarChart",
+  #   dom = "hl_chart"
+  # )
+  # 
+  # hl$set(width = 0.95*session$clientData$output_dummy_width)
+  # 
+  # hl <- currentChart()
+  # 
+  # if(hl) {
+  #   dataValues$show_hl_chart_panel <- TRUE
+  #   showElement("hl_chart_div")
+  #   
+  #   return(hl)
+  # } else {
+  #   return(rCharts$new())
+  # }
 })
 
 output$show_hl_chart_panel <- reactive({
   dataValues$show_hl_chart_panel
 })
 
+observe({
+    .data <- current_data()
+
+    if(is.null(.data) || is.null(input$hl_x1) || is.null(input$hl_x2)) return(NULL)
+
+    dataValues$charts$current_title <- paste(
+      pluralise(as.character(.data$outcome[[1]])),
+      "grouped by",
+      vars_analysis[input$hl_x1],
+      if(input$hl_x2 != "none" && input$hl_x2 != input$hl_x1) paste("and", vars_analysis[input$hl_x2])
+    )
+})
 
 output$hl_chart_title <- renderUI({
   .data <- current_data()
   
   if(is.null(.data) || is.null(input$hl_x1) || is.null(input$hl_x2)) return(NULL)
-  # number <- if(is.null(dataValues$current_total)) 0 else dataValues$current_total
   
   tags$div(
     style = "text-align: center;",
-    h3(
-      paste(
-        pluralise(as.character(.data$outcome[[1]])),
-        "grouped by",
-        vars_analysis[input$hl_x1],
-        if(input$hl_x2 != "none" && input$hl_x2 != input$hl_x1) paste("and", vars_analysis[input$hl_x2])
-      )
-    )
+    h3(dataValues$charts$current_title)
   )
 })
 
@@ -200,6 +316,28 @@ output$hl_popn_summaries <- renderUI({
   
   tagList(section_title, values)
 })
+
+
+observeEvent(input$hl_reserve_current_chart, {
+  dataValues$charts$reserved[[dataValues$charts$current_title]] <- dataValues$charts$current_chart
+  output[[paste0("Download ", dataValues$charts$current_title)]] <- downloadHandler(
+    filename = function() {
+      paste(prefix, name, ".html", sep = "")
+    },
+    content = function(file) {
+      dataValues$charts$reserved[[dataValues$charts$current_title]]$save(file, standalone=TRUE)
+    }
+  )
+})
+
+output$hl_download_current_chart <- downloadHandler(
+  filename = function() {
+    paste0("InterMAHP chart-", dataValues$charts$current_title, ".html")
+  },
+  content = function(file) {
+    currentChart()$save(file, standalone = TRUE)
+  }
+)
 
 # update chart panel when not visible
 outputOptions(output, "show_hl_chart_panel", suspendWhenHidden = FALSE)
