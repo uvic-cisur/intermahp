@@ -40,6 +40,8 @@ function(input, output, session) {
 
   
   # Include logic for each major facet ----
+  source(file.path("server", "nav-buttons.R"), local = TRUE)$value
+  
   source(file.path("server", "file-upload.R"), local = TRUE)$value
   source(file.path("server", "data-handlers.R"), local = TRUE)$value
   source(file.path("server", "drinking_groups.R"), local = TRUE)$value

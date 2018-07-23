@@ -31,16 +31,28 @@ tagList(
     fluidRow(
       column(
         3,
-        source(file.path("ui", "params-panel.R"), local = TRUE)$value
+        source(file.path("ui", "nav-panel.R"), local = TRUE)$value
+        # source(file.path("ui", "params-panel.R"), local = TRUE)$value
       ),
       column(
         9,
-        source(file.path("ui", "high-level-view.R"), local = TRUE)$value,
-        source(file.path("ui", "analyst-view.R"), local = TRUE)$value
+        div(id = "panel_datasets",           source(file.path("ui", "panel-datasets.R"), local = TRUE)$value),
+        div(id = "panel_settings",      source(file.path("ui", "panel-settings.R"), local = TRUE)$value),
+        # div(id = "panel_drinking_groups",    source(file.path("ui", "panel-drinking-groups.R"), local = TRUE)$value),
+
+        div(id = "panel_generate_estimates", source(file.path("ui", "panel-generate-estimates.R"), local = TRUE)$value),
+        div(id = "panel_new_scenarios",       source(file.path("ui", "panel-new-scenarios.R"), local = TRUE)$value),
+
+        div(id = "panel_high",               source(file.path("ui", "panel-high.R"), local = TRUE)$value),
+        div(id = "panel_analyst",            source(file.path("ui", "panel-analyst.R"), local = TRUE)$value),
+        
+        # Error messages ----
+        fluidRow(column(12, hidden(div(id = "errorDiv", div(icon("exclamation-circle"), tags$b("Error: "), span(id = "errorMsg"))))))
+        
+        # source(file.path("ui", "high-level-view.R"), local = TRUE)$value,
+        # source(file.path("ui", "analyst-view.R"), local = TRUE)$value
       )
-    ),
+    )
     
-    # Error messages ----
-    fluidRow(column(12, hidden(div(id = "errorDiv", div(icon("exclamation-circle"), tags$b("Error: "), span(id = "errorMsg"))))))
   )
 )

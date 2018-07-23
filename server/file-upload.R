@@ -19,7 +19,6 @@ observeEvent(
 )
 
 # When the "Upload Data" button is clicked ----
-# Adapted from the ddPCR R package written by Dean Attali
 observeEvent(input$upload_files_btn, {
   withBusyIndicator("upload_files_btn", {
     pc <- readr::read_csv(input$upload_pc$datapath)
@@ -33,8 +32,12 @@ observeEvent(input$upload_files_btn, {
     dataValues$pc_in <- pc
     dataValues$rr_in <- rr
     dataValues$dh_in <- dh
+    
+    # Ensure data cohesion (gender levels match, etc)
 
     output$datasetsChosen <- reactive({ TRUE })
+    
+    
     
     shinyjs::enable("new_model")
   })
