@@ -22,13 +22,13 @@
       ),
       withBusyIndicator(
         actionButton(
-          "upload_files_btn",
+          "datasets_new_upload_btn",
           "Upload data",
           class = "btn-primary"
         )
       )
     ),
-    
+  
     tabPanel(
       title = "Load Saved Dataset",
       value = "tabset_datasets_saved",
@@ -36,6 +36,13 @@
       fileInput(
         inputId = "datasets_load_saved", label = "Saved InterMAHP file",
         accept = c(".rda", ".RData")
+      ),
+      withBusyIndicator(
+        actionButton(
+          "datasets_saved_upload_btn",
+          "Upload data",
+          class = "btn-primary"
+        )
       )
     ),
     
@@ -43,16 +50,23 @@
       title = "Use Sample Datasets",
       value = "tabsets_datasets_sample",
       br(),
-      selectInput(
-        inputId = "datasets_sample_pc",
-        label = "Sample Prevalence and Consumption Data",
-        choices = c("BC, 2007-2014", "NL", "placeholder") 
-      ),
+      
+      uiOutput("datasets_sample_years_render"),
+      uiOutput("datasets_sample_provinces_render"),
+      
       
       selectInput(
         inputId = "datasets_sample_rr",
         label = "Sample Relative Risk Data",
         choices = c("Zhao", "Roerecke") 
+      ),
+      
+      withBusyIndicator(
+        actionButton(
+          "datasets_sample_load_btn",
+          "Load data",
+          class = "btn-primary"
+        )
       )
     )
   )

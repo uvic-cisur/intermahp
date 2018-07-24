@@ -138,21 +138,21 @@ withBusyIndicator <- function(buttonId, expr) {
     hide(selector = loadingEl)
   })
   
-  # tryCatch({
+  tryCatch({
     value <- expr
     show(selector = doneEl)
     delay(2000, hide(
       selector = doneEl, anim = TRUE, animType = "fade",
       time = 0.5))
     value
-  # }, error = errorFunc)
+  }, error = errorFunc)
 }
 
 # Error message display ----
 # Adapted from the ddPCR R package written by Dean Attali
 
 # Error handler that gets used in many tryCatch blocks
-errorShow <- function(err) {
+errorFunc <- function(err) {
   html("errorMsg", err$message)
   show("errorDiv", TRUE, "fade")
 }

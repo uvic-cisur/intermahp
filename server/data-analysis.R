@@ -4,7 +4,7 @@ shinyjs::disable(id = "new_model")
 ## disable estimation generation button initially
 shinyjs::disable(id = "add_scenario_btn")
 
-## TODO: Conform to new data standards
+# Script when a new model is generated ----
 observeEvent(input$new_model, {
   style <- "notification"
   # Create a Progress object

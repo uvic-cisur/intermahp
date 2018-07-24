@@ -3,8 +3,6 @@
 nav_ids <- c(
   "datasets",
   "settings",
-  # "global_params",
-  # "drinking_groups",
   "generate_estimates",
   "new_scenarios",
   "high",
