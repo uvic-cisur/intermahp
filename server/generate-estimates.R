@@ -12,39 +12,53 @@ shinyjs::hide(id = "model_progress_content")
 observeEvent(input$generate_estimates, {
   withBusyIndicator("generate_estimates", {
     show("model_progress_content")
-    html(id = "model_progress", "Generating Estimates")
+    html(id = "model_progress", "Generating Estimates:<br />")
     withCallingHandlers(
       {
-        pc <- intermahpr::preparePC(
+        html(id = "model_progress", "Stage 1/3 (dataset preparation)<br />&emsp;", TRUE)
+          pc <- intermahpr::preparePC(
           dataValues$pc_in, 
           bb = binge_barriers(),
           lb = 0.03, 
-          ub = input$ub)
+          ub = input$settings_ub_in_units * drinking_unit())
         
-        setWideTable(.data = factorizeVars(intermahpr::renderPCWide(pc)), name = "Prevalence and Consumption", status = "Ready", is.scenario = FALSE)
+        setWideTable(
+          .data = factorizeVars(intermahpr::renderPCWide(pc)),
+          name = "Prevalence and Consumption",
+          status = "Ready",
+          is.scenario = FALSE)
         
+        html(id = "model_progress", "&emsp;", TRUE)
         rr <- intermahpr::prepareRR(dataValues$rr_in, input$ext)
         
+        html(id = "model_progress", "&emsp;", TRUE)
         mm <- intermahpr::prepareMM(dataValues$mm_in)
         
+        html(id = "model_progress", "Stage 2/3 (building factories)<br />&emsp;", TRUE)
         free_rr <- rr %>%
           intermahpr::filterFree() %>%
           intermahpr::makeFreeFactories() %>%
           inner_join(pc, by = c("gender"))
         
+        html(id = "model_progress", "&emsp;", TRUE)
         calibrated_rr <- rr %>%
           intermahpr::filterCalibrated() %>%
-          intermahpr::makeCalibratedFactories(pc = pc, dh = dh)
+          intermahpr::makeCalibratedFactories(pc = pc, mm = mm)
         
         model <- bind_rows(free_rr, calibrated_rr) %>%
           select(intermahpr::getExpectedVars("model"))
         
-        dataValues$model <- list(model = model, scenarios = list(), rr = rr, pc = pc, dh = dh)
+        dataValues$model <- list(model = model, scenarios = list(), rr = rr, pc = pc, mm = mm)
         
-        processNewScenario(name = "Base", scale = 1, updateProgress = updateProgress)
+        message("Stage 3/3 (evaluating base scenario)")
         
-        shinyjs::enable(id = "add_scenario_btn")
+        processNewScenario(name = "Base", scale = 1)
         
+        message("Estimates generated.")
+        
+        shinyjs::enable(id = "nav_new_scenarios")
+        shinyjs::enable(id = "nav_high")
+        shinyjs::enable(id = "nav_analyst")
       },
       message = function(m) {
         html("model_progress", m$message, TRUE)
@@ -54,43 +68,4 @@ observeEvent(input$generate_estimates, {
       }
     )
   })
-  
-  
-  style <- "notification"
-  # Create a Progress object
-  progress <- shiny::Progress$new(style = style)
-  progress$set(message = "Generating Estimate Modeler", value = 0)
-  # Close the progress when this reactive exits (regardless of why)
-  on.exit(progress$close())
-  
-  # Closure that updates progress.
-  # Each time this is called, if 'value' is NULL it will push the progress bar
-  # 1/5 of the remaining distance.  Else, it will set the bar to that value.
-  # Also accepts optional detail text.
-  updateProgress <- function(value = NULL, detail = NULL) {
-    if(is.null(value)) {
-      value <- progress$getValue()
-      value <- value + (progress$getMax() - value) / 5
-    }
-    progress$set(value = value, detail = detail)
-  }
-  
-  updateProgress(0, detail = "Preparing prevalence and consumption input")
-  
-  
-  updateProgress(0.05, detail = "Preparing relative risk input")
-  
-  
-  updateProgress(0.1, detail = "Preparing morbidity and mortality input")
-  
-  
-  updateProgress(value = 0.15, detail = "Building unconstrained factories")
-  
-  
-  updateProgress(value = 0.30, detail = "Building and calibrating constrained factories")
-  
 })
-
-include_group <- function(group) {
-  input[[paste("Include", group)]]
-}

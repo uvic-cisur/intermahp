@@ -15,7 +15,7 @@ tabsetPanel(
       uiOutput("settings_unit_render"),
       uiOutput("settings_global_upper_limit"),
       selectInput(
-        inputId = "ext", label = "Dose Response Extrapolation Method",
+        inputId = "ext", label = "Dose response extrapolation method",
         c("Linear" = T, "Capped" = F), selected = T)
     ),
     

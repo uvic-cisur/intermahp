@@ -9,15 +9,15 @@
       value = "tabset_datasets_new",
       br(),
       fileInput(
-        inputId = "datasets_upload_pc", label = "Prevalence and Consumption Data",
+        inputId = "datasets_upload_pc", label = "Prevalence and consumption data",
         accept = c("text/csv", "text/comma-separated-values", "text/plain", ".csv")
       ),
       fileInput(
-        inputId = "datasets_upload_rr", label = "Relative Risk Data",
+        inputId = "datasets_upload_rr", label = "Relative risk data",
         accept = c("text/csv", "text/comma-separated-values", "text/plain", ".csv")
       ),
       fileInput(
-        inputId = "datasets_upload_mm", label = "Morbidity and Mortality Data",
+        inputId = "datasets_upload_mm", label = "Morbidity and mortality data",
         accept = c("text/csv", "text/comma-separated-values", "text/plain", ".csv")
       ),
       withBusyIndicator(
@@ -57,7 +57,7 @@
       
       selectInput(
         inputId = "datasets_sample_rr",
-        label = "Sample Relative Risk Data",
+        label = "Sample relative risk data",
         choices = c("Zhao", "Roerecke") 
       ),
       

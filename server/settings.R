@@ -1,9 +1,9 @@
 # Drinking Group Server Logic ----
 
-# disable estimation generation button initially
+#* disable estimation generation button initially ----
 shinyjs::disable(id = "add_group_btn")
 
-# ensure group name is alphanumeric
+#* ensure group name is alphanumeric ----
 checkGroupNameValidity <- function(string) {
   !(grepl("[^[:alnum:] ]", string) || nchar(string) == 0)
 }
@@ -12,7 +12,7 @@ observe({
   if(!is.null(input$new_group_name) && checkGroupNameValidity(input$new_group_name)) shinyjs::enable(id = "add_group_btn")
 })
 
-# drinking group reactive list
+#* drinking group reactive list ----
 base_groups <- list(
   "Entire Population" = list(
     .label = "Entire Population",
@@ -51,7 +51,7 @@ base_groups <- list(
 
 dataValues$drinking_groups <- base_groups
 
-# Render current group checkboxes
+#* Render current group checkboxes ----
 output$group_checkboxes <- renderUI({
   boxes <- lapply(
     dataValues$drinking_groups,
@@ -77,10 +77,10 @@ output$group_checkboxes <- renderUI({
 })
 
 
-# Make sure the checkboxes and their values always exist
+#* Make sure the drinking group checkboxes and their values always exist ----
 outputOptions(output, 'group_checkboxes', suspendWhenHidden = FALSE)
 
-# Logic when a new group is added
+#* Logic when a new drinking group is added ----
 observeEvent(input$add_group_btn, {
   lower_strata <- c()
   upper_strata <- c()
@@ -118,7 +118,7 @@ observeEvent(input$add_group_btn, {
   )
 })
 
-# Produce a lower/upper bound input for each gender for drinknig group addition
+#* Produce a dynamic lower/upper bound input for each gender for drinking group addition ----
 output$settings_drinking_group_bounds_render <- renderUI({
   inputs <- lapply(
     dataValues$genders,
@@ -145,6 +145,8 @@ output$settings_drinking_group_bounds_render <- renderUI({
   tagList(inputs)
 })
 
+# Global Parameter Server Logic ----
+#* Dynamic binge barriers ----
 output$settings_global_binge_barrier_render <- renderUI({
   inputs <- lapply(
     dataValues$genders,
@@ -168,9 +170,10 @@ output$settings_global_binge_barrier_render <- renderUI({
   tagList(inputs)
 })
 
+#* Global upper bound ----
 output$settings_global_upper_limit <- renderUI({
   numericInput(
-    inputId = "setting_ub_in_units",
+    inputId = "settings_ub_in_units",
     label = "Upper limit of consumption",
     value = round(250/drinking_unit(), 2),
     min = 0,
@@ -178,10 +181,12 @@ output$settings_global_upper_limit <- renderUI({
   )
 })
 
-# Make sure the previous renders always exist
+#* Make sure the previous renders always exist ----
 outputOptions(output, 'settings_drinking_group_bounds_render', suspendWhenHidden = FALSE)
 outputOptions(output, 'settings_global_binge_barrier_render', suspendWhenHidden = FALSE)
 outputOptions(output, 'settings_global_upper_limit', suspendWhenHidden = FALSE)
+
+#* Drinking Unit ----
 
 unit_popover_content <- reactive({
   content <- if(drinking_unit() == 1) {
@@ -189,7 +194,7 @@ unit_popover_content <- reactive({
   } else {
     paste(
       "The",
-      input$settings_unit,
+      country_as_adjective[[input$settings_unit]],
       "standard drink is defined as",
       drinking_unit(),
       "grams-ethanol."
@@ -214,7 +219,7 @@ drinking_unit <- reactive({
   as.numeric(units[[input$settings_unit]])
 })
 
-# Reactive lists
+#* Reactive lists ----
 
 binge_barriers <- reactive({
   barriers <- list()

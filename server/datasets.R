@@ -1,5 +1,5 @@
 # intermaphr-shiny - Sam Churchill 2018
-# --- File upload server --- #
+# --- datasets server --- #
 
 # only enable the upload buttons when their corresponding input has a file selected ----
 # Adapted from the ddPCR R package written by Dean Attali
@@ -69,18 +69,18 @@ observeEvent(input$datasets_saved_upload_btn, {
 })
 
 # Sample data load ----
-# * Select input render ----
+# * Select sample datasets render ----
 output$datasets_sample_years_render <- renderUI({
   pickerInput(
     inputId = "datasets_sample_years",
-    label = "Sample Years",
+    label = "Sample years",
     choices = unique(preloaded_dataset_pc$year),
     selected = unique(preloaded_dataset_pc$year),
     multiple = T,
     options = list(
       `actions-box` = TRUE, 
       `selected-text-format` = "count > 2",
-      `count-selected-text` = paste("{0}/{1}", "Years")
+      `count-selected-text` = paste("{0}/{1}", "years")
     )
   )  
 })
@@ -89,18 +89,32 @@ output$datasets_sample_years_render <- renderUI({
 output$datasets_sample_provinces_render <- renderUI({
   pickerInput(
     inputId = "datasets_sample_provinces",
-    label = "Sample Provinces",
+    label = "Sample provinces",
     choices = unique(preloaded_dataset_pc$region),
     selected = unique(preloaded_dataset_pc$region),
     multiple = T,
     options = list(
       `actions-box` = TRUE, 
       `selected-text-format` = "count > 2",
-      `count-selected-text` = paste("{0}/{1}", "Provinces")
+      `count-selected-text` = paste("{0}/{1}", "provinces")
     )
   )
 })
 
+observe({
+  if(
+    (length(input$datasets_sample_provinces) > 0) &&
+    (length(input$datasets_sample_years) > 0)
+  ) {
+    enable(id = "datasets_sample_load_btn")
+  } else{
+    disable(id = "datasets_sample_load_btn")
+  }
+})
+
+#* Update samples when not visible
+outputOptions(output, "datasets_sample_years_render", suspendWhenHidden = FALSE)
+outputOptions(output, "datasets_sample_provinces_render", suspendWhenHidden = FALSE)
 
 # * Button ----
 observeEvent(input$datasets_sample_load_btn, {

@@ -56,27 +56,38 @@ reformat <- function(tbl, type, col) {
 
 # * Dummy, grammar, and reference tables ----
 
-analysis_vars <- c(
+simple_analysis_vars <- c(
+  "Condition Category" = "condition_category",
+  "Region" = "region",
+  "Year" = "year",
+  "Gender" = "gender",
+  "Age Group" = "age_group"
+)
+
+simple_vars_analysis <- c(
+  "condition_category" = "Condition Category",
+  "region" = "Region",
+  "year" = "Year",
+  "gender" = "Gender",
+  "age_group" = "Age Group"
+)
+
+major_choices <- c(
   "Condition Category" = "condition_category",
   "Region" = "region",
   "Year" = "year",
   "Gender" = "gender",
   "Age Group" = "age_group",
-  "Population" = "population"
+  "Drinking Status" = "status",
+  "Scenario" = "scenario"
 )
 
-vars_analysis <- c(
-  "condition_category" = "Condition Category",
-  "region" = "Region",
-  "year" = "Year",
-  "gender" = "Gender",
-  "age_group" = "Age Group",
-  "population" = "Population"
-)
+minor_choices <- c("None" = "none", major_choices)
 
-x1_choices <- analysis_vars
+analysis_vars <- c("Outcome" = "outcome", major_choices)
 
-x2_choices <- c("None" = "none", x1_choices)
+# x1_choices <- analysis_vars
+# x2_choices <- c("None" = "none", x1_choices)
 
 pluralise <- function(var) {
   switch(

@@ -68,3 +68,27 @@ units <- list(
   "United Kingdom" = 8,
   "United States" = 14
 )
+
+country_as_adjective <- list(
+  "Australia" = "Australian",
+  "Austria" = "Austrian",
+  "Canada" = "Canadian",
+  "Denmark" = "Danish",
+  "Finland" = "Finnish",
+  "France" = "French",
+  "Germany" = "German",
+  "Hong Kong" = "Hong Kong",
+  "Hungary" = "Hungarian",
+  "Iceland" = "Icelandic",
+  "Ireland" = "Irish",
+  "Italy" = "Italian",
+  "Japan" = "Japanese",
+  "Netherlands" = "Dutch",
+  "New Zealand" = "New Zealand",
+  "Poland" = "Polish",
+  "Portugal" = "Portugese",
+  "Spain" = "Spanish",
+  "Switzerland" = "Swiss",
+  "United Kingdom" = "British",
+  "United States" = "American"
+)

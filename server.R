@@ -54,22 +54,24 @@ function(input, output, session) {
   output$logo_img <- renderUI({
     img(src="imahp_logo.png")
   })
-  
 
   
   # Include logic for each major facet ----
   source(file.path("server", "nav-buttons.R"), local = TRUE)$value
-  source(file.path("server", "file-upload.R"), local = TRUE)$value
+  source(file.path("server", "datasets.R"), local = TRUE)$value
   source(file.path("server", "settings.R"), local = TRUE)$value
   source(file.path("server", "generate-estimates.R"), local = TRUE)$value
+  source(file.path("server", "new-scenarios.R"), local = TRUE)$value
+  source(file.path("server", "set-tables.R"), local = TRUE)$value
+  source(file.path("server", "high.R"), local = TRUE)$value
   
   # source(file.path("server", "data-handlers.R"), local = TRUE)$value
   # source(file.path("server", "drinking_groups.R"), local = TRUE)$value
   # source(file.path("server", "data-analysis.R"), local = TRUE)$value
-  source(file.path("server", "high-level-btns.R"), local = TRUE)$value
-  source(file.path("server", "high-level.R"), local = TRUE)$value
-  source(file.path("server", "analyst-btns.R"), local = TRUE)$value
-  source(file.path("server", "analyst.R"), local = TRUE)$value
+  # source(file.path("server", "high-level-btns.R"), local = TRUE)$value
+  # source(file.path("server", "high-level.R"), local = TRUE)$value
+  # source(file.path("server", "analyst-btns.R"), local = TRUE)$value
+  # source(file.path("server", "analyst.R"), local = TRUE)$value
   
   
   # hide the loading message ----
