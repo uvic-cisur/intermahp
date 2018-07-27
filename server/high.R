@@ -30,6 +30,18 @@ output$high_minor_render <- renderUI({
   )
 })
 
+#* dueling selectors
+observe({
+  x1 <- input$high_major
+  x2 <- input$high_minor
+  
+  x1_c <- major_choices[!(major_choices %in% x2)]
+  x2_c <- minor_choices[!(minor_choices %in% x1)]
+  
+  updateSelectInput(session, "high_major", choices = x1_c, selected = x1)
+  updateSelectInput(session, "high_minor", choices = x2_c, selected = x2)  
+})
+
 #* Grouping checks ----
 #* Are we grouping by drinking status?
 is_grouped_by_status <- reactive({
@@ -175,8 +187,9 @@ high_filtered_data <- reactive({
   
 })
 
-#* render current chart
-high_current_chart <- reactive({
+#* summarized chartable data
+high_chartable_data <- reactive({
+  
   .data <- high_filtered_data()
   
   if(is.null(.data)) {
@@ -186,63 +199,74 @@ high_current_chart <- reactive({
   major <- rlang::sym(input$high_major)
   minor <- if(input$high_minor == "none") NULL else rlang::sym(input$high_minor)
   
-  .data <- if(input$high_minor == "none") group_by(.data, !!major) else group_by(.data, !!major, !!minor)
-  .data <- summarise(.data, metric = sum(metric, na.rm = T))
-  .data[["Attributable Count"]] <- .data$metric
-  .data$metric <-  NULL
-  
-  cc <- 
-  
-  # nPlot(
-  #   speed ~ dist,
-  #   data = cars,
-  #   type = "multiBarChart"
-  # )
-    
-  nPlot(
-    x = major,
-    y = "Attributable Count",
-    group = minor,
-    data = .data,
-    type = "multiBarHorizontalChart"
-  )
-  
-  cc$set(width = 0.975*session$clientData$output_dummy_chart_width)
-  cc$set(dom = "high_chart")
-  
-  x_names <- .data[[major]]
-  left_margin <- if(is.character(x_names) && length(x_names)) max(8*max(nchar(x_names)), 55) else 0
+  .data <- if(is.null(minor)) group_by(.data, !!major) else group_by(.data, !!major, !!minor)
+  .data <- summarise(.data, y = round(sum(metric, na.rm = T), 2)) %>% ungroup()
 
-  cc$chart(margin = list("left" = left_margin))
+  if(!is.null(minor)) .data <- spread(.data, key = !!minor, value = y)
+    
+  .data$categories <- .data[[major]]
+  .data[[major]] <- NULL
   
-  if(is_grouped_by_status() || is_grouped_by_scenario() || is.null(minor)) cc$chart(showControls = FALSE)
+  .data
+})
+
+high_current_chart <- reactive({
+  .data <- high_chartable_data()
   
-  return(cc)
+  if(is.null(.data) || nrow(.data) == 0) return(NULL)
+  
+  cc <- Highcharts$new()
+  cc$set(dom = "high_chart")
+  cc$chart(type = "column")
+  cc$yAxis(title = list(text = "Attributable count"))
+  cc$xAxis(type = "category")
+  cc$xAxis(categories = .data$categories)
+
+  if(input$high_minor == "none") {
+    cc$legend(enabled = F)
+    .data[["Attributable count"]] <- .data$y
+    .data$y <- NULL
+  }
+  
+  cc$data(select(.data, -categories))
+  
+  if(nrow(.data) == 1 && ncol(.data) == 2) {
+    cc$legend(enabled = F)
+    cc$xAxis(categories = c(.data$categories, NA))
+  }
+  
+  cc$title(text = chart_title())
+  cc$exporting(enabled = T, formAttributes=list(target='_blank'))
+  
+  cc
+})
+
+#* reactive chart title
+chart_title <- reactive({
+  if(is.null(input$high_outcome_filter) || is.null(input$high_major) || is.null(input$high_minor)) return("")
+  
+  paste0(
+    pluralise(as.character(input$high_outcome_filter)),
+    " grouped by ",
+    choices_reverse_lookup[input$high_major],
+    if(input$high_minor != "none") paste0(" and ", choices_reverse_lookup[input$high_minor])
+  )
 })
 
 
 #* display current chart
 output$high_chart <- renderChart({
-  # browser()
+  chart <- high_current_chart()
   
-  hc <- high_current_chart()
+  if(is.null(chart)) return(rCharts$new())
 
-  if(is.null(hc)) {
-    return(rCharts$new())
-  }
-  
-  return(hc)
+  show("high_chart_div")
+  return(chart)
 })
+
+
 
 
 #Update chart when not visible
 outputOptions(output, "high_chart", suspendWhenHidden = FALSE)
-
-
-# update all filtration systems when not visible
-# outputOptions(output, "high_outcome_filter_render", suspendWhenHidden = FALSE)
-# outputOptions(output, "high_scenario_filter_render", suspendWhenHidden = FALSE)
-# outputOptions(output, "high_simple_filters_render", suspendWhenHidden = FALSE)
-# outputOptions(output, "high_status_filter_render", suspendWhenHidden = FALSE)
-
 

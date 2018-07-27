@@ -34,6 +34,7 @@ function(input, output, session) {
   shinyjs::disable(id = "nav_new_scenarios")
   
   shinyjs::disable(id = "nav_high")
+  shinyjs::hide("high_chart_div")
   shinyjs::disable(id = "nav_analyst")
   
   # Set logo image

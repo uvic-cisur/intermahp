@@ -84,6 +84,16 @@ major_choices <- c(
 
 minor_choices <- c("None" = "none", major_choices)
 
+choices_reverse_lookup <- c(
+  "condition_category" = "Condition Category",
+  "region" = "Region",
+  "year" = "Year",
+  "gender" = "Gender",
+  "age_group" = "Age Group",
+  "status" = "Drinking Status",
+  "scenario" = "Scenario"
+)
+
 analysis_vars <- c("Outcome" = "outcome", major_choices)
 
 # x1_choices <- analysis_vars

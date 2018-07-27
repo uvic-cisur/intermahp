@@ -20,7 +20,8 @@ tagList(
   br(),
   
   wellPanel(
-    showOutput(outputId = "high_chart", lib = "nvd3"),
+    div(id = "high_chart_div", chartOutput("high_chart", lib = "highcharts")),
+    br(),
       # ),
       # downloadButton("high_chart_download", label = "Download")
       fluidRow(
