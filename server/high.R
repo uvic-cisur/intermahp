@@ -4,14 +4,20 @@
 # zzz utility functions ----
 current_var <- function(var) unique(high_selected_scenarios()[[var]])
 
+truncated_filtration_div <- function(.label) {
+  div(class = "truncate",
+      style = paste0("width:", session$clientData$output_dummy_filtration_width, ";"),
+      .label)
+}
+
 # Grouping Variables ----
 #* Grouping Selections
 output$high_major_render <- renderUI({
   selectInput(
     inputId = "high_major",
     label = "Major Grouping",
-    choices = major_choices,
-    selected = if(is.null(input$high_major)) "Condition Category" else input$high_major
+    choices = major_choices
+    # selected = if(is.null(input$high_major)) "Condition Category" else input$high_major
   )
 })
 
@@ -19,8 +25,8 @@ output$high_minor_render <- renderUI({
   selectInput(
     inputId = "high_minor",
     label = "Minor Grouping",
-    choices = minor_choices,
-    selected = if(is.null(input$high_major)) "Region" else input$high_minor
+    choices = minor_choices
+    # selected = if(is.null(input$high_minor)) "Region" else input$high_minor
   )
 })
 
@@ -45,22 +51,23 @@ is_grouped_by_scenario <- reactive({
 output$high_outcome_filter_render <- renderUI({
   selectInput(
     inputId = "high_outcome_filter",
-    label = "Outcome",
-    choices = c("Morbidity", "Mortality")
+    label = truncated_filtration_div("Outcome"),
+    choices = unique(dataValues$model$mm$outcome),
+    selected = unique(dataValues$model$mm$outcome)[1]
   )
 })
 
 # scenarios names filtered by selected outcome
 filtered_scenario_names <- reactive({
   if(is.null(input$high_outcome_filter)) return(NULL)
-  names(dataValues$long)[grep(input$high_outcome_filter, names(dataValues$long))]
+  unique(high_selected_outcomes()[["scenario"]])
 })
 
 # Filter by scenario (dependent on grouping)
 output$high_scenario_filter_render <- renderUI({
   pickerInput(
     inputId = "high_scenario_filter",
-    label = "Scenarios",
+    label = truncated_filtration_div("Scenarios"),
     choices = filtered_scenario_names(),
     selected = if(is_grouped_by_scenario()) filtered_scenario_names() else filtered_scenario_names()[1],
     multiple = is_grouped_by_scenario(),
@@ -83,7 +90,7 @@ output$high_simple_filters_render <- renderUI({
         4,
         pickerInput(
           inputId = use_id,
-          label = .label,
+          label = truncated_filtration_div(.label),
           choices = factors,
           selected = factors,
           multiple = TRUE,
@@ -104,7 +111,7 @@ output$high_status_filter_render <- renderUI({
     4,
     pickerInput(
       inputId = "high_status_filter",
-      label = "Drinking Status",
+      label = div(class = "truncate", "Drinking Status"),
       choices = current_var("status"),
       selected = if(is_grouped_by_status()) current_var("status") else "Entire Population",
       multiple = is_grouped_by_status(),
@@ -117,20 +124,40 @@ output$high_status_filter_render <- renderUI({
   )
 })
 
-# reactive dataset after outcome filtering
-high_selected_scenarios <- reactive({
-  if(length(dataValues$long) == 0 || is.null(input$high_scenario_filter)) return(NULL)
-  .data <- reduce(.x = dataValues$long[input$high_scenario_filter], .f = inner_join)
-  gather(.data, key = "scenario", value = "aaf", input$high_scenario_filter)
+# Reactive datasets ----
+#* reactive dataset after outcome filtering
+high_selected_outcomes <- reactive({
+  input$high_outcome_filter
+  
+  if(length(dataValues$long) == 0) return(NULL)
+  scenario_names <- names(dataValues$long)
+  valid_scenarios <- scenario_names[grep(input$high_outcome_filter, scenario_names)]
+  .data <- reduce(.x = dataValues$long[valid_scenarios], .f = inner_join)
+  .data <- gather(.data, key = "scenario", value = "aaf", valid_scenarios)
+  .data$scenario <- gsub('.{10}$', '', .data$scenario)
+  .data
 })
 
-# reactive dataset with full filtering
+#* reactive dataset after outcome filtering
+high_selected_scenarios <- reactive({
+  input$high_scenario_filter
+  
+  .data <- high_selected_outcomes()
+  if(is.null(.data)) return(NULL)
+  
+  filtered <- filter(.data, scenario %in% input$high_scenario_filter)
+  
+  filtered
+  
+})
+
+#* reactive dataset with full filtering
 high_filtered_data <- reactive({
   .data <- high_selected_scenarios()
   
   if(is.null(.data)) return(NULL)
   
-  for(var in analysis_vars) {
+  for(var in major_choices) {
     id <- paste("high", var, "filter", sep = "_")
     var_sym <- rlang::sym(var)
     if(!is.null(input[[id]])) {
@@ -141,12 +168,76 @@ high_filtered_data <- reactive({
   .data$metric = .data$count * .data$aaf
   
   dataValues$current_total <- .data %>%
-    group_by(status) %>%
+    group_by(status, scenario) %>%
     summarise(total = sum(metric, na.rm = TRUE))
   
   .data
   
 })
+
+#* render current chart
+high_current_chart <- reactive({
+  .data <- high_filtered_data()
+  
+  if(is.null(.data)) {
+    return(NULL)
+  }
+  
+  major <- rlang::sym(input$high_major)
+  minor <- if(input$high_minor == "none") NULL else rlang::sym(input$high_minor)
+  
+  .data <- if(input$high_minor == "none") group_by(.data, !!major) else group_by(.data, !!major, !!minor)
+  .data <- summarise(.data, metric = sum(metric, na.rm = T))
+  .data[["Attributable Count"]] <- .data$metric
+  .data$metric <-  NULL
+  
+  cc <- 
+  
+  # nPlot(
+  #   speed ~ dist,
+  #   data = cars,
+  #   type = "multiBarChart"
+  # )
+    
+  nPlot(
+    x = major,
+    y = "Attributable Count",
+    group = minor,
+    data = .data,
+    type = "multiBarHorizontalChart"
+  )
+  
+  cc$set(width = 0.975*session$clientData$output_dummy_chart_width)
+  cc$set(dom = "high_chart")
+  
+  x_names <- .data[[major]]
+  left_margin <- if(is.character(x_names) && length(x_names)) max(8*max(nchar(x_names)), 55) else 0
+
+  cc$chart(margin = list("left" = left_margin))
+  
+  if(is_grouped_by_status() || is_grouped_by_scenario() || is.null(minor)) cc$chart(showControls = FALSE)
+  
+  return(cc)
+})
+
+
+#* display current chart
+output$high_chart <- renderChart({
+  # browser()
+  
+  hc <- high_current_chart()
+
+  if(is.null(hc)) {
+    return(rCharts$new())
+  }
+  
+  return(hc)
+})
+
+
+#Update chart when not visible
+outputOptions(output, "high_chart", suspendWhenHidden = FALSE)
+
 
 # update all filtration systems when not visible
 # outputOptions(output, "high_outcome_filter_render", suspendWhenHidden = FALSE)

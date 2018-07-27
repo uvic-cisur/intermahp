@@ -5,7 +5,6 @@
 tagList(
   wellPanel(
     fluidRow(
-      h4("Filters"),
       column(
         3,
         uiOutput("high_outcome_filter_render"),
@@ -18,7 +17,23 @@ tagList(
       )
     )
   ),
-  br()
+  br(),
+  
+  wellPanel(
+    showOutput(outputId = "high_chart", lib = "nvd3"),
+      # ),
+      # downloadButton("high_chart_download", label = "Download")
+      fluidRow(
+        column(6, uiOutput("high_major_render")),
+        column(6, uiOutput("high_minor_render"))
+      )
+      # )
+    # )
+  ),
+  wellPanel(
+    # uiOutput("high_summary_render")
+  )
+  
   # Panel that contains the chart output ----
   # conditionalPanel(
   #   condition = "output.show_hl_chart_panel",
@@ -34,4 +49,10 @@ tagList(
   #   ),
   #   plotOutput("dummy")
   # )
+  
+  
+  # Dummy plot to track session width of a 3-in-9 column
+  , column(3, plotOutput(outputId = "dummy_filtration", height = 0))
+  # Dummy plot to track session width of a 9 column
+  , plotOutput(outputId = "dummy_chart", height = 0)
 )

@@ -75,7 +75,7 @@ output$datasets_sample_years_render <- renderUI({
     inputId = "datasets_sample_years",
     label = "Sample years",
     choices = unique(preloaded_dataset_pc$year),
-    selected = unique(preloaded_dataset_pc$year),
+    selected = unique(preloaded_dataset_pc$year)[1],
     multiple = T,
     options = list(
       `actions-box` = TRUE, 
@@ -91,7 +91,7 @@ output$datasets_sample_provinces_render <- renderUI({
     inputId = "datasets_sample_provinces",
     label = "Sample provinces",
     choices = unique(preloaded_dataset_pc$region),
-    selected = unique(preloaded_dataset_pc$region),
+    selected = unique(preloaded_dataset_pc$region)[1],
     multiple = T,
     options = list(
       `actions-box` = TRUE, 

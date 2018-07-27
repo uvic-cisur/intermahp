@@ -10,7 +10,9 @@ observeEvent(input$new_scenario, {
     withCallingHandlers(
       {
         scale <- 1 + (0.01 * input$new_scenarios_rescale_percent)
-        processNewScenario(paste("Scenario - rescale consumption by ", input$new_scenarios_rescale_percent, " percent"), scale = scale)
+        sign <- if(scale < 1) "" else "+"
+        
+        processNewScenario(paste0(sign, input$new_scenarios_rescale_percent, "% Consumption"), scale = scale)
         message("Scenario added.")
       }, message = function(m) {
         html("scenario_progress", m$message, TRUE)
