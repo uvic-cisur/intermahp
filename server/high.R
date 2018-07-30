@@ -200,6 +200,10 @@ high_chartable_data <- reactive({
   minor <- if(input$high_minor == "none") NULL else rlang::sym(input$high_minor)
   
   .data <- if(is.null(minor)) group_by(.data, !!major) else group_by(.data, !!major, !!minor)
+  
+  # If including rate/10,000 people (drinkers?) as a metric, here is where we still
+  # have the variables necessary to join with model$pc[c(key, population)]
+  
   .data <- summarise(.data, y = round(sum(metric, na.rm = T), 2)) %>% ungroup()
 
   if(!is.null(minor)) .data <- spread(.data, key = !!minor, value = y)
@@ -230,9 +234,11 @@ high_current_chart <- reactive({
   
   cc$data(select(.data, -categories))
   
-  if(nrow(.data) == 1 && ncol(.data) == 2) {
-    cc$legend(enabled = F)
+  if(nrow(.data) == 1) {
     cc$xAxis(categories = c(.data$categories, NA))
+    if(ncol(.data) == 2) {
+      cc$legend(enabled = F)
+    }
   }
   
   cc$title(text = chart_title())

@@ -5,15 +5,17 @@
 library(shiny)
 library(shinyjs)
 library(shinyWidgets)
+library(shinyalert)
 library(intermahpr)
 library(tidyverse)
 library(rCharts)
 
 source(file.path("ui", "helpers.R"))
-source("popover_fns.R")
+source("js-utils.R")
 
 tagList(
   useShinyjs(),
+  useShinyalert(),
   
   # Add custom JS and CSS ----
   tags$head(

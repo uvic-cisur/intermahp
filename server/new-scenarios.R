@@ -39,14 +39,18 @@ processNewScenario <- function(name, scale)
   ## Modify by attributability (wholly attributable conditions are the only ones affected)
   attr <- ((.data$attributability == "Wholly") / total) + (.data$attributability == "Partially")
   
+  message("Done")
+  message(paste0("&emsp;Computing attributable fractions for:"))
+  
   include_groups <- vapply(
     X = names(dataValues$drinking_groups),
-    FUN = function(group) {if(include_group(group)) group},
+    FUN = function(group) {if(include_group(group)) group else "!"},
     FUN.VALUE = "0")
   
-  message("Done")
+  include_groups <- include_groups[include_groups != "!"]
+  
   for(group in include_groups) {
-    message(paste0("&emsp;Computing attributable fractions for ", group, "... "), appendLF = FALSE)
+    message(paste0("&emsp;&emsp;", group, "... "), appendLF = FALSE)
     .data[[paste0("AAF - ", group)]] <- dataValues$drinking_groups[[group]]$.command(.data) * attr
     message("Done")
   }

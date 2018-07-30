@@ -22,14 +22,10 @@ tagList(
   wellPanel(
     div(id = "high_chart_div", chartOutput("high_chart", lib = "highcharts")),
     br(),
-      # ),
-      # downloadButton("high_chart_download", label = "Download")
-      fluidRow(
-        column(6, uiOutput("high_major_render")),
-        column(6, uiOutput("high_minor_render"))
-      )
-      # )
-    # )
+    fluidRow(
+      column(6, uiOutput("high_major_render")),
+      column(6, uiOutput("high_minor_render"))
+    )
   ),
   wellPanel(
     # uiOutput("high_summary_render")

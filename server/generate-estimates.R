@@ -10,6 +10,35 @@ shinyjs::hide(id = "model_progress_content")
 
 # Script when a new model is generated ----
 observeEvent(input$generate_estimates, {
+  if(!is.null(dataValues$model)) {
+    shinyalert(
+      title = "Estimates already generated",
+      text = "You've already generated estimates. Clear data and generate new estimates?",
+      type = "warning",
+      closeOnEsc = T,
+      closeOnClickOutside = T,
+      showCancelButton = T,
+      showConfirmButton = T,
+      confirmButtonText = "Yes",
+      cancelButtonText = "No",
+      callbackR = function(continue) {
+        if(continue) {
+          dataValues$model <- NULL
+          dataValues$wide <- NULL
+          dataValues$long <- NULL
+          generateEstimates()
+        } else {
+          return()
+        }
+      }
+    )
+  } else {
+    generateEstimates()
+  }
+})
+
+  
+generateEstimates <- function() {
   withBusyIndicator("generate_estimates", {
     show("model_progress_content")
     html(id = "model_progress", "Generating Estimates:<br />")
@@ -68,4 +97,4 @@ observeEvent(input$generate_estimates, {
       }
     )
   })
-})
+}

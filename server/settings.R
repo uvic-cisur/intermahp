@@ -5,11 +5,11 @@ shinyjs::disable(id = "add_group_btn")
 
 #* ensure group name is alphanumeric ----
 checkGroupNameValidity <- function(string) {
-  !(grepl("[^[:alnum:] ]", string) || nchar(string) == 0)
+  !(grepl("[^[:alnum:] ]", string) || nchar(string) == 0 || string %in% c("Entire Population", "Current Drinkers", "Former Drinkers"))
 }
 
 observe({
-  if(!is.null(input$new_group_name) && checkGroupNameValidity(input$new_group_name)) shinyjs::enable(id = "add_group_btn")
+  if(!is.null(input$new_group_name) && checkGroupNameValidity(input$new_group_name)) shinyjs::enable(id = "add_group_btn") else shinyjs::disable(id = "add_group_btn")
 })
 
 #* drinking group reactive list ----
@@ -76,7 +76,6 @@ output$group_checkboxes <- renderUI({
   tagList(boxes)
 })
 
-
 #* Make sure the drinking group checkboxes and their values always exist ----
 outputOptions(output, 'group_checkboxes', suspendWhenHidden = FALSE)
 
@@ -92,14 +91,14 @@ observeEvent(input$add_group_btn, {
   )
   
   for(gender in dataValues$genders) {
-    lower_strata[[gender]] = input[[paste0(gender, " lower bound")]]
-    upper_strata[[gender]] = input[[paste0(gender, " upper bound")]]
+    lower_strata[[gender]] = input[[gsub(" ","_", paste0(gender, " lower bound"))]]
+    upper_strata[[gender]] = input[[gsub(" ","_", paste0(gender, " upper bound"))]]
     popover_text <- paste0(
       popover_text,
       if(dataValues$genders[length(dataValues$genders)] == gender) "and " else NULL,
-      round(input[[paste0(gender, " lower bound")]] * drinking_unit(), 2),
+      round(input[[gsub(" ","_", paste0(gender, " lower bound"))]] * drinking_unit(), 2),
       " and ",
-      round(input[[paste0(gender, " upper bound")]] * drinking_unit(), 2),
+      round(input[[gsub(" ","_", paste0(gender, " upper bound"))]] * drinking_unit(), 2),
       " daily grams-ethanol for gender ",
       gender,
       ", ")
@@ -118,31 +117,60 @@ observeEvent(input$add_group_btn, {
   )
 })
 
+
+truncated_group_div <- function(.label) {
+  div(class = "truncate",
+      style = paste0("width:", session$clientData$output_dummy_6in8in9_width, ";"),
+      .label)
+}
+
+
 #* Produce a dynamic lower/upper bound input for each gender for drinking group addition ----
 output$settings_drinking_group_bounds_render <- renderUI({
   inputs <- lapply(
     dataValues$genders,
     function(gender) {
       tagList(
-        hr(),
-        numericInput(
-          inputId = paste0(gender, " lower bound"),
-          label = paste0(gender, " lower bound"),
-          min = 0,
-          value = round(15/drinking_unit(), 2),
-          max = 1000
-        ),
-        numericInput(
-          inputId = paste0(gender, " upper bound"),
-          label = paste0(gender, " upper bound"),
-          min = 0,
-          value = round(30/drinking_unit(), 2),
-          max = 1000
+        fluidRow(
+          column(
+            6,
+            numericInput(
+              inputId = gsub(" ","_", paste0(gender, " lower bound")),
+              label = truncated_group_div(paste0(gender, " lower bound")),
+              min = 0,
+              value = round(15/drinking_unit(), 2),
+              max = 1000
+            )
+          ),
+          column(
+            6,
+            numericInput(
+              inputId = gsub(" ","_", paste0(gender, " upper bound")),
+              label = truncated_group_div(paste0(gender, " upper bound")),
+              min = 0,
+              value = round(30/drinking_unit(), 2),
+              max = 1000
+            )
+          )
         )
       )
     }
   )
+  
   tagList(inputs)
+})
+
+#* min/max button functionality
+observeEvent(input$settings_min_lb, {
+  for(gender in dataValues$genders) {
+    updateNumericInput(session, inputId = gsub(" ","_", paste0(gender, " lower bound")), value = 0)
+  }
+})
+
+observeEvent(input$settings_max_ub, {
+  for(gender in dataValues$genders) {
+    updateNumericInput(session, inputId = gsub(" ","_", paste0(gender, " upper bound")), value = input$settings_ub_in_units)
+  }
 })
 
 # Global Parameter Server Logic ----

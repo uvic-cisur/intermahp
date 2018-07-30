@@ -7,12 +7,19 @@ wellPanel(
         br(),
         "This may take several minutes depending on the number of population subgroups."),
       
-      numericInput(
-        inputId = "new_scenarios_rescale_percent",
-        label = "Percent change in consumption",
-        min = -100,
-        value = 0,
-        max = 100
+      tagList(
+        singleton(proxyclickInit()),
+        tagAppendAttributes(
+          numericInput(
+            inputId = "new_scenarios_rescale_percent",
+            label = "Percent change in consumption",
+            min = -100,
+            value = 0,
+            max = 100,
+            width = "225px"
+          ),
+          `data-proxy-click` = "new_scenario"
+        )
       ),
       
       withBusyIndicator(

@@ -9,14 +9,13 @@ library(tidyverse)
 library(rCharts)
 
 source(file.path("server", "helpers.R"))
-source("popover_fns.R")
+source("js-utils.R")
 
 function(input, output, session) {
   # server side reactive data store ----
   dataValues <- reactiveValues(
     wide = list(),
-    long = list(),
-    charts = list())
+    long = list())
   
   # preloaded data initialization ----
   # RR
