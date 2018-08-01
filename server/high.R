@@ -17,7 +17,6 @@ output$high_major_render <- renderUI({
     inputId = "high_major",
     label = "Major Grouping",
     choices = major_choices
-    # selected = if(is.null(input$high_major)) "Condition Category" else input$high_major
   )
 })
 
@@ -26,7 +25,6 @@ output$high_minor_render <- renderUI({
     inputId = "high_minor",
     label = "Minor Grouping",
     choices = minor_choices
-    # selected = if(is.null(input$high_minor)) "Region" else input$high_minor
   )
 })
 
@@ -269,8 +267,7 @@ output$high_chart <- renderChart({
   return(chart)
 })
 
-# Update chart when not visible
-outputOptions(output, "high_chart", suspendWhenHidden = FALSE)
+
 
 # Summary table for high-level view
 
@@ -317,6 +314,12 @@ output$high_summary_render <- renderUI({
 })
 
 
+# update some elements when not visible
+outputOptions(output, "high_major_render", suspendWhenHidden = FALSE)
+outputOptions(output, "high_minor_render", suspendWhenHidden = FALSE)
 
+outputOptions(output, "high_scenario_filter_render", suspendWhenHidden = FALSE)
+outputOptions(output, "high_simple_filters_render", suspendWhenHidden = FALSE)
+outputOptions(output, "high_status_filter_render", suspendWhenHidden = FALSE)
 
-
+outputOptions(output, "high_chart", suspendWhenHidden = FALSE)

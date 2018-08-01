@@ -26,7 +26,7 @@ observeEvent(input$datasets_new_upload_btn, {
     mm <- readr::read_csv(input$datasets_upload_mm$datapath)
     
     check_pc <- clean(pc, intermahpr::getExpectedVars("pc"))
-    check_rr <- prepareRR(rr, T)
+    check_rr <- clean(rr, intermahpr::getExpectedVars("rr"))
     check_mm <- clean(mm, intermahpr::getExpectedVars("mm"))
     
     # Ensure data cohesion (gender levels match, etc)
@@ -49,11 +49,11 @@ observeEvent(input$datasets_new_upload_btn, {
     # Set variables
     dataValues$genders <- unique(as.character(check_rr$gender))
     
-    dataValues$pc_in <- pc
-    dataValues$rr_in <- rr
-    dataValues$mm_in <- mm
+    dataValues$pc_in <- check_pc
+    dataValues$rr_in <- check_rr
+    dataValues$mm_in <- check_mm
     
-    output$datasetsChosen <- reactive({ TRUE })
+    output$dataChosen <- reactive({ TRUE })
     
     shinyjs::enable("nav_settings")
     shinyjs::enable("nav_generate_estimates")
@@ -120,6 +120,7 @@ outputOptions(output, "datasets_sample_provinces_render", suspendWhenHidden = FA
 # * Button ----
 observeEvent(input$datasets_sample_load_btn, {
   withBusyIndicator("datasets_sample_load_btn", {
+    
     if(input$datasets_sample_rr == "Zhao") dataValues$rr_in <- preloaded_dataset_rr_zhao
     if(input$datasets_sample_rr == "Roerecke") dataValues$rr_in <- preloaded_dataset_rr_roerecke
     
@@ -138,10 +139,112 @@ observeEvent(input$datasets_sample_load_btn, {
     # Set variables
     dataValues$genders <- c("Male", "Female")
     
-    shinyjs::enable("nav_settings")
-    shinyjs::enable("nav_generate_estimates")
-    shinyjs::enable("generate_estimates")
+    show("datasets_nextMsg")
     
-    output$datasetsChosen <- reactive({ TRUE })
+    output$dataChosen <- reactive({ TRUE })
   })
 })
+
+# Metadata for loaded datasets ----
+#* 
+
+output$pc_metadata <- renderUI({
+  pc <- dataValues$pc_in
+  if(is.null(pc)) return("")
+  
+  obs <- nrow(pc)
+  years <- length(unique(pc$year))
+  regions <- length(unique(pc$region))
+  cohorts <- length(unique(pc$gender)) * length(unique(pc$age_group))
+  
+  div(
+    class = "data-info",
+    paste0("Prevalence and consumption:"),
+    div(
+      class = "padded-data-info",
+      paste0(
+        obs,
+        " observation", if(obs >= 2) "s",
+        " over ",
+        years,
+        " year", if(years >= 2) "s",
+        ", ",
+        regions,
+        " region", if(regions >= 2) "s",
+        " and ",
+        cohorts,
+        " gender-age group", if(cohorts >= 2) "s",
+        "."
+      )
+    )
+  )
+})
+
+output$rr_metadata <- renderUI({
+  rr <- dataValues$rr_in
+  if(is.null(rr)) return("")
+  
+  obs <- nrow(rr)
+  conditions <- length(unique(rr$im))
+
+  div(
+    class = "data-info",
+    paste0("Relative risks:"),
+    div(
+      class = "padded-data-info",
+      paste0(
+        obs,
+        " function specification", if(obs >= 2) "s",
+        " across ",
+        conditions,
+        " condition", if(conditions >= 2) "s",
+        "."
+      )
+    )
+  )
+})
+
+
+output$mm_metadata <- renderUI({
+  mm <- dataValues$mm_in
+  if(is.null(mm)) return("")
+  
+  years <- length(unique(mm$year))
+  regions <- length(unique(mm$region))
+  cohorts <- length(unique(mm$gender)) * length(unique(mm$age_group))
+  conditions <- length(unique(mm$im))
+  morbidities <- nrow(filter(mm, grepl("Morb", outcome)))
+  mortalities <- nrow(filter(mm, grepl("Mort", outcome)))
+    
+  div(
+    class = "data-info",
+    paste0("Morbidity and mortality:"),
+    div(
+      class = "padded-data-info",
+      paste0(
+        morbidities,
+        " morbidit", if(morbidities < 2 && morbidities >= 1) "y" else "ies",
+        " and ",
+        mortalities,
+        " mortalit", if(mortalities < 2 && mortalities >= 1) "y" else "ies",
+        " over ",
+        years,
+        " year", if(years >= 2) "s",
+        ", ",
+        regions,
+        " region", if(regions >= 2) "s",
+        " and ",
+        cohorts,
+        " gender-age group", if(cohorts >= 2) "s",
+        " across ",
+        conditions,
+        " condition", if(conditions >= 2) "s",
+        "."
+      )
+    )
+  )
+})
+
+# nextMsg links ----
+observeEvent(input$datasets_to_settings, set_nav("settings"))
+observeEvent(input$datasets_to_generate_estimates, set_nav("generate_estimates"))

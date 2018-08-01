@@ -26,10 +26,12 @@ set_nav <- function(id) {
   
   showElement(id = paste0("panel_", id))
   addClass(id = paste0("nav_", id), class = "active")
+
+  hide("errorDiv")  
+  # hide(selector = "div.next-msg")
 }
 
-# Initialize nav
-set_nav("datasets")
+
 
 # NOTE:
 # This might be doable via modules...

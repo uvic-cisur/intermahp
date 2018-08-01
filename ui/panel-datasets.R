@@ -1,7 +1,7 @@
 # intermaphr-shiny - Sam Churchill 2018
 # --- Datasets UI --- #
 
-# wellPanel(
+tagList(
   tabsetPanel(
     id = "tabset_datasets",
     tabPanel(
@@ -69,5 +69,14 @@
         )
       )
     )
+  ),
+  # Next step message ----
+  div(
+    id = "datasets_nextMsg", 
+    class = "next-msg",
+    "Next, ",
+    actionLink("datasets_to_settings", "review and tweak settings"),
+    " or ",
+    actionLink("datasets_to_generate_estimates", "generate estimates.")
   )
-# )
+)

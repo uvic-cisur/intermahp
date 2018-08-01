@@ -34,10 +34,14 @@ tagList(
     fluidRow(
       column(
         3,
-        source(file.path("ui", "nav-panel.R"), local = TRUE)$value
+        source(file.path("ui", "panel-nav.R"), local = TRUE)$value,
+        source(file.path("ui", "panel-metadata.R"), local = TRUE)$value
       ),
       column(
         9,
+        
+        div(id = "header", source(file.path("ui", "header.R"), local = TRUE)$value),
+        
         div(id = "panel_datasets", source(file.path("ui", "panel-datasets.R"), local = TRUE)$value),
         div(id = "panel_settings", source(file.path("ui", "panel-settings.R"), local = TRUE)$value),
 

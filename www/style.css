@@ -9,7 +9,7 @@
 
 p {
   font-size: 1.2em;
-  /*font-weight: bold;*/
+  font-weight: 500;
 }
 
 table {
@@ -76,4 +76,43 @@ table {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.indented-data-info {
+  font-size: 14px;
+  font-weight: 400;
+  text-indent: 5%;
+}
+
+.padded-data-info {
+  font-size: 14px;
+  font-weight: 400;
+  padding-left: 5%;
+}
+
+
+.data-info {
+  font-size: 1.2em;
+  font-weight: 600;
+}
+
+
+.slidedown {
+  overflow-y: hidden;
+	max-height: 500px; /* approximate max height */
+
+	transition-property: all;
+	transition-duration: .5s;
+	transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+}
+
+.slidedown.closed {
+  max-height: 0px;
+}
+
+.next-msg {
+  margin-top: 20px;
+  color: #777;
+  font-size: 1.4em;
+  font-weight: bold;
 }

@@ -25,16 +25,43 @@ function(input, output, session) {
   preloaded_dataset_pc <- read_rds(file.path("data", "all_pc.rds"))
   preloaded_dataset_mm <- read_rds(file.path("data", "all_mm.rds"))
   
+  # we need to have a quasi-variable flag to indicate whether or not
+  # we have data to work with or if we're waiting for data to be chosen
+  # Adapted from the ddPCR R package written by Dean Attali
+  output$dataChosen <- reactive({ FALSE })
+  outputOptions(output, 'dataChosen', suspendWhenHidden = FALSE)
   
-  # Disable most buttons
-  shinyjs::disable(id = "nav_settings")
+  # similar to above, indicates whether estimates have been generated
+  output$estimatesGenerated <- reactive({ FALSE })
+  outputOptions(output, 'estimatesGenerated', suspendWhenHidden = FALSE)
   
-  shinyjs::disable(id = "nav_generate_estimates")
-  shinyjs::disable(id = "nav_new_scenarios")
+  # similar to above
+  current_nav <- reactive({NULL})
   
-  shinyjs::disable(id = "nav_high")
-  shinyjs::hide("high_chart_div")
-  shinyjs::disable(id = "nav_analyst")
+  # save button (downloads model object)
+  output$saveButton <- downloadHandler(
+    filename = function() {
+      "InterMAHP-estimator.rds"
+    },
+    content = function(file) {
+      write_rds(x = dataValues$model, file)
+    }
+  )
+  
+  # When a main or secondary tab is switched, clear the error message
+  # and don't show the dataset info on the About tab
+  observe({
+    input$tabset_datasets
+    input$tabset_settings
+
+    # clear the error message
+    hide("errorDiv")
+    
+    # hide the "finished, move on to next tab" messages
+    # hide(selector = "div.next-msg")
+  })
+  
+  output$nextMsg_content <- renderUI({ NULL })
   
   # Set logo image
   output$logo_img <- renderUI({
@@ -43,6 +70,7 @@ function(input, output, session) {
 
   
   # Include logic for each major facet ----
+  source(file.path("server", "header.R"), local = TRUE)$value
   source(file.path("server", "nav-buttons.R"), local = TRUE)$value
   source(file.path("server", "datasets.R"), local = TRUE)$value
   source(file.path("server", "settings.R"), local = TRUE)$value
@@ -51,14 +79,11 @@ function(input, output, session) {
   source(file.path("server", "set-tables.R"), local = TRUE)$value
   source(file.path("server", "high.R"), local = TRUE)$value
   
-  # source(file.path("server", "data-handlers.R"), local = TRUE)$value
-  # source(file.path("server", "drinking_groups.R"), local = TRUE)$value
-  # source(file.path("server", "data-analysis.R"), local = TRUE)$value
-  # source(file.path("server", "high-level-btns.R"), local = TRUE)$value
-  # source(file.path("server", "high-level.R"), local = TRUE)$value
-  # source(file.path("server", "analyst-btns.R"), local = TRUE)$value
-  # source(file.path("server", "analyst.R"), local = TRUE)$value
-  
+  # Initialize nav
+  set_nav("datasets")
+  hide("datasets_nextMsg")
+  hide("generate_estimates_nextMsg")
+  hide("new_scenarios_nextMsg")
   
   # hide the loading message ----
   hide("loading-content", TRUE, "fade") 

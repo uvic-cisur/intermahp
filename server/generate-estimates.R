@@ -3,7 +3,7 @@
 
 
 ## disable estimation generation button initially
-shinyjs::disable(id = "generate_estimates")
+# shinyjs::disable(id = "generate_estimates")
 
 # hide model progress initially
 shinyjs::hide(id = "model_progress_content")
@@ -83,11 +83,13 @@ generateEstimates <- function() {
         
         processNewScenario(name = "Base", scale = 1)
         
+        output$estimatesGenerated <- reactive({ TRUE })
+        
+        shinyjs::addClass(id = "header_generate_estimates_instruction", class = "closed")
+        
         message("Estimates generated.")
         
-        shinyjs::enable(id = "nav_new_scenarios")
-        shinyjs::enable(id = "nav_high")
-        shinyjs::enable(id = "nav_analyst")
+        show("generate_estimates_nextMsg")
       },
       message = function(m) {
         html("model_progress", m$message, TRUE)
@@ -98,3 +100,8 @@ generateEstimates <- function() {
     )
   })
 }
+
+# nextMsg links ----
+observeEvent(input$generate_estimates_to_new_scenarios, set_nav("new_scenarios"))
+observeEvent(input$generate_estimates_to_high, set_nav("high"))
+observeEvent(input$generate_estimates_to_analyst, set_nav("analyst"))

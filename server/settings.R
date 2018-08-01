@@ -261,3 +261,5 @@ binge_barriers <- reactive({
   barriers
 })
 
+# nextMsg links ----
+observeEvent(input$settings_to_generate_estimates, set_nav("generate_estimates"))
