@@ -139,7 +139,8 @@ output$settings_drinking_group_bounds_render <- renderUI({
               label = truncated_group_div(paste0(gender, " lower bound")),
               min = 0,
               value = round(15/drinking_unit(), 2),
-              max = 1000
+              max = 1000,
+              width = validateCssUnit(session$clientData$output_dummy_6in8in9_width)
             )
           ),
           column(
@@ -149,7 +150,8 @@ output$settings_drinking_group_bounds_render <- renderUI({
               label = truncated_group_div(paste0(gender, " upper bound")),
               min = 0,
               value = round(30/drinking_unit(), 2),
-              max = 1000
+              max = 1000,
+              width = validateCssUnit(session$clientData$output_dummy_6in8in9_width)
             )
           )
         )

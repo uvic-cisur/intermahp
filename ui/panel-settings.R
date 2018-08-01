@@ -31,9 +31,9 @@ tabsetPanel(
     
     br(),
     
-    column(6, uiOutput("group_checkboxes")),
+    column(4, uiOutput("group_checkboxes")),
     column(
-      6,
+      8,
       textInput(
         inputId = "new_group_name",
         label = div(
@@ -42,8 +42,31 @@ tabsetPanel(
         ),
         placeholder = "Light Drinkers"
       ),
+      hr(),
+      fluidRow(
+        column(
+          6,
+          actionButton(
+            inputId = "settings_min_lb",
+            label = "Use minimum",
+            icon = icon("angle-double-down"),
+            class = "btn-block btn-primary"
+          ),
+          plotOutput(outputId = "dummy_6in8in9", height = 0)
+        ),
+        column(
+          6,
+          actionButton(
+            inputId = "settings_max_ub",
+            label = "Use maximum",
+            icon = icon("angle-double-up"),
+            class = "btn-block btn-primary"
+          )
+        )
+      ),
+      hr(),
       uiOutput("settings_drinking_group_bounds_render"),
-      
+      hr(),
       actionButton(inputId = "add_group_btn", label = "Add new group", icon = icon("plus"), class = "btn-danger btn-block")
     )
   )

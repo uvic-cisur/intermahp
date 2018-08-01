@@ -8,6 +8,7 @@ library(shinyWidgets)
 library(shinyalert)
 library(intermahpr)
 library(tidyverse)
+library(magrittr)
 library(rCharts)
 
 source(file.path("ui", "helpers.R"))

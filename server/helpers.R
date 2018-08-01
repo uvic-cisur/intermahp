@@ -5,7 +5,8 @@ base_options <- list(
   pageLength = 12,
   lengthMenu = c(12,18,36,72),
   scrollX = TRUE,
-  autoWidth = TRUE
+  autoWidth = FALSE
+  # columnDefs = list(list(className = 'dt-center', targets = "_all"))
 )
 
 # * columnDefs elements ----

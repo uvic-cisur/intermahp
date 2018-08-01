@@ -183,6 +183,9 @@ high_filtered_data <- reactive({
     group_by(status, scenario) %>%
     summarise(total = sum(metric, na.rm = TRUE))
   
+  # If including rate/10,000 people (drinkers?) as a metric, here is where we still
+  # have the variables necessary to join with model$pc[c(key, population)]
+  
   .data
   
 })
@@ -200,10 +203,6 @@ high_chartable_data <- reactive({
   minor <- if(input$high_minor == "none") NULL else rlang::sym(input$high_minor)
   
   .data <- if(is.null(minor)) group_by(.data, !!major) else group_by(.data, !!major, !!minor)
-  
-  # If including rate/10,000 people (drinkers?) as a metric, here is where we still
-  # have the variables necessary to join with model$pc[c(key, population)]
-  
   .data <- summarise(.data, y = round(sum(metric, na.rm = T), 2)) %>% ungroup()
 
   if(!is.null(minor)) .data <- spread(.data, key = !!minor, value = y)
@@ -270,9 +269,54 @@ output$high_chart <- renderChart({
   return(chart)
 })
 
-
-
-
-#Update chart when not visible
+# Update chart when not visible
 outputOptions(output, "high_chart", suspendWhenHidden = FALSE)
+
+# Summary table for high-level view
+
+output$high_summary_render <- renderUI({
+  .data <- high_chartable_data()
+  
+  if(is.null(.data)) return(NULL)
+  # browser()
+
+  N <- ncol(.data)
+  M <- nrow(.data)
+  
+  summable <- select(.data, -N)
+  cats <- select(.data, N)
+  cats[[choices_reverse_lookup[input$high_major]]] <- cats$categories
+  cats %<>% select(-categories)
+  
+  if(N == 2 && input$high_minor == "none") {
+    summable$`Attributable count` <- summable$y
+    summable %<>% select(-y)
+  }
+    
+  if(N > 2 && !(input$high_minor %in% c("status", "scenario")))
+    summable %<>% mutate(Total = round(rowSums(.), 2))
+  if(M > 1 && !(input$high_major %in% c("status", "scenario"))) {
+    summable %<>% rbind(summarise_all(summable, sum))
+    cats[M+1, 1] <- "Total"
+  }
+  
+  .data <- cbind(cats, summable)
+
+  options <- list(
+    dom = "Bfrtip",
+    buttons = list("colvis", "pageLength", list(extend='csv', filename = "InterMAHP High Level Summary")),
+    pageLength = 12,
+    lengthMenu = c(12,18,36,72),
+    scrollX = TRUE,
+    autoWidth = FALSE
+  )
+  
+  output$high_summary_dt <- renderStandardDataTable(.data, options)
+  
+  DT::dataTableOutput("high_summary_dt")
+})
+
+
+
+
 

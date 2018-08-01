@@ -19,11 +19,11 @@ function(input, output, session) {
   
   # preloaded data initialization ----
   # RR
-  preloaded_dataset_rr_zhao <- read_csv(file.path("data", "zhao.csv"))
-  preloaded_dataset_rr_roerecke <- read_csv(file.path("data", "roerecke.csv"))
+  preloaded_dataset_rr_zhao <- read_rds(file.path("data", "zhao.rds"))
+  preloaded_dataset_rr_roerecke <- read_rds(file.path("data", "roerecke.rds"))
   # PC & MM
-  preloaded_dataset_pc <- read_csv(file.path("data", "all_pc.csv"))
-  preloaded_dataset_mm <- read_csv(file.path("data", "all_mm.csv"))
+  preloaded_dataset_pc <- read_rds(file.path("data", "all_pc.rds"))
+  preloaded_dataset_mm <- read_rds(file.path("data", "all_mm.rds"))
   
   
   # Disable most buttons

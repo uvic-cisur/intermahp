@@ -19,13 +19,13 @@ observeEvent(input$nav_high, set_nav("high"))
 observeEvent(input$nav_analyst, set_nav("analyst"))
 
 set_nav <- function(id) {
+  for(for_id in setdiff(nav_ids, id)) {
+    hideElement(id = paste0("panel_", for_id))
+    removeClass(id = paste0("nav_", for_id), class = "active")
+  }
+  
   showElement(id = paste0("panel_", id))
   addClass(id = paste0("nav_", id), class = "active")
-  
-  for(id in setdiff(nav_ids, id)) {
-    hideElement(id = paste0("panel_", id))
-    removeClass(id = paste0("nav_", id), class = "active")
-  }
 }
 
 # Initialize nav

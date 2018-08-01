@@ -48,9 +48,8 @@ factorizeVars <- function(.data) {
 }
 
 #* render a datatable with standard preferences
-renderStandardDataTable <- function(.data) {
+renderStandardDataTable <- function(.data, options = base_options) {
   DT::renderDataTable({
-    options <- base_options
     DT::datatable(
       rownames = FALSE,
       data = .data,

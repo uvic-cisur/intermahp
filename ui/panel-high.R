@@ -28,7 +28,8 @@ tagList(
     )
   ),
   wellPanel(
-    # uiOutput("high_summary_render")
+    h3("Charted Data"),
+    uiOutput("high_summary_render")
   )
   
   # Panel that contains the chart output ----

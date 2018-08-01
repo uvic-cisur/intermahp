@@ -57,6 +57,7 @@ observeEvent(input$datasets_new_upload_btn, {
     
     shinyjs::enable("nav_settings")
     shinyjs::enable("nav_generate_estimates")
+    shinyjs::enable("generate_estimates")
   })
 })
 
@@ -137,10 +138,10 @@ observeEvent(input$datasets_sample_load_btn, {
     # Set variables
     dataValues$genders <- c("Male", "Female")
     
-    output$datasetsChosen <- reactive({ TRUE })
-    
     shinyjs::enable("nav_settings")
     shinyjs::enable("nav_generate_estimates")
     shinyjs::enable("generate_estimates")
+    
+    output$datasetsChosen <- reactive({ TRUE })
   })
 })
