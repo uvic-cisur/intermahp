@@ -68,6 +68,41 @@ tagList(
           class = "btn-primary"
         )
       )
+    ),
+    
+    tabPanel(
+      title = "Review loaded data",
+      value = "tabsets_loaded_data",
+      br(),
+      conditionalPanel(
+        condition = "output.dataChosen",
+        div(
+          id = "metadata_div",
+          div(
+            id = "pc_meta_div",
+            uiOutput("pc_metadata", inline = TRUE)
+          ),
+          div(
+            id = "rr_meta_div",
+            uiOutput("rr_metadata", inline = TRUE)
+          ),
+          div(
+            id = "mm_meta_div",
+            uiOutput("mm_metadata", inline = TRUE)
+          )
+        ),
+        br(),
+        selectInput(
+          inputId = "loaded_raw_data",
+          label = "View loaded data",
+          choices = list(
+            "Prevalence and consumption" = "pc",
+            "Relative risks" = "rr",
+            "Morbidity and mortality" = "mm"
+          )
+        ),
+        DT::dataTableOutput("datasets_summary_dt_render")
+      )
     )
   ),
   # Next step message ----

@@ -34,8 +34,8 @@ tagList(
     fluidRow(
       column(
         3,
-        source(file.path("ui", "panel-nav.R"), local = TRUE)$value,
-        source(file.path("ui", "panel-metadata.R"), local = TRUE)$value
+        source(file.path("ui", "panel-nav.R"), local = TRUE)$value
+        # source(file.path("ui", "panel-metadata.R"), local = TRUE)$value
       ),
       column(
         9,

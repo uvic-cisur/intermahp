@@ -249,6 +249,7 @@ chart_title <- reactive({
   if(is.null(input$high_outcome_filter) || is.null(input$high_major) || is.null(input$high_minor)) return("")
   
   paste0(
+    "Alcohol Attributable ",
     pluralise(as.character(input$high_outcome_filter)),
     " grouped by ",
     choices_reverse_lookup[input$high_major],

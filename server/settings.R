@@ -261,5 +261,43 @@ binge_barriers <- reactive({
   barriers
 })
 
+#* group inclusion logic names
+include_group <- function(group) {
+  input[[paste("Include", group)]]
+}
+
+include_groups <- reactive({
+  X <- vapply(
+    X = names(dataValues$drinking_groups),
+    FUN = function(group) {if(include_group(group)) group else "!"},
+    FUN.VALUE = "0")
+  
+  X <- X[X != "!"]
+  X
+})
+
+current_settings <- reactive({
+  list(
+    bb = binge_barriers(),
+    lb = 0.03,
+    ub = input$settings_ub_in_units * drinking_unit(),
+    ext = input$ext,
+    include_groups = include_groups()
+  )
+})
+
+# indicates whether current settings were used to generate current estimates
+observe({
+  if(!is.null(dataValues$model)) {
+    if(all.equal(last_settings, current_settings()) != TRUE) {
+      
+      shinyjs::show(id = "header_settings_changed_alert")
+    } else {
+      shinyjs::hide(id = "header_settings_changed_alert")
+    }
+  } 
+})
+
+
 # nextMsg links ----
 observeEvent(input$settings_to_generate_estimates, set_nav("generate_estimates"))

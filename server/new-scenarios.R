@@ -42,14 +42,14 @@ processNewScenario <- function(name, scale)
   message("Done")
   message(paste0("&emsp;Computing attributable fractions for:"))
   
-  include_groups <- vapply(
-    X = names(dataValues$drinking_groups),
-    FUN = function(group) {if(include_group(group)) group else "!"},
-    FUN.VALUE = "0")
+  # include_groups <- vapply(
+  #   X = names(dataValues$drinking_groups),
+  #   FUN = function(group) {if(include_group(group)) group else "!"},
+  #   FUN.VALUE = "0")
+  # 
+  # include_groups <- include_groups[include_groups != "!"]
   
-  include_groups <- include_groups[include_groups != "!"]
-  
-  for(group in include_groups) {
+  for(group in last_settings$include_groups) {
     message(paste0("&emsp;&emsp;", group, "... "), appendLF = FALSE)
     .data[[paste0("AAF - ", group)]] <- dataValues$drinking_groups[[group]]$.command(.data) * attr
     message("Done")
@@ -68,13 +68,7 @@ processNewScenario <- function(name, scale)
   
   setWideTable(.data = .data, name = name, status = "Combined", is.scenario = TRUE)
   
-  setLongScenarioTable(.data = .data, name = name, status = "Combined", gather_vars = include_groups)
+  setLongScenarioTable(.data = .data, name = name, status = "Combined", gather_vars = last_settings$include_groups)
   
   message("Done")
-}
-
-# zzz utility functions ----
-#* group inclusion logic names
-include_group <- function(group) {
-  input[[paste("Include", group)]]
 }

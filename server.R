@@ -34,9 +34,11 @@ function(input, output, session) {
   # similar to above, indicates whether estimates have been generated
   output$estimatesGenerated <- reactive({ FALSE })
   outputOptions(output, 'estimatesGenerated', suspendWhenHidden = FALSE)
-  
+    
   # similar to above
   current_nav <- reactive({NULL})
+  
+  shinyjs::hide(id = "header_settings_changed_alert")
   
   # save button (downloads model object)
   output$saveButton <- downloadHandler(

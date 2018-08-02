@@ -49,8 +49,13 @@ observeEvent(input$datasets_new_upload_btn, {
     # Set variables
     dataValues$genders <- unique(as.character(check_rr$gender))
     
+    dataValues$pc_raw <- pc
     dataValues$pc_in <- check_pc
+    
+    dataValues$rr_raw <- rr
     dataValues$rr_in <- check_rr
+    
+    dataValues$mm_raw <- mm
     dataValues$mm_in <- check_mm
     
     output$dataChosen <- reactive({ TRUE })
@@ -135,6 +140,10 @@ observeEvent(input$datasets_sample_load_btn, {
       year %in% input$datasets_sample_years &
         region %in% input$datasets_sample_provinces
     )
+    
+    dataValues$rr_raw <- dataValues$rr_in
+    dataValues$pc_raw <- dataValues$pc_in
+    dataValues$mm_raw <- dataValues$mm_in
     
     # Set variables
     dataValues$genders <- c("Male", "Female")
@@ -244,6 +253,22 @@ output$mm_metadata <- renderUI({
     )
   )
 })
+
+current_loaded_data <- reactive({
+  dataValues[[paste0(input$loaded_raw_data, "_raw")]]
+})
+
+datasets_summary_dt <- reactive({
+  DT::datatable(
+    rownames = FALSE,
+    data = current_loaded_data(),
+    filter = "top",
+    extensions = "Buttons",
+    options = base_options
+  )
+})
+
+output$datasets_summary_dt_render <- DT::renderDataTable(datasets_summary_dt())
 
 # nextMsg links ----
 observeEvent(input$datasets_to_settings, set_nav("settings"))

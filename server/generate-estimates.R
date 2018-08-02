@@ -37,6 +37,7 @@ observeEvent(input$generate_estimates, {
   }
 })
 
+last_settings <- list()
   
 generateEstimates <- function() {
   withBusyIndicator("generate_estimates", {
@@ -44,12 +45,13 @@ generateEstimates <- function() {
     html(id = "model_progress", "Generating Estimates:<br />")
     withCallingHandlers(
       {
+        last_settings <<- current_settings()
         html(id = "model_progress", "Stage 1/3 (dataset preparation)<br />&emsp;", TRUE)
           pc <- intermahpr::preparePC(
           dataValues$pc_in, 
-          bb = binge_barriers(),
-          lb = 0.03, 
-          ub = input$settings_ub_in_units * drinking_unit())
+          bb = current_settings()$bb,
+          lb = current_settings()$lb, 
+          ub = current_settings()$ub)
         
         setWideTable(
           .data = factorizeVars(intermahpr::renderPCWide(pc)),
@@ -58,7 +60,9 @@ generateEstimates <- function() {
           is.scenario = FALSE)
         
         html(id = "model_progress", "&emsp;", TRUE)
-        rr <- intermahpr::prepareRR(dataValues$rr_in, input$ext)
+        rr <- intermahpr::prepareRR(
+          dataValues$rr_in, 
+          ext = if(current_settings()$ext == "TRUE") TRUE else FALSE)
         
         html(id = "model_progress", "&emsp;", TRUE)
         mm <- intermahpr::prepareMM(dataValues$mm_in)
@@ -85,7 +89,8 @@ generateEstimates <- function() {
         
         output$estimatesGenerated <- reactive({ TRUE })
         
-        shinyjs::addClass(id = "header_generate_estimates_instruction", class = "closed")
+        shinyjs::addClass(id = "header_to_generate_estimates_instruction", class = "closed")
+        shinyjs::hide(id = "header_settings_changed_alert")
         
         message("Estimates generated.")
         

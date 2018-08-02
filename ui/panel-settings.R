@@ -34,6 +34,7 @@ conditionalPanel(
       br(),
       column(
         8,
+        h3("New groups"),
         textInput(
           inputId = "new_group_name",
           label = div(
@@ -70,7 +71,7 @@ conditionalPanel(
         actionButton(inputId = "add_group_btn", label = "Add new group", icon = icon("plus"), class = "btn-danger btn-block")
       ),
       
-      column(4, uiOutput("group_checkboxes"))
+      column(4, h3("Existing groups"), uiOutput("group_checkboxes"))
     )
   ),
   # Next step message ----
