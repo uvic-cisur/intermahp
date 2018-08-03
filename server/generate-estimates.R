@@ -90,7 +90,15 @@ generateEstimates <- function() {
         output$estimatesGenerated <- reactive({ TRUE })
         
         shinyjs::addClass(id = "header_to_generate_estimates_instruction", class = "closed")
-        shinyjs::hide(id = "header_settings_changed_alert")
+        
+        # Adds a warning to the settings tab
+        html(id = "header_settings_changed_alert",
+          '
+            <div class="alert alert-warning alert-dismissible">
+              <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+              <strong>Note:</strong> Analyses must be re-run for setting changes to take effect.
+            </div>   
+          ')
         
         message("Estimates generated.")
         

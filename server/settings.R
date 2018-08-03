@@ -286,18 +286,6 @@ current_settings <- reactive({
   )
 })
 
-# indicates whether current settings were used to generate current estimates
-observe({
-  if(!is.null(dataValues$model)) {
-    if(all.equal(last_settings, current_settings()) != TRUE) {
-      
-      shinyjs::show(id = "header_settings_changed_alert")
-    } else {
-      shinyjs::hide(id = "header_settings_changed_alert")
-    }
-  } 
-})
-
 
 # nextMsg links ----
 observeEvent(input$settings_to_generate_estimates, set_nav("generate_estimates"))

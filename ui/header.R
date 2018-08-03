@@ -16,14 +16,5 @@ div(
       h2(actionLink("header_to_generate_estimates", "Generate estimates"), " to proceed"),
       br()
     )
-  ),
-  conditionalPanel(
-    condition = "output.estimatesGenerated",
-    div(
-      id = "header_settings_changed_alert",
-      class = "alert alert-danger",
-      strong("Note:"),
-      "Some settings have changed. Re-run the analysis for changes to take effect"
-    )
   )
 )

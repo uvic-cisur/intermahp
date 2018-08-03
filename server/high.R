@@ -212,15 +212,17 @@ high_chartable_data <- reactive({
 })
 
 high_current_chart <- reactive({
-  .data <- high_chartable_data()
-  
-  if(is.null(.data) || nrow(.data) == 0) return(NULL)
-  
   cc <- Highcharts$new()
   cc$set(dom = "high_chart")
   cc$chart(type = "column")
   cc$yAxis(title = list(text = "Attributable count"))
   cc$xAxis(type = "category")
+  
+  .data <- high_chartable_data()
+  if(is.null(.data) || nrow(.data) == 0) {
+    return(cc) 
+  }
+  
   cc$xAxis(categories = .data$categories)
 
   if(input$high_minor == "none") {
@@ -238,8 +240,8 @@ high_current_chart <- reactive({
     }
   }
   
-  cc$title(text = chart_title())
   cc$exporting(enabled = T, formAttributes=list(target='_blank'))
+  cc$title(text = chart_title())
   
   cc
 })
