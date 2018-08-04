@@ -7,11 +7,6 @@ conditionalPanel(
     condition = "output.estimatesGenerated",
     div(
       id = "header_settings_changed_alert"
-      # ,
-      # class = "alert alert-warning alert-dismissible",
-      # tags$a(class = "close", `data-dismiss` = "alert", `aria-label` = "close", icon("times")),
-      # strong("Note:"),
-      # "Analyses must be re-run for setting changes to take effect."
     )
   ),
   

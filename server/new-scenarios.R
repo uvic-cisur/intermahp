@@ -42,14 +42,7 @@ processNewScenario <- function(name, scale)
   message("Done")
   message(paste0("&emsp;Computing attributable fractions for:"))
   
-  # include_groups <- vapply(
-  #   X = names(dataValues$drinking_groups),
-  #   FUN = function(group) {if(include_group(group)) group else "!"},
-  #   FUN.VALUE = "0")
-  # 
-  # include_groups <- include_groups[include_groups != "!"]
-  
-  for(group in last_settings$include_groups) {
+  for(group in dataValues$model$settings$include_groups) {
     message(paste0("&emsp;&emsp;", group, "... "), appendLF = FALSE)
     .data[[paste0("AAF - ", group)]] <- dataValues$drinking_groups[[group]]$.command(.data) * attr
     message("Done")

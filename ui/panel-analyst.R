@@ -3,8 +3,9 @@
 
 conditionalPanel(
   condition = "output.estimatesGenerated",
-  wellPanel(
-    "Analyst UI Panel"
-  )
+  uiOutput("analyst_download_render"),
+  br(),
+  uiOutput("analyst_view_select_render"),
+  DT::dataTableOutput("analyst_view_dt_render")
 )
 

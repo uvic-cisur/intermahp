@@ -85,9 +85,9 @@ observeEvent(input$add_group_btn, {
   upper_strata <- c()
   
   popover_text <- paste(
-    "Membership in the user defined group",
+    "Membership in the user-defined group",
     input$new_group_name,
-    "specified by an average daily consumption of between "
+    "is specified by the following consumption ranges in average daily grams-ethanol:<br /> "
   )
   
   for(gender in dataValues$genders) {
@@ -95,13 +95,13 @@ observeEvent(input$add_group_btn, {
     upper_strata[[gender]] = input[[gsub(" ","_", paste0(gender, " upper bound"))]]
     popover_text <- paste0(
       popover_text,
-      if(dataValues$genders[length(dataValues$genders)] == gender) "and " else NULL,
-      round(input[[gsub(" ","_", paste0(gender, " lower bound"))]] * drinking_unit(), 2),
-      " and ",
-      round(input[[gsub(" ","_", paste0(gender, " upper bound"))]] * drinking_unit(), 2),
-      " daily grams-ethanol for gender ",
       gender,
-      ", ")
+      ": ",
+      round(input[[gsub(" ","_", paste0(gender, " lower bound"))]] * drinking_unit(), 2),
+      " to ",
+      round(input[[gsub(" ","_", paste0(gender, " upper bound"))]] * drinking_unit(), 2),
+      "<br />"
+    )
   }
   
   dataValues$drinking_groups[[input$new_group_name]] <- list(

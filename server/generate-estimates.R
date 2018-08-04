@@ -81,7 +81,13 @@ generateEstimates <- function() {
         model <- bind_rows(free_rr, calibrated_rr) %>%
           select(intermahpr::getExpectedVars("model"))
         
-        dataValues$model <- list(model = model, scenarios = list(), rr = rr, pc = pc, mm = mm)
+        dataValues$model <- list(
+          model = model,
+          scenarios = list(),
+          rr = rr,
+          pc = pc,
+          mm = mm,
+          settings = current_settings())
         
         message("Stage 3/3 (evaluating base scenario)")
         
@@ -96,7 +102,7 @@ generateEstimates <- function() {
           '
             <div class="alert alert-warning alert-dismissible">
               <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-              <strong>Note:</strong> Analyses must be re-run for setting changes to take effect.
+              <strong>Note:</strong> Estimates must be re-generated for setting changes to take effect.
             </div>   
           ')
         

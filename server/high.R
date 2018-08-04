@@ -223,6 +223,10 @@ high_current_chart <- reactive({
     return(cc) 
   }
   
+  .data$arrange_by <- rowSums(select(.data, -categories))
+  .data %<>% arrange(arrange_by) %>% select(-arrange_by)
+  
+  
   cc$xAxis(categories = .data$categories)
 
   if(input$high_minor == "none") {
