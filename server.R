@@ -1,12 +1,16 @@
-# intermaphr-shiny - Sam Churchill 2018
+# intermahpr-shiny - Sam Churchill 2018
 # --- Main server file for shiny app --- #
+# 
 
 library(shiny)
 library(shinyjs)
 library(shinyWidgets)
+library(shinyalert)
 library(intermahpr)
 library(tidyverse)
+library(magrittr)
 library(rCharts)
+library(gtools)
 
 source(file.path("server", "helpers.R"))
 source("js-utils.R")

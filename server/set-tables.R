@@ -7,8 +7,8 @@ setLongScenarioTable <- function(.data, name, status = "Ready", gather_vars) {
     setLongScenarioTable(filter(.data, grepl("Mort", outcome)), name = paste(name, "Mortality"), status = "Ready", gather_vars = gather_vars)
   } else {
     
-    long_data <- gather(.data, key = "status", value = !!name, paste0("AAF - ", gather_vars))
-    long_data[["status"]] <- substring(long_data[["status"]], first = 7)
+    long_data <- gather(.data, key = "status", value = !!name, paste0("AAF: ", gather_vars))
+    long_data[["status"]] <- substring(long_data[["status"]], first = 5)
     # long_data <- factorizeVars(long_data)
     
     dataValues$long[[name]] <- long_data

@@ -10,6 +10,7 @@ library(intermahpr)
 library(tidyverse)
 library(magrittr)
 library(rCharts)
+library(gtools)
 
 source(file.path("ui", "helpers.R"))
 source("js-utils.R")

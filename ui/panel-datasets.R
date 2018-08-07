@@ -28,24 +28,24 @@ tagList(
         )
       )
     ),
-  
-    tabPanel(
-      title = "Load Saved Dataset",
-      value = "tabset_datasets_saved",
-      br(),
-      fileInput(
-        inputId = "datasets_load_saved", label = "Saved InterMAHP file",
-        accept = c(".rda", ".RData")
-      ),
-      withBusyIndicator(
-        actionButton(
-          "datasets_saved_upload_btn",
-          "Upload data",
-          class = "btn-primary"
-        )
-      )
-    ),
-    
+    # 
+    # tabPanel(
+    #   title = "Load Saved Dataset",
+    #   value = "tabset_datasets_saved",
+    #   br(),
+    #   fileInput(
+    #     inputId = "datasets_load_saved", label = "Saved InterMAHP file",
+    #     accept = c(".rda", ".RData")
+    #   ),
+    #   withBusyIndicator(
+    #     actionButton(
+    #       "datasets_saved_upload_btn",
+    #       "Upload data",
+    #       class = "btn-primary"
+    #     )
+    #   )
+    # ),
+    # 
     tabPanel(
       title = "Use Sample Datasets",
       value = "tabsets_datasets_sample",

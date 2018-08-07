@@ -70,7 +70,7 @@ output$high_outcome_filter_render <- renderUI({
 # scenarios names filtered by selected outcome
 filtered_scenario_names <- reactive({
   if(is.null(input$high_outcome_filter)) return(NULL)
-  unique(high_selected_outcomes()[["scenario"]])
+  gtools::mixedsort(unique(high_selected_outcomes()[["scenario"]]))
 })
 
 # Filter by scenario (dependent on grouping)
@@ -79,7 +79,7 @@ output$high_scenario_filter_render <- renderUI({
     inputId = "high_scenario_filter",
     label = truncated_filtration_div("Scenarios"),
     choices = filtered_scenario_names(),
-    selected = if(is_grouped_by_scenario()) filtered_scenario_names() else filtered_scenario_names()[1],
+    selected = if(is_grouped_by_scenario()) filtered_scenario_names() else "Base",
     multiple = is_grouped_by_scenario(),
     options = list(
       `actions-box` = TRUE, 
@@ -155,7 +155,7 @@ high_selected_scenarios <- reactive({
   .data <- high_selected_outcomes()
   if(is.null(.data)) return(NULL)
   
-  filtered <- filter(.data, scenario %in% input$high_scenario_filter)
+  filtered <- filter(.data, scenario %in% gtools::mixedsort(input$high_scenario_filter))
   
   filtered
   
@@ -202,7 +202,21 @@ high_chartable_data <- reactive({
   
   .data <- if(is.null(minor)) group_by(.data, !!major) else group_by(.data, !!major, !!minor)
   .data <- summarise(.data, y = round(sum(metric, na.rm = T), 2)) %>% ungroup()
+  
+  if(is.null(minor)) {
+    .data$arrange_by <- rowSums(select(.data, -!!major))
+    .data %<>% arrange(arrange_by) %>% select(-arrange_by)
+  } else {
+    minor_order <- gtools::mixedsort(unique(.data[[minor]]))
+    .data %<>% mutate(minor_var = factor(!!minor, levels = minor_order))
+    .data[[minor]] <- .data$minor_var
+    .data$minor_var <- NULL
+    
+    .data$arrange_by <- rowSums(select(.data, -c(!!major, !!minor)))
+    .data %<>% arrange(!!minor) %>% arrange(arrange_by) %>% select(-arrange_by)
+  }
 
+  
   if(!is.null(minor)) .data <- spread(.data, key = !!minor, value = y)
     
   .data$categories <- .data[[major]]
@@ -223,10 +237,9 @@ high_current_chart <- reactive({
     return(cc) 
   }
   
-  .data$arrange_by <- rowSums(select(.data, -categories))
-  .data %<>% arrange(arrange_by) %>% select(-arrange_by)
-  
-  
+  # .data$arrange_by <- rowSums(select(.data, -categories))
+  # .data %<>% arrange(arrange_by) %>% select(-arrange_by)
+
   cc$xAxis(categories = .data$categories)
 
   if(input$high_minor == "none") {
@@ -282,7 +295,6 @@ output$high_summary_render <- renderUI({
   .data <- high_chartable_data()
   
   if(is.null(.data)) return(NULL)
-  # browser()
 
   N <- ncol(.data)
   M <- nrow(.data)
