@@ -60,9 +60,6 @@ function(input, output, session) {
 
     # clear the error message
     hide("errorDiv")
-    
-    # hide the "finished, move on to next tab" messages
-    # hide(selector = "div.next-msg")
   })
   
   output$nextMsg_content <- renderUI({ NULL })

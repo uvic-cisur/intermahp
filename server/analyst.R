@@ -25,12 +25,12 @@ output$analyst_zip_data <- downloadHandler(
   },
   content = function(fname) {
     fs <- c()
-    tmpdir <- tempdir()
-    old <- setwd(tempdir())
-    on.exit(setwd(old))
-
+    
+    stamp <- format(Sys.time(),"%Y-%m-%d-%H%M")
+    dir.create(stamp)
+    
     for(.label in input$analyst_select_zip_data) {
-      path <- paste0("InterMAHP ", .label, ".csv")
+      path <- file.path(stamp, paste0("InterMAHP ", .label, ".csv"))
       fs <- c(fs, path)
       write_csv(dataValues$wide[[.label]], path)
     }
