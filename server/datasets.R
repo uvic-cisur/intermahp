@@ -270,6 +270,41 @@ datasets_summary_dt <- reactive({
 
 output$datasets_summary_dt_render <- DT::renderDataTable(datasets_summary_dt())
 
+# downlaod sample data handlers ----
+
+output$sampleRR <- downloadHandler(
+  filename = "RelativeRisks.csv",
+  content = function(fname) {
+    write.csv(
+      x = sample_rr_file,
+      row.names = F,
+      file = fname)
+  },
+  contentType = "csv"
+)
+
+output$sampleRR <- downloadHandler(
+  filename = "PrevalenceConsumption.csv",
+  content = function(fname) {
+    write.csv(
+      x = preloaded_dataset_pc,
+      row.names = F,
+      file = fname)
+  },
+  contentType = "csv"
+)
+
+output$sampleRR <- downloadHandler(
+  filename = "MorbidityMortality.csv",
+  content = function(fname) {
+    write.csv(
+      x = preloaded_dataset_mm,
+      row.names = F,
+      file = fname)
+  },
+  contentType = "csv"
+)
+
 # nextMsg links ----
 observeEvent(input$datasets_to_settings, set_nav("settings"))
 observeEvent(input$datasets_to_generate_estimates, set_nav("generate_estimates"))

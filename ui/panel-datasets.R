@@ -9,15 +9,59 @@ tagList(
       value = "tabset_datasets_new",
       br(),
       fileInput(
-        inputId = "datasets_upload_pc", label = "Prevalence and consumption data",
+        inputId = "datasets_upload_pc",
+        label = div(
+          "Prevalence and consumption data",
+          popover(
+            "Prevalence and consumption popover text placeholder",
+            pos = "right",
+            icon("question-circle")
+          ),
+          br(),
+          downloadLink(
+            "samplePC",
+            div(
+              "Example prevalence and consumption data sheet"
+            )
+          )
+        ),
         accept = c("text/csv", "text/comma-separated-values", "text/plain", ".csv")
       ),
       fileInput(
-        inputId = "datasets_upload_rr", label = "Relative risk data",
+        inputId = "datasets_upload_rr",
+        label = div(
+          "Relative risk data",
+          popover(
+            "Relative risk popover text placeholder",
+            pos = "right",
+            icon("question-circle")
+          ),
+          br(),
+          downloadLink(
+            "sampleRR",
+            div(
+              "Example relative risk data sheet"
+            )
+          )
+        ),
         accept = c("text/csv", "text/comma-separated-values", "text/plain", ".csv")
       ),
       fileInput(
-        inputId = "datasets_upload_mm", label = "Morbidity and mortality data",
+        inputId = "datasets_upload_mm",
+        label = div(
+          "Morbidity and mortality data",
+          popover(
+            "Morbidity and mortality popover text placeholder",
+            pos = "right",
+            icon("question-circle")
+          ),
+          downloadLink(
+            "sampleMM",
+            div(
+              "Example morbidity and mortality data sheet"
+            )
+          )
+        ),
         accept = c("text/csv", "text/comma-separated-values", "text/plain", ".csv")
       ),
       withBusyIndicator(

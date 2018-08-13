@@ -25,6 +25,7 @@ function(input, output, session) {
   # RR
   preloaded_dataset_rr_zhao <- read_rds(file.path("data", "zhao.rds"))
   preloaded_dataset_rr_roerecke <- read_rds(file.path("data", "roerecke.rds"))
+  sample_rr_file <- read_rds(file.path("data", "zhao_roerecke.rds"))
   # PC & MM
   preloaded_dataset_pc <- read_rds(file.path("data", "all_pc.rds"))
   preloaded_dataset_mm <- read_rds(file.path("data", "all_mm.rds"))

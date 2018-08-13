@@ -116,3 +116,8 @@ table {
   font-size: 1.4em;
   font-weight: bold;
 }
+
+#sampleRR, #samplePC, #sampleMM {
+  font-size: 0.8em;
+  font-weight: normal;
+}
