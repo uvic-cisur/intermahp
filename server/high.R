@@ -204,7 +204,7 @@ high_chartable_data <- reactive({
   .data <- summarise(.data, y = round(sum(metric, na.rm = T), 2)) %>% ungroup()
   
   if(is.null(minor)) {
-    .data$arrange_by <- rowSums(select(.data, -!!major))
+    .data$arrange_by <- if(major == "year") .data$year else rowSums(select(.data, -!!major))
     .data %<>% arrange(arrange_by) %>% select(-arrange_by)
   } else {
     minor_order <- gtools::mixedsort(unique(.data[[minor]]))
@@ -212,7 +212,7 @@ high_chartable_data <- reactive({
     .data[[minor]] <- .data$minor_var
     .data$minor_var <- NULL
     
-    .data$arrange_by <- rowSums(select(.data, -c(!!major, !!minor)))
+    .data$arrange_by <- if(major == "year") .data$year else rowSums(select(.data, -c(!!major, !!minor)))
     .data %<>% arrange(!!minor) %>% arrange(arrange_by) %>% select(-arrange_by)
   }
 

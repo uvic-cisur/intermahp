@@ -25,15 +25,17 @@ observeEvent(input$datasets_new_upload_btn, {
     rr <- readr::read_csv(input$datasets_upload_rr$datapath)
     mm <- readr::read_csv(input$datasets_upload_mm$datapath)
     
-    check_pc <- clean(pc, intermahpr::getExpectedVars("pc"))
-    check_rr <- clean(rr, intermahpr::getExpectedVars("rr"))
-    check_mm <- clean(mm, intermahpr::getExpectedVars("mm"))
+    clean_pc <- clean(pc, intermahpr::getExpectedVars("pc"))
+    clean_rr <- clean(rr, intermahpr::getExpectedVars("rr"))
+    clean_mm <- clean(mm, intermahpr::getExpectedVars("mm"))
+    
+    prep_rr <- prepareRR(clean_rr, ext = T)
     
     # Ensure data cohesion (gender levels match, etc)
     # 
     stop_message <- ""
     
-    g_flag <- !(setequal(check_pc$gender, check_rr$gender) && setequal(check_rr$gender, check_mm$gender))
+    g_flag <- !(setequal(clean_pc$gender, prep_rr$gender) && setequal(prep_rr$gender, clean_mm$gender))
     
     if(g_flag) {
       stop_message <- paste(
@@ -47,16 +49,16 @@ observeEvent(input$datasets_new_upload_btn, {
     if(sum(flags)) stop(stop_message)
     
     # Set variables
-    dataValues$genders <- unique(as.character(check_rr$gender))
+    dataValues$genders <- unique(as.character(prep_rr$gender))
     
     dataValues$pc_raw <- pc
-    dataValues$pc_in <- check_pc
+    dataValues$pc_in <- clean_pc
     
     dataValues$rr_raw <- rr
-    dataValues$rr_in <- check_rr
+    dataValues$rr_in <- clean_rr
     
     dataValues$mm_raw <- mm
-    dataValues$mm_in <- check_mm
+    dataValues$mm_in <- clean_mm
     
     output$dataChosen <- reactive({ TRUE })
     
