@@ -25,10 +25,30 @@ function(input, output, session) {
   # RR
   preloaded_dataset_rr_zhao <- read_rds(file.path("data", "zhao.rds"))
   preloaded_dataset_rr_roerecke <- read_rds(file.path("data", "roerecke.rds"))
-  sample_rr_file <- read_rds(file.path("data", "zhao_roerecke.rds"))
+  preloaded_dataset_rr_sample <- read_rds(file.path("data", "intermahpr_sample_rr.rds"))
+  output$sampleRR <- downloadHandler(
+    filename = "intermahpr_sample_rr.csv",
+    content = function(fname) {
+      write_csv(preloaded_dataset_rr_sample, fname)
+    }
+  )
+  
   # PC & MM
-  preloaded_dataset_pc <- read_rds(file.path("data", "all_pc.rds"))
-  preloaded_dataset_mm <- read_rds(file.path("data", "all_mm.rds"))
+  preloaded_dataset_pc <- read_rds(file.path("data", "intermahpr_sample_pc.rds"))
+  output$samplePC <- downloadHandler(
+    filename = "intermahpr_sample_pc.csv",
+    content = function(fname) {
+      write_csv(preloaded_dataset_pc, fname)
+    }
+  )
+  
+  preloaded_dataset_mm <- read_rds(file.path("data", "intermahpr_sample_mm.rds"))
+  output$sampleMM <- downloadHandler(
+    filename = "intermahpr_sample_mm.csv",
+    content = function(fname) {
+      write_csv(preloaded_dataset_mm, fname)
+    }
+  )
   
   # we need to have a quasi-variable flag to indicate whether or not
   # we have data to work with or if we're waiting for data to be chosen

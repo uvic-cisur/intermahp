@@ -8,20 +8,18 @@ tagList(
       title = "Upload New Datasets",
       value = "tabset_datasets_new",
       br(),
+      p("Upload datasets that satisfy the specifications outlined in the InterMAHP user guide."),
+      p("The sample datasets provided satisfy these specfications (see guide for more details)."),
+      br(),
       fileInput(
         inputId = "datasets_upload_pc",
         label = div(
           "Prevalence and consumption data",
-          popover(
-            "Prevalence and consumption popover text placeholder",
-            pos = "right",
-            icon("question-circle")
-          ),
           br(),
           downloadLink(
             "samplePC",
             div(
-              "Example prevalence and consumption data sheet"
+              "Sample prevalence and consumption data sheet"
             )
           )
         ),
@@ -31,17 +29,10 @@ tagList(
         inputId = "datasets_upload_rr",
         label = div(
           "Relative risk data",
-          popover(
-            "Relative risk popover text placeholder",
-            pos = "right",
-            icon("question-circle")
-          ),
           br(),
           downloadLink(
-            "sampleRR",
-            div(
-              "Example relative risk data sheet"
-            )
+            outputId = "sampleRR",
+            label = "Sample relative risk data sheet"
           )
         ),
         accept = c("text/csv", "text/comma-separated-values", "text/plain", ".csv")
@@ -50,15 +41,10 @@ tagList(
         inputId = "datasets_upload_mm",
         label = div(
           "Morbidity and mortality data",
-          popover(
-            "Morbidity and mortality popover text placeholder",
-            pos = "right",
-            icon("question-circle")
-          ),
           downloadLink(
             "sampleMM",
             div(
-              "Example morbidity and mortality data sheet"
+              "Sample morbidity and mortality data sheet"
             )
           )
         ),
@@ -96,7 +82,7 @@ tagList(
       br(),
       
       uiOutput("datasets_sample_years_render"),
-      uiOutput("datasets_sample_provinces_render"),
+      # uiOutput("datasets_sample_provinces_render"),
       
       
       selectInput(

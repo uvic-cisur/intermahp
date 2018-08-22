@@ -31,6 +31,7 @@ observeEvent(input$new_scenario, {
 processNewScenario <- function(name, scale)
 {
   message("&emsp;Evaluating factories... ", appendLF = FALSE)
+  
   dataValues$model <- intermahpr::makeScenario(dataValues$model, scenario_name = name, scale = scale)
   
   .data <- dataValues$model$scenarios[[name]]

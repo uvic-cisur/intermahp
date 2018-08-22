@@ -94,24 +94,8 @@ output$datasets_sample_years_render <- renderUI({
 })
 
 
-output$datasets_sample_provinces_render <- renderUI({
-  pickerInput(
-    inputId = "datasets_sample_provinces",
-    label = "Sample provinces",
-    choices = unique(preloaded_dataset_pc$region),
-    selected = unique(preloaded_dataset_pc$region)[1],
-    multiple = T,
-    options = list(
-      `actions-box` = TRUE, 
-      `selected-text-format` = "count > 2",
-      `count-selected-text` = paste("{0}/{1}", "provinces")
-    )
-  )
-})
-
 observe({
   if(
-    (length(input$datasets_sample_provinces) > 0) &&
     (length(input$datasets_sample_years) > 0)
   ) {
     enable(id = "datasets_sample_load_btn")
@@ -122,7 +106,7 @@ observe({
 
 #* Update samples when not visible
 outputOptions(output, "datasets_sample_years_render", suspendWhenHidden = FALSE)
-outputOptions(output, "datasets_sample_provinces_render", suspendWhenHidden = FALSE)
+
 
 # * Button ----
 observeEvent(input$datasets_sample_load_btn, {
@@ -133,14 +117,12 @@ observeEvent(input$datasets_sample_load_btn, {
     
     dataValues$pc_in <- dplyr::filter(
       preloaded_dataset_pc,
-      year %in% input$datasets_sample_years &
-        region %in% input$datasets_sample_provinces
+      year %in% input$datasets_sample_years 
     )
     
     dataValues$mm_in <- dplyr::filter(
       preloaded_dataset_mm, 
-      year %in% input$datasets_sample_years &
-        region %in% input$datasets_sample_provinces
+      year %in% input$datasets_sample_years 
     )
     
     dataValues$rr_raw <- dataValues$rr_in
@@ -271,41 +253,6 @@ datasets_summary_dt <- reactive({
 })
 
 output$datasets_summary_dt_render <- DT::renderDataTable(datasets_summary_dt())
-
-# downlaod sample data handlers ----
-
-output$sampleRR <- downloadHandler(
-  filename = "RelativeRisks.csv",
-  content = function(fname) {
-    write.csv(
-      x = sample_rr_file,
-      row.names = F,
-      file = fname)
-  },
-  contentType = "csv"
-)
-
-output$sampleRR <- downloadHandler(
-  filename = "PrevalenceConsumption.csv",
-  content = function(fname) {
-    write.csv(
-      x = preloaded_dataset_pc,
-      row.names = F,
-      file = fname)
-  },
-  contentType = "csv"
-)
-
-output$sampleRR <- downloadHandler(
-  filename = "MorbidityMortality.csv",
-  content = function(fname) {
-    write.csv(
-      x = preloaded_dataset_mm,
-      row.names = F,
-      file = fname)
-  },
-  contentType = "csv"
-)
 
 # nextMsg links ----
 observeEvent(input$datasets_to_settings, set_nav("settings"))
