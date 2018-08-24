@@ -1,3 +1,6 @@
+## intermahp - International Model of Alcohol Harms and Policies
+## Copyright (C) 2018 Samuel Churchill
+
 output$analyst_download_render <- renderUI({
   tagList(
     pickerInput(

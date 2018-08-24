@@ -1,4 +1,6 @@
-# intermaphr-shiny - Sam Churchill 2018
+## intermahp - International Model of Alcohol Harms and Policies
+## Copyright (C) 2018 Samuel Churchill
+
 # --- New Scenarios UI --- #
 
 conditionalPanel(

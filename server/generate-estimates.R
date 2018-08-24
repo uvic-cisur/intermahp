@@ -1,6 +1,7 @@
-# intermaphr-shiny - Sam Churchill 2018
-# --- Generate Estimates Server Logic --- #
+## intermahp - International Model of Alcohol Harms and Policies
+## Copyright (C) 2018 Samuel Churchill
 
+# --- Generate Estimates Server Logic --- #
 
 ## disable estimation generation button initially
 # shinyjs::disable(id = "generate_estimates")

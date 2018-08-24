@@ -1,3 +1,6 @@
+## intermahp - International Model of Alcohol Harms and Policies
+## Copyright (C) 2018 Samuel Churchill
+
 # Set Viewable (wide) tables and chartable (long) tables ----
 #* Add long tables to dataValues ----
 setLongScenarioTable <- function(.data, name, status = "Ready", gather_vars) {
