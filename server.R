@@ -63,16 +63,6 @@ function(input, output, session) {
   # similar to above
   current_nav <- reactive({NULL})
   
-  # save button (downloads model object)
-  output$saveButton <- downloadHandler(
-    filename = function() {
-      "InterMAHP-estimator.rds"
-    },
-    content = function(file) {
-      write_rds(x = dataValues$model, file)
-    }
-  )
-  
   # When a main or secondary tab is switched, clear the error message
   # and don't show the dataset info on the About tab
   observe({

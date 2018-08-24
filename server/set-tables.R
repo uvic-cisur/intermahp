@@ -42,8 +42,9 @@ setWideTable <- function(.data, name, status = "Ready", is.scenario = F) {
 # zzz utility functions ----
 #* Turn the relevent variables into factors for easier filtering
 factorizeVars <- function(.data) {
-  to_factor <- intersect(c(simple_analysis_vars, "condition", "outcome"), names(.data))
-  .data[to_factor] <- lapply(.data[to_factor], factor)
-  .data
+  mutate_if(.tbl = .data, .predicate = is.character, .funs = as.factor)
+  # to_factor <- intersect(c(simple_analysis_vars, "condition", "outcome"), names(.data))
+  # .data[to_factor] <- lapply(.data[to_factor], factor)
+  # .data
 }
 
