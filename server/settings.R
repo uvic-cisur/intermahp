@@ -35,8 +35,7 @@ base_groups <- list(
       intermahpr::computeCurrentFraction(.data)
     },
     .popover = paste(
-      "Current drinkers are people who have consumed one standard drink or",
-      "more in the past year."
+      "Current drinkers are people who have consumed at least one standard drink in the past year."
     )
   ),
   "Former Drinkers" = list(
@@ -45,8 +44,8 @@ base_groups <- list(
       intermahpr::computeFormerFraction(.data)
     },
     .popover = paste(
-      "Former drinkers are people who have consumed one standard drink or more",
-      "in their lifetime, but have not consumed at least one standard drink in",
+      "Former drinkers are people who have consumed at least one standard",
+      "in their lifetime, but have not consumed one or more standard drinks in",
       "the past year."
     )
   )
