@@ -218,11 +218,10 @@ output$mm_metadata <- renderUI({
       class = "padded-data-info",
       paste0(
         morbidities,
-        " morbidit", if(morbidities < 2 && morbidities >= 1) "y" else "ies",
+        " morbidity",
         " and ",
         mortalities,
-        " mortalit", if(mortalities < 2 && mortalities >= 1) "y" else "ies",
-        " over ",
+        " mortality counts over ",
         years,
         " year", if(years >= 2) "s",
         ", ",
