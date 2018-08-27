@@ -83,7 +83,7 @@ observeEvent(input$datasets_saved_upload_btn, {
 output$datasets_sample_years_render <- renderUI({
   pickerInput(
     inputId = "datasets_sample_years",
-    label = "Sample years",
+    label = "Years of study",
     choices = unique(preloaded_dataset_pc$year),
     selected = unique(preloaded_dataset_pc$year)[1],
     multiple = T,

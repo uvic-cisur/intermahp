@@ -83,13 +83,37 @@ tagList(
       value = "tabsets_datasets_sample",
       br(),
       
+      p("Use sample data to explore Canadian mortality between 2007 and 2016."),
+      
+      p("To begin, select years of study and ischaemic heart disease treatment."),
+      
+      br(),
+      
       uiOutput("datasets_sample_years_render"),
       # uiOutput("datasets_sample_provinces_render"),
       
       
       selectInput(
         inputId = "datasets_sample_rr",
-        label = "Sample relative risk data",
+        label = div(
+          "Ischaemic heart disease treatment",
+          popover(
+            content = "Ischaemic heart disease relative risk is stratified at the meta-analysis level by treatment of abstainer bias.
+            <br /><br />
+            Zhao explicitly controls for abstainer bias by selecting studies with no bias and other methods.
+            <br /><br />
+            Roerecke reweights relative risk results from studies which pooled former and never drinkers as abstainers using a standard methodology.
+            <br /><br />
+            For more information, refer to the articles themselves:<br />
+            <a href=https://www.jsad.com/doi/abs/10.15288/jsad.2017.78.375>Zhao</a>
+            <br />
+            <a href=https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1360-0443.2012.03780.x>Roerecke</a>
+            ",
+            pos = "right",
+            icon("info-circle")
+            
+          )
+        ),
         choices = c("Zhao", "Roerecke") 
       ),
       

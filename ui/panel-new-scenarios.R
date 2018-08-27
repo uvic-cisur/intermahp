@@ -40,15 +40,15 @@ conditionalPanel(
           popover(
             content =
               "
-              Computing a summary table can add several minutes of computation
-              and does not need to be computed for every new scenario.  
+              Computing the summary table can add several minutes of computation
+              and the summary table need not be computed at every new scenario.  
               <br />
               <br />
               In  the interest of saving your time, it is recommended that you
-              compute the summary table when evaluating your final scenario.
+              compute the summary table only when evaluating your final scenario.
             ",
             pos = "right", 
-            icon("question-circle"))
+            icon("info-circle"))
         ),
         value = FALSE
       )

@@ -66,7 +66,7 @@ output$group_checkboxes <- renderUI({
           inputId = id,
           label = div(
             group$.label,
-            popover(content = group$.popover, pos = "right", icon("question-circle"))
+            popover(content = group$.popover, pos = "right", icon("info-circle"))
           ),
           value = if(is.null(input[[id]])) TRUE else input[[id]]
         )
@@ -240,7 +240,7 @@ output$settings_unit_render <- renderUI({
     inputId = "settings_unit",
     label = div(
       "Unit of average daily consumption",
-      popover(content = unit_popover_content(), pos = "right", icon("question-circle"))
+      popover(content = unit_popover_content(), pos = "right", icon("info-circle"))
     ),
     choices = unit_options,
     selected = input$settings_unit

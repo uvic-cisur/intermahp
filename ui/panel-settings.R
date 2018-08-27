@@ -48,7 +48,7 @@ conditionalPanel(
           inputId = "new_group_name",
           label = div(
             "Group name",
-            popover(content = "Only alphanumeric group names accepted.", pos = "right", icon("question-circle"))
+            popover(content = "Only alphanumeric group names accepted.", pos = "right", icon("info-circle"))
           ),
           placeholder = "Light Drinkers"
         ),
