@@ -79,7 +79,7 @@ filtered_scenario_names <- reactive({
 output$high_scenario_filter_render <- renderUI({
   pickerInput(
     inputId = "high_scenario_filter",
-    label = truncated_filtration_div("Scenarios"),
+    label = truncated_filtration_div("Scenario"),
     choices = filtered_scenario_names(),
     selected = if(is_grouped_by_scenario()) filtered_scenario_names() else "Base",
     multiple = is_grouped_by_scenario(),

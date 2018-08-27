@@ -28,6 +28,12 @@ observeEvent(input$new_scenario, {
   })
 })
 
+cleanTableForSetting <- function(.data) {
+  .data[c("current_fraction", "former_fraction")] <- NULL
+  .data <- left_join(.data, dataValues$model$mm, by = c("region", "year", "gender", "age_group", "im", "outcome"))
+  .data <- mutate(.data, cc = substring(im, first = 2, last = 2))
+  .data <- right_join(condition_category_ref, .data, by = "cc")
+}
 
 # Create a new scenario ----
 processNewScenario <- function(name, scale)
@@ -38,15 +44,19 @@ processNewScenario <- function(name, scale)
   
   .data <- dataValues$model$scenarios[[name]]
   
-  this_total <- intermahpr::computeTotalFraction(.data)
+  this_total <- map2_dbl(
+    .x = .data$current_fraction,
+    .y = .data$attributability,
+    .f = ~if(.y == "Wholly") {.x(current_settings()$ub) - .x(0.03)} else {1}
+  )
   this_total <- ifelse(this_total == 0, 1, this_total)
-  
-  base_total <- if(name == "Base") this_total else intermahpr::computeTotalFraction(dataValues$model$scenarios[["Base"]])
-  base_total <- if(name == "Base") this_total else ifelse(base_total == 0, 1, base_total)
   
   ## Modify by attributability (wholly attributable conditions are the only ones affected)
   this_attr <- ((.data$attributability == "Wholly") / this_total) + (.data$attributability == "Partially")
-  base_attr <- ((.data$attributability == "Wholly") / base_total) + (.data$attributability == "Partially")
+  
+  if(name == "Base") dataValues$base_attr <- this_attr
+  
+  base_attr <- dataValues$base_attr
   
   long_table <- wide_table <- .data
   
@@ -70,17 +80,13 @@ processNewScenario <- function(name, scale)
   
   message("&emsp;Preparing data for viewing... ", appendLF = FALSE)
   
-  long_table[c("current_fraction", "former_fraction")] <- NULL
-  long_table <- left_join(long_table, dataValues$model$mm, by = c("region", "year", "gender", "age_group", "im", "outcome"))
-  long_table <- mutate(long_table, cc = substring(im, first = 2, last = 2))
-  long_table <- right_join(condition_category_ref, long_table, by = "cc")
-  setLongScenarioTable(.data = long_table, name = name, status = "Combined", gather_vars = last_settings$include_groups)
+  setLongScenarioTable(
+    .data = cleanTableForSetting(long_table),
+    name = name, status = "Combined", gather_vars = last_settings$include_groups)
   
-  wide_table[c("current_fraction", "former_fraction")] <- NULL
-  wide_table <- left_join(wide_table, dataValues$model$mm, by = c("region", "year", "gender", "age_group", "im", "outcome"))
-  wide_table <- mutate(wide_table, cc = substring(im, first = 2, last = 2))
-  wide_table <- right_join(condition_category_ref, wide_table, by = "cc")
-  setWideTable(.data = wide_table, name = name, status = "Combined", is.scenario = TRUE)
+  setWideTable(
+    .data = cleanTableForSetting(wide_table),
+    name = name, status = "Combined", is.scenario = TRUE)
   
   message("Done")
 }
