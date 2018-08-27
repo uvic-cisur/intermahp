@@ -1,5 +1,5 @@
 ## intermahp - International Model of Alcohol Harms and Policies
-## Copyright (C) 2018 Samuel Churchill
+## Copyright (C) 2018 Canadian Institute for Substance Use Research
 
 # Set up a button to have an animated loading indicator and a checkmark
 # for better user experience
