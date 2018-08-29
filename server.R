@@ -69,7 +69,6 @@ function(input, output, session) {
   current_nav <- reactive({NULL})
   
   # When a main or secondary tab is switched, clear the error message
-  # and don't show the dataset info on the About tab
   observe({
     input$tabset_datasets
     input$tabset_settings

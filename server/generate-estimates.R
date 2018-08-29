@@ -3,9 +3,6 @@
 
 # --- Generate Estimates Server Logic --- #
 
-## disable estimation generation button initially
-# shinyjs::disable(id = "generate_estimates")
-
 # hide model progress initially
 shinyjs::hide(id = "model_progress_content")
 

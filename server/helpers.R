@@ -113,9 +113,6 @@ choices_reverse_lookup <- c(
 
 analysis_vars <- c("Outcome" = "outcome", major_choices)
 
-# x1_choices <- analysis_vars
-# x2_choices <- c("None" = "none", x1_choices)
-
 pluralise <- function(var) {
   switch(
     var,

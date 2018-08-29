@@ -73,7 +73,6 @@ tagList(
       br(),
       
       uiOutput("datasets_sample_years_render"),
-      # uiOutput("datasets_sample_provinces_render"),
       
       
       selectInput(

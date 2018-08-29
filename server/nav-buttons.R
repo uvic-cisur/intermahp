@@ -31,10 +31,5 @@ set_nav <- function(id) {
   addClass(id = paste0("nav_", id), class = "active")
 
   hide("errorDiv")  
-  # hide(selector = "div.next-msg")
 }
 
-
-
-# NOTE:
-# This might be doable via modules...

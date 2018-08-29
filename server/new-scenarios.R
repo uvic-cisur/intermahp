@@ -12,7 +12,6 @@ observeEvent(input$new_scenario, {
       {
         scale <- 1 + (0.01 * input$new_scenarios_rescale_percent)
         scenario_name <- paste0(scale*100, "% Consumption")
-        # if(scale < 1) scenario_name <- paste0("0", scenario_name)
         
         html("scenario_progress", paste0("Adding Scenario: ", scenario_name, "<br />"), add = FALSE)
         

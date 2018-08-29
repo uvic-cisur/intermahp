@@ -12,7 +12,6 @@ setLongScenarioTable <- function(.data, name, status = "Ready", gather_vars) {
     
     long_data <- gather(.data, key = "status", value = !!name, paste0("AAF: ", gather_vars))
     long_data[["status"]] <- substring(long_data[["status"]], first = 5)
-    # long_data <- factorizeVars(long_data)
     
     dataValues$long[[name]] <- long_data
   }
@@ -46,8 +45,5 @@ setWideTable <- function(.data, name, status = "Ready", is.scenario = F) {
 #* Turn the relevent variables into factors for easier filtering
 factorizeVars <- function(.data) {
   mutate_if(.tbl = .data, .predicate = is.character, .funs = as.factor)
-  # to_factor <- intersect(c(simple_analysis_vars, "condition", "outcome"), names(.data))
-  # .data[to_factor] <- lapply(.data[to_factor], factor)
-  # .data
 }
 
