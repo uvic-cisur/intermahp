@@ -16,7 +16,7 @@ conditionalPanel(
     id = "tabset_settings",
     
     tabPanel(
-      title = "Global Parameters",
+      title = "Global parameters",
       value = "tabset_settings_global",
       
       br(),
@@ -37,7 +37,7 @@ conditionalPanel(
     ),
     
     tabPanel(
-      title = "Drinking Groups",
+      title = "Drinking groups",
       value = "tabset_settings_groups",
       
       br(),

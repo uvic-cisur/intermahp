@@ -7,7 +7,7 @@ tagList(
   tabsetPanel(
     id = "tabset_datasets",
     tabPanel(
-      title = "Upload New Datasets",
+      title = "Upload new datasets",
       value = "tabset_datasets_new",
       br(),
       p("Upload datasets that satisfy the specifications outlined in the InterMAHP user guide."),
@@ -60,26 +60,9 @@ tagList(
         )
       )
     ),
-    # 
-    # tabPanel(
-    #   title = "Load Saved Dataset",
-    #   value = "tabset_datasets_saved",
-    #   br(),
-    #   fileInput(
-    #     inputId = "datasets_load_saved", label = "Saved InterMAHP file",
-    #     accept = c(".rda", ".RData")
-    #   ),
-    #   withBusyIndicator(
-    #     actionButton(
-    #       "datasets_saved_upload_btn",
-    #       "Upload data",
-    #       class = "btn-primary"
-    #     )
-    #   )
-    # ),
-    # 
+
     tabPanel(
-      title = "Use Sample Datasets",
+      title = "Use sample datasets",
       value = "tabsets_datasets_sample",
       br(),
       
