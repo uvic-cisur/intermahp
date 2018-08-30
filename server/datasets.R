@@ -27,6 +27,17 @@ observeEvent(input$datasets_new_upload_btn, {
     rr <- readr::read_csv(input$datasets_upload_rr$datapath)
     mm <- readr::read_csv(input$datasets_upload_mm$datapath)
     
+    ## Morbidity/Mortality not strictly necessary data.  If there are no observations, make a dummy table.
+    if(nrow(mm) == 0) mm <- tibble::tibble(
+      region = "None", 
+      year = 0,
+      gender = "Male",
+      age_group = "None",
+      im = "(0).(0)",
+      outcome = "None", 
+      count = 0
+    )
+    
     clean_pc <- clean(pc, intermahpr::getExpectedVars("pc"))
     clean_rr <- clean(rr, intermahpr::getExpectedVars("rr"))
     clean_mm <- clean(mm, intermahpr::getExpectedVars("mm"))
@@ -37,7 +48,7 @@ observeEvent(input$datasets_new_upload_btn, {
     # 
     stop_message <- ""
     
-    g_flag <- !(setequal(clean_pc$gender, prep_rr$gender) && setequal(prep_rr$gender, clean_mm$gender))
+    g_flag <- !(prod(clean_pc$gender %in% prep_rr$gender) && prod(clean_mm$gender %in% prep_rr$gender))
     
     if(g_flag) {
       stop_message <- paste(

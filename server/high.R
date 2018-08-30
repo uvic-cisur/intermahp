@@ -144,10 +144,14 @@ high_selected_outcomes <- reactive({
   if(length(dataValues$long) == 0) return(NULL)
   scenario_names <- names(dataValues$long)
   valid_scenarios <- scenario_names[grep(input$high_outcome_filter, scenario_names)]
-  .data <- reduce(.x = dataValues$long[valid_scenarios], .f = inner_join)
-  .data <- gather(.data, key = "scenario", value = "aaf", valid_scenarios)
-  .data$scenario <- gsub('.{10}$', '', .data$scenario)
-  .data
+  if(length(valid_scenarios) > 0) {
+    .data <- reduce(.x = dataValues$long[valid_scenarios], .f = inner_join)
+    .data <- gather(.data, key = "scenario", value = "aaf", valid_scenarios)
+    .data$scenario <- gsub('.{10}$', '', .data$scenario)
+    return(.data)
+  } else {
+    return(NULL)
+  }
 })
 
 #* reactive dataset after outcome filtering
