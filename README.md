@@ -63,7 +63,9 @@ purrr
 tidyr
 magrittr
 gtools
+DT
 ```
+TODO:: Include a script that installs all necessary packages.
 
 The easiest way to run InterMAHP locally is through the RStudio 'Run App' button, but you may also execute the command
 ```sh
