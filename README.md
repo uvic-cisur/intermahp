@@ -142,6 +142,8 @@ An example relative risk table is provided for download, and this table must be 
 -   *Condition* &ndash; Name of alcohol related condition.  This name propagates throughout InterMAHP computations.
 -   *Gender* &ndash; See [above](#gender).  Accepts an additional possible value of 'All'.
 -   *Outcome* &ndash; One of 'Morbidity', 'Mortality', or 'Combined'.
+-   *P_FD* &ndash; For each condition, gender, and outcome, the relative risk of former drinkers as compared to lifetime abstainers.  See the [comprehensive manual](#comprehensive-manual) for references.
+-   *BingeF* &dash; 
 
 #### Relative risk adaptation
 
