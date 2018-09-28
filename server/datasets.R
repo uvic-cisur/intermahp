@@ -38,13 +38,63 @@ observeEvent(input$datasets_new_upload_btn, {
       count = 0
     )
     
-    clean_pc <- clean(pc, intermahpr::getExpectedVars("pc"))
-    clean_rr <- clean(rr, intermahpr::getExpectedVars("rr"))
-    clean_mm <- clean(mm, intermahpr::getExpectedVars("mm"))
+    ## We want descriptive, helpful error messages when the input data is malformed.
     
+    
+    ## First, check all datasets for missing vars
+    pc_missingvars_flag <- FALSE
+    clean_pc <- tryCatch(
+      {
+        clean(pc, intermahpr::getExpectedVars("pc"))
+      },
+      error = function(e) {
+        pc_missingvars_flag <<- TRUE
+        gsub("A supplied", "Prevalence and consumption", e$message)
+      }
+    )
+
+    rr_missingvars_flag <- FALSE
+    clean_rr <- tryCatch(
+      {
+        clean(rr, intermahpr::getExpectedVars("rr"))
+      },
+      error = function(e) {
+        rr_missingvars_flag <<- TRUE
+        e$message
+        gsub("A supplied", "Relative risk", e$message)
+      }
+    )
+    
+    mm_missingvars_flag <- FALSE
+    clean_mm <- tryCatch(
+      {
+        clean(mm, intermahpr::getExpectedVars("mm"))
+      },
+      error = function(e) {
+        mm_missingvars_flag <<- TRUE
+        gsub("A supplied", "Morbidity and mortality", e$message)
+      }
+    )
+    
+    ## If any table has missing vars, the associcated error message is stored in
+    ## the variable clean_XX and its corresp flag is set to true.
+    missingvars_flags <- c(pc_missingvars_flag, rr_missingvars_flag, mm_missingvars_flag)
+    
+    if(sum(missingvars_flags)) {
+      stop(
+        c(
+          "\n",
+          if(pc_missingvars_flag) clean_pc else "",
+          if(rr_missingvars_flag) clean_rr else "",
+          if(mm_missingvars_flag) clean_mm else ""
+        )
+      )
+    }
+    
+    ## Otherwise, the clean_XX vars are datatables, and we can continue.
     prep_rr <- prepareRR(clean_rr, ext = T)
     
-    # Ensure data cohesion (gender levels match, etc)
+    # Ensure data cohesion (currently tests: gender levels match)
     # 
     stop_message <- ""
     
@@ -57,7 +107,7 @@ observeEvent(input$datasets_new_upload_btn, {
       )
     }
     
-    # If any flag is raised, send an error
+    # If any cohesion flag is raised, send an error
     flags <- c(g_flag)
     if(sum(flags)) stop(stop_message)
     

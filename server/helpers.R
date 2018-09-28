@@ -188,7 +188,14 @@ withBusyIndicator <- function(buttonId, expr) {
 
 # Error handler that gets used in many tryCatch blocks
 errorFunc <- function(err) {
-  html("errorMsg", err$message)
+  msg <- err$message
+  
+  ## If any error messages came from intermahpr backend, they may contain \n
+  ## or \t characters that must be converted to html.
+  msg <- gsub('\n', '<br />', msg)
+  msg <- gsub('\t', '&emsp;', msg)
+  
+  html("errorMsg", msg)
   show("errorDiv", TRUE, "fade")
 }
 
