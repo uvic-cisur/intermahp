@@ -218,7 +218,7 @@ Linear extrapolation has slope calculated between 100 and 150 g/day (50 and 100 
 
 <a name = "ref-stockwell-2017a">\[3\]</a> Stockwell, Tim, Bernadette Pauly, Clifton Chow, Rebekah A. Erickson, Bonnie Krysowaty, Audra Roemer, Kate Vallance, Ashley Wettlaufer, and Jinhui Zhao. "Does managing the consumption of people with severe alcohol dependence reduce harm? A comparison of participants in six Canadian managed alcohol programs with locally recruited controls." Drug and alcohol review 37 (2018): S159-S166. [Scholar search](https://scholar.google.ca/scholar?hl=en&as_sdt=0%2C5&q=Stockwell%2C+Tim%2C+Bernadette+Pauly%2C+Clifton+Chow%2C+Rebekah+A.+Erickson%2C+Bonnie+Krysowaty%2C+Audra+Roemer%2C+Kate+Vallance%2C+Ashley+Wettlaufer%2C+and+Jinhui+Zhao.+%22Does+managing+the+consumption+of+people+with+severe+alcohol+dependence+reduce+harm%3F+A+comparison+of+participants+in+six+Canadian+managed+alcohol+programs+with+locally+recruited+controls.%22+Drug+and+alcohol+review+37+%282018%29%3A+S159-S166.&btnG=)
 
-<a name = "ref-who-gsrah">\[4\]</a> World Health Organization. Global status report on alcohol and health, 2014. World Health Organization, 2018. [Link](http://www.who.int/substance_abuse/publications/global_alcohol_report/en/)
+<a name = "ref-who-gsrah">\[4\]</a> World Health Organization. Global status report on alcohol and health, 2018. World Health Organization, 2018. [Link](http://www.who.int/substance_abuse/publications/global_alcohol_report/en/)
 
 <a name = "ref-royston-book">\[5\]</a> Royston, Patrick, and Willi Sauerbrei. Multivariable model-building: a pragmatic approach to regression anaylsis based on fractional polynomials for modelling continuous variables. Vol. 777. John Wiley & Sons, 2008.
 
