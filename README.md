@@ -22,26 +22,6 @@ Table of contents
     -   [Advanced settings](#advanced-settings)
         -   [Units of alcohol](#units-of-alcohol)
         -   [Binge limits](#binge-limits)
-        -   [Upper limits](#upper-limits)
-        -   [Dose extrapolation](#dose-extrapolation)
-        -   [Drinking groups](#drinking-groups)
-    -   [Analysis](#analysis)
-        -   [Generate estimates](#generate-estimates)
-        -   [Add new scenarios](#add-new-scenarios)
-    -   [Results](#results)
-        -   [High level](#high-level)
-        -   [Analyst](#analyst-level)
--   [Further reading](#further-reading)
-    -   [Comprehensive manual](#comprehensive-manual)
-    -   [References](#references)
-    -   [Not yet public](#not-yet-public)
-
-## Background
-
-## Overview
-
-InterMAHP allows customization of relative risk curves, drinking status specification, and models changes in consumption to generate estimates of harms in a given population.  Results are available in a variety of forms: customizable downloadable charts, summary statistic tables, and full morbidity and mortality attributable fraction tables.
-
 ## Running InterMAHP locally
 
 InterMAHP depends on two packages available through github.  The easiest way to install these is through the `devtools` package, available on CRAN.  You'll need `intermahpr`, the InterMAHP backend:
