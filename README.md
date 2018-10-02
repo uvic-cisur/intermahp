@@ -25,6 +25,7 @@ Table of contents
         -   [Upper limits](#upper-limits)
         -   [Dose extrapolation](#dose-extrapolation)
         -   [Drinking groups](#drinking-groups)
+        -   [Quick start settings](#quick-start-settings)
     -   [Analysis](#analysis)
         -   [Generate estimates](#generate-estimates)
         -   [Add new scenarios](#add-new-scenarios)
@@ -92,10 +93,10 @@ Preloaded datasets are provided to allow a quick exploration of InterMAHP's func
 The choice of ischaemic heart disease treatment is a choice of preferred literature. Ischaemic heart disease relative risk is stratified at the meta-analysis level by treatment of abstainer bias. Zhao explicitly controls for abstainer bias by selecting studies with no bias and other methods. Roerecke reweights relative risk results from studies which pooled former and never drinkers as abstainers using a standard methodology.
 
 For more information, refer to the articles themselves:
--   [Zhao](#ref-zhao)
--   [Roerecke](#ref-roerecke)
+-   Zhao [\[1\]](#ref-zhao)
+-   Roerecke [\[2\]](#ref-roerecke)
     
-When the data is loaded, advanced settings may be tinkered with or left alone.  For more information, see the section of this document on [advanced settings](#advanced-settings).
+When the data is loaded, advanced settings may be tinkered with or left alone.  For more information, see the general description of [advanced settings](#advanced-settings) and an [example](#quick-start-settings).
 
 Next, generate estimates and add new scenarios if desired.  This typically takes several seconds per year of sample data.
 
@@ -162,9 +163,6 @@ Other useful adaptations include restriction to just morbidity or mortality in t
 
 ### Advanced settings
 
-InterMAHP can be run with its default advanced settings, but full customization is possible.
-
-
 #### Units of alcohol
 
 Changes the average daily units of alcohol used.
@@ -179,12 +177,12 @@ These settings are stratified by the genders entered in the uploaded data sheets
 #### Upper limits
 
 Sets the upper limit of daily alcohol consumption.
-The default value is set to 250 grams-ethanol, which is informed by [Stockwell et al. (2017)](#ref-stockwell-2017a), while an upper bound of 150 grams-ethanol is used by WHO in their [Global Status Report on Alcohol and Health](#ref-who-gsrah).
+The default value is set to 250 grams-ethanol, which is informed by Stockwell et al. [\[3\]](#ref-stockwell-2017a), while an upper bound of 150 grams-ethanol is used by WHO in their Global Status Report on Alcohol and Health [\[4\]](#ref-who-gsrah).
 
 #### Dose extrapolation
 
 Changes how fractional polynomial relative risk curves are extrapolated beyond 150 grams-ethanol (100 for ischaemic heart disease).
-Such an extrapolation is necessary, as described in [the book](#ref-royston-book) on the FP technique, because extrapolation of data should not be performed too far outside of the range of that data.
+Such an extrapolation is necessary, as described in the book on the FP technique [\[5\]](#ref-royston-book), because extrapolation of data should not be performed too far outside of the range of that data.
 
 Included extrapolations are capped or linear.
 Under capped extrapolation, the continuous relative risk function is simply capped at the value it reaches at 150 g/day (100 for IHD).  It takes this value for all consumption levels above 150 g/day (100 for IHD).
@@ -192,13 +190,72 @@ Linear extrapolation has slope calculated between 100 and 150 g/day (50 and 100 
 
 #### Drinking groups
 
+Attributable fractions are computed for three groups by default:
+-   Current drinkers
+-   Former drinkers
+-   Entire population
 
+Of these, fractions are only mandatory for 'Entire population' &ndash; the others may be unchecked.
+
+Custom drinking groups, stratified by gender, can also be defined.
+Unique, alphanumeric names for each group are required.
+
+#### Quick start settings
+
+The [Canadian low risk drinking guidelines](http://www.ccdus.ca/Eng/topics/alcohol/drinking-guidelines/Pages/default.aspx) recommend that women drink no more than 10 Canadian standard drinks per week, with no more than 15 for men.
+These guidelines translate to approximately 1.43 drinks per day on average for women and 2.14 for men.
+Furthermore, Canadian surveys define the number of drinks for an event to be classified as binge drinking as 4 for women and 5 for men.
+
+To tailor InterMAHP for the sample Canadian statistics, we set the unit of consumption, binge limits, and implement 'Inside Canadian LRDG', 'Outside Canadian LRDG but less than daily binge', and 'Daily binge' groups.
+
+Under the 'Global parameters' tab, change the unit of average daily consumption to 'Canada' and set binge limits to '4' for Female and '5' for Male.
+
+Under the 'Drinking groups' tab, add the group name 'Inside LRDG', click 'Use minimum' to set lower bounds to 0 and enter 1.43 for 'Female lower bound' and 2.14 for 'Male upper bound', then click 'Add new group'.
+
+For 'Outside LRDG', set the Female lower bound to 1.43, upper bound to 4, and set Male lower bound to 2.14, upper bound to 5, and add the group.
+
+For 'Daily binge', set the Female lower bound to 4 and the Male lower bound to 5, and click 'Use maximum' to set the upper bounds to the defined upper limit of consumption.
+
+With advanced settings in place, estimates are ready to be generated.
 
 ### Analysis
 
 #### Generate estimates
 
+To generate estimates, press the 'Generate estimates' button.
+If estimates have already been generated during your session, you will see a warning that old estimates will be deleted and replaced if you continue.
+
+Estimates are generated by running the uploaded data through several stages of analysis.
+Stage 1 is dataset preparation.
+
+Preparation of prevalence and consumption data involves applying population constants set in advanced settings and computing derived metrics such as the shape and scale parameters for the gamma distribution that represents the density of drinkers as a function of average daily grams-ethanol.
+For more details of how this distribution affects alcohol attributable fraction computations, see the [comprehensive manual](#comprehensive-manual).
+
+By comparison, there is little preparation for relative risk and morbidity/mortality data.
+Preparation of relative risk data involves expanding 'All' and 'Combined' entries over relevent levels, and we also extract data from the B1-B16 variables into a form that is more managable.
+For morbidity and mortlaity, we collapse deprecated IM codes that were discontinued after version 1.
+
+Stage 2 is factory building.
+The internal structure of InterMAHP involves building a function factory for every condition and outcome across age group, gender, geography, and time.
+This factory accepts as input a consumption distribution and outputs an attributable fraction calculator.
+Unconstrained factories are those that are determined entirely by the relative risk sheet, i.e. those where the relative risk curve is formally defined.
+Constrained factories depend on morbidity and mortality data to produce an absolute risk curve because this technique is only used for conditions that are wholly attributable to alcohol.
+
+Stage 3 is factory evaluation.
+When generating initial estimates, the factories are evaluated at baseline consumption, i.e. the consumption levels uploaded in the prevalence and consumption table.
+The resulting attributable fraction calculators are then evaluated for every desired drinking group, and then the resulting data is cleaned and prepared for viewing at the [high](#high-level) or [analyst](#analyst-level) level.
+
 #### Add new scenarios
+
+In InterMAHP, a scenario is a *consumption* scenario relative to the observed consumption uploaded as a part of the prevalence and consumption table.
+This is implemented by rescaling the PCC_litres_year variable and reassessing the prevalence of bingers by maintaining the ratio of daily bingers to nondaily bingers.
+Factories are then evaluated under the new scenario, and fractions are computed for every drinking group included in the baseline scenario.
+
+There is an additional table that can be computed, which is the summary table.
+The summary table contains attributable fractions and relative attributable fractions for the entire population under each scenario, where a relative AF is the attributable fraction under each consumption scenario relative to the fraction under the baseline scenario.
+Relative fractions are a necessity when considering wholly attributable conditions because the attributable fraction under all scenarios is by definition exactly 1.0, but the condition incidence is expected to change under different consumption scenarios.
+Because the summary table can be computed whenever a scenario is added to your session, but need only be computed in concert with the final scenario, the option to compute is left unchecked by default.
+
 
 ### Results
 
