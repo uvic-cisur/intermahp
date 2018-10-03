@@ -260,7 +260,7 @@ The resulting attributable fraction calculators are then evaluated for every des
 #### Add new scenarios
 
 In InterMAHP, a scenario is a *consumption* scenario relative to the observed consumption uploaded as a part of the prevalence and consumption table.
-This is implemented by rescaling the PCC_litres_year variable and reassessing the prevalence of bingers by maintaining the ratio of daily bingers to nondaily bingers.
+This is implemented by rescaling the PCC_litres_year variable and reassessing the prevalence of bingers by maintaining the proportion of average daily bingers within all bingers.
 Factories are then evaluated under the new scenario, and fractions are computed for every drinking group included in the baseline scenario.
 
 [![Adding a scenario, planning to add another](www/minus-five-scenario.png)](www/minus-five-scenario.png)
