@@ -278,7 +278,7 @@ Because the summary table can be computed whenever a scenario is added to your s
 Morbidity or mortality counts are required in order to investigate high level results.
 The base chart that is served is a simple breakdown of all data by condition category.
 
-[![Alcohol attributable mortality by condition category](www/high-init.png)](www/high-init-1.png)
+[![Alcohol attributable mortality by condition category](www/high-init-1.png)](www/high-init-1.png)
 
 Above the chart is a collection of filters, and below a choice of grouping variable.
 The example Canadian data demonstrates that cancer contributed the greatest cumulative alcohol attributable mortality burden in Canada from 2007 - 2016, so we investigate further.
