@@ -2,7 +2,7 @@
 
 > *Copyright 2018 Canadian Institute for Substance Use Research. Licensed under the MIT license.*
 
-This RStudio Shiny app provides an interface to the International Model of Alcohol Harms and Policies (InterMAHP), an R package used to compute Alcohol Attributable Fractions (AAFs), explore change in alcohol consumption scenarios, visualize the results, and download relevant computed statistics in .csv format.  Users provide statistics on drinking prevalence, average alcohol consumption, and total deaths and/or hospitalizations in their region.  A customizable table used to generate condition-specific relative risk curves is also provided. InterMAHP is [available online](#not-yet-public), or it can be [run locally](#r-interactive).
+This RStudio Shiny app provides an interface to the International Model of Alcohol Harms and Policies (InterMAHP), an R package used to compute Alcohol Attributable Fractions (AAFs), explore change in alcohol consumption scenarios, visualize the results, and download relevant computed statistics in .csv format.  Users provide statistics on drinking prevalence, average alcohol consumption, and total deaths and/or hospitalizations in their region.  A customizable table used to generate condition-specific relative risk curves is also provided. InterMAHP is [available online](https://cisur.shinyapps.io/intermahp), or it can be [run locally](#r-interactive).
 
 This document serves as a tutorial for the app, and complements the guides found on [InterMAHP's homepage](https://www.uvic.ca/research/centres/cisur/projects/intermahp/index.php) at the Canadian Institute for Substance Use Research.
 
@@ -35,7 +35,6 @@ Table of contents
 -   [Further reading](#further-reading)
     -   [Comprehensive manual](#comprehensive-manual)
     -   [References](#references)
-    -   [Not yet public](#not-yet-public)
 
 ## Background
 
@@ -82,7 +81,7 @@ in the directory containing this repository from a base R installation.
 
 ## Running InterMAHP remotely
 
-InterMAHP is also hosted at [shinyapps.io](#not-yet-public) for remote access.
+InterMAHP is also hosted at [https://cisur.shinyapps.io/intermahp](https://cisur.shinyapps.io/intermahp) for remote access.
 
 ## Using InterMAHP
 
@@ -276,7 +275,31 @@ Because the summary table can be computed whenever a scenario is added to your s
 
 #### High level
 
+Morbidity or mortality counts are required in order to investigate high level results.
+The base chart that is served is a simple breakdown of all data by condition category.
+
+[![Alcohol attributable mortality by condition category](www/high-init.png)](www/high-init.png)
+
+Above the chart is a collection of filters, and below a choice of grouping variable.
+The example Canadian data demonstrates that cancer contributed the greatest cumulative alcohol attributable mortality burden in Canada from 2007 - 2016, so we investigate further.
+We filter out all condition categories but cancer, and group by gender then year.
+
+[![Alcohol attributable cancer burden by gender and year](www/high-cancer-gender-year.png)](www/high-cancer-gender-year.png)
+
+Let's also examine the variables we've added to consideration.
+We'll return to all condition categories, filter to only 2016, and group by scenario and drinking status.
+
+[![Alcohol attributable mortality burden for 2016 by scenario and drinking status](www/high-2016-status-scenario.png)](www/high-2016-status-scenario.png)
+
+And we see a comparison between estimated mortality burdens for each of our defined drinking groups under different consumption scenarios.
+
+
 #### Analyst level
+
+Raw attributable fraction and scenario adjustment data is available for view and download.
+Datasets are available as a .zip package.
+
+[![Selection of generated example datasets for viewing.](www/analyst-dropdown.png)](www/analyst-dropdown.png)
 
 ## Further reading
 
@@ -293,7 +316,3 @@ Because the summary table can be computed whenever a scenario is added to your s
 <a name = "ref-who-gsrah">\[4\]</a> World Health Organization. Global status report on alcohol and health, 2018. World Health Organization, 2018. [Link](http://www.who.int/substance_abuse/publications/global_alcohol_report/en/)
 
 <a name = "ref-royston-book">\[5\]</a> Royston, Patrick, and Willi Sauerbrei. Multivariable model-building: a pragmatic approach to regression anaylsis based on fractional polynomials for modelling continuous variables. Vol. 777. John Wiley & Sons, 2008.
-
-### Not yet public
-
-The remotely available version of InterMAHP hosted on shinyapps.io is not yet public.  Release date October 5th.

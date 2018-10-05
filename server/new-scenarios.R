@@ -43,19 +43,57 @@ processNewScenario <- function(name, scale)
   
   .data <- dataValues$model$scenarios[[name]]
   
-  this_total <- map2_dbl(
-    .x = .data$current_fraction,
-    .y = .data$attributability,
-    .f = ~if(.y == "Wholly") {.x(current_settings()$ub) - .x(0.03)} else {1}
+  ## Entire population aafs are always computed as they are needed for adjustment
+  ## ratios.  We do this here, and use them where needed.
+  this_total <- dataValues$drinking_groups[["Entire Population"]]$.command(.data)
+  
+  ## 0 aafs can occur under some computation circumstances for both partially
+  ## and wholly attributable conditions.  They are fine when adjusting partial
+  ## conditions but must be replaced for whole conditions.
+  this_total <- ifelse(
+    (this_total == 0) & (.data$attributability == "Wholly"),
+    1, this_total
   )
-  this_total <- ifelse(this_total == 0, 1, this_total)
   
+  ## Base case entire population aafs are needed for adjustment ratios in all
+  ## new scenarios, so we keep them in the base reactive dataValues store.
+  if(name == "Base") dataValues$base_total <- this_total
+  
+  ## When not base scenario, use adjusted aafs to estimate harms
+  ## For wholly attributable conditions, this is 1 / base aaf total
+  ## For partially attributable conditions, this is (1 - base_aaf) / (1 - this_aaf),
+  ## both aaf totals.
+  long_adjuster <-
+    ifelse(
+      .data$attributability == "Wholly",
+      1 / dataValues$base_total,
+      (1 - dataValues$base_total) / (1 - this_total)
+    )
+
+  ## Wide will display 1 as AAFs for wholly attributable conditions, and the adjustments
+  ## are performed via the intermahpr distill_model.
+  wide_adjuster <-
+    long_adjuster <-
+    ifelse(
+      .data$attributability == "Wholly",
+      1 / dataValues$base_total,
+      1
+    )
+  
+  # this_total <- map2_dbl(
+  #   .x = .data$current_fraction,
+  #   .y = .data$attributability,
+  #   .f = ~if(.y == "Wholly") {.x(current_settings()$ub) - .x(0.03)} else {1}
+  # )
+  # 
+  # this_total <- ifelse(this_total == 0, 1, this_total)
   ## Modify by attributability (wholly attributable conditions are the only ones affected)
-  this_attr <- ((.data$attributability == "Wholly") / this_total) + (.data$attributability == "Partially")
-  
-  if(name == "Base") dataValues$base_attr <- this_attr
-  
-  base_attr <- dataValues$base_attr
+  # this_attr <- ((.data$attributability == "Wholly") / this_total) + (.data$attributability == "Partially")
+  # 
+  # if(name == "Base") dataValues$base_attr <- this_attr
+  # 
+  # base_attr <- dataValues$base_attr
+  # 
   
   long_table <- wide_table <- .data
   
@@ -64,9 +102,13 @@ processNewScenario <- function(name, scale)
   
   for(group in dataValues$model$settings$include_groups) {
     message(paste0("&emsp;&emsp;", group, "... "), appendLF = FALSE)
-    aafs <- dataValues$drinking_groups[[group]]$.command(.data)
-    long_table[[paste0("AAF: ", group)]] <- aafs * base_attr
-    wide_table[[paste0("AAF: ", group)]] <- aafs * this_attr
+    aafs <- if(group == "Entire Population") {
+        this_total
+      } else {
+        dataValues$drinking_groups[[group]]$.command(.data)
+      }
+    long_table[[paste0("AAF: ", group)]] <- aafs * long_adjuster
+    wide_table[[paste0("AAF: ", group)]] <- aafs * wide_adjuster
     message("Done")
   }
   
