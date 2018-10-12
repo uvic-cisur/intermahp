@@ -16,6 +16,7 @@ library(tidyr)
 library(magrittr)
 library(rCharts)
 library(gtools)
+library(rmarkdown)
 
 source(file.path("ui", "helpers.R"))
 source("js-utils.R")
@@ -55,6 +56,8 @@ tagList(
 
         div(id = "panel_high", source(file.path("ui", "panel-high.R"), local = TRUE)$value),
         div(id = "panel_analyst", source(file.path("ui", "panel-analyst.R"), local = TRUE)$value),
+        
+        div(id = "panel_about", source(file.path("ui", "panel-about.R"), local = TRUE)$value),
         
         # Error messages ----
         fluidRow(column(12, hidden(div(id = "errorDiv", div(icon("exclamation-circle"), tags$b("Error: "), span(id = "errorMsg"))))))

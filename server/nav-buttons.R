@@ -9,7 +9,8 @@ nav_ids <- c(
   "generate_estimates",
   "new_scenarios",
   "high",
-  "analyst"
+  "analyst",
+  "about"
 )
 
 observeEvent(input$nav_datasets, set_nav("datasets"))
@@ -20,6 +21,8 @@ observeEvent(input$nav_new_scenarios, set_nav("new_scenarios"))
 
 observeEvent(input$nav_high, set_nav("high"))
 observeEvent(input$nav_analyst, set_nav("analyst"))
+
+observeEvent(input$nav_about, set_nav("about"))
 
 set_nav <- function(id) {
   for(for_id in setdiff(nav_ids, id)) {

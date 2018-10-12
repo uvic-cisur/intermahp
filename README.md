@@ -305,6 +305,9 @@ Datasets are available as a .zip package.
 
 ### Comprehensive manual
 
+A comprehensive guide to the estimation of alcohol-attributable morbidity and mortality is available on the [InterMAHP homepage](https://www.uvic.ca/research/centres/cisur/projects/intermahp/index.php).
+It contains a thorough discussion of the employed methodology and a complete list of references.
+
 ### References
 
 <a name = "ref-zhao">\[1\]</a> Zhao, Jinhui, Tim Stockwell, Audra Roemer, Timothy Naimi, and Tanya Chikritzhs. "Alcohol consumption and mortality from coronary heart disease: An updated meta-analysis of cohort studies." Journal of studies on alcohol and drugs 78, no. 3 (2017): 375-386. [Scholar search](https://scholar.google.ca/scholar?as_q=Alcohol+Consumption+and+Mortality+From+Coronary+Heart+Disease&as_epq=An+Updated+Meta-Analysis+of+Cohort+Studies&as_oq=&as_eq=&as_occt=any&as_sauthors=Jinhui+Zhao&as_publication=&as_ylo=2017&as_yhi=&hl=en&as_sdt=0%2C5)

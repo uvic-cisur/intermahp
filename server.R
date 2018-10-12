@@ -16,6 +16,7 @@ library(tidyr)
 library(magrittr)
 library(rCharts)
 library(gtools)
+library(rmarkdown)
 
 source(file.path("server", "helpers.R"))
 source("js-utils.R")
