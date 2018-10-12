@@ -73,7 +73,6 @@ processNewScenario <- function(name, scale)
   ## Wide will display 1 as AAFs for wholly attributable conditions, and the adjustments
   ## are performed via the intermahpr distill_model.
   wide_adjuster <-
-    long_adjuster <-
     ifelse(
       .data$attributability == "Wholly",
       1 / dataValues$base_total,
