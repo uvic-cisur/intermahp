@@ -121,3 +121,8 @@ table {
   font-size: 0.8em;
   font-weight: normal;
 }
+
+.imahp-hidden {
+  display: none;
+  /*pointer-events: none;*/
+}

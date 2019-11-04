@@ -20,6 +20,23 @@ observeEvent(
   }
 )
 
+observeEvent(
+  {
+    input$high_level_flag
+    input$calibrate_wac_flag
+  },
+  ignoreNULL = FALSE,
+  {
+    if(input$high_level_flag || input$calibrate_wac_flag) {
+      enable("datasets_upload_mm")
+      show("datasets_upload_mm")
+    } else {
+      disable("datasets_upload_mm")
+      hide("datasets_upload_mm")
+    }
+  }
+)
+
 # New data upload button ----
 observeEvent(input$datasets_new_upload_btn, {
   withBusyIndicator("datasets_new_upload_btn", {

@@ -9,6 +9,7 @@ library(shinyjs)
 library(shinyWidgets)
 library(shinyalert)
 library(intermahpr)
+library(intermahp3)
 library(dplyr)
 library(purrr)
 library(readr)
@@ -22,6 +23,9 @@ source(file.path("server", "helpers.R"))
 source("js-utils.R")
 
 function(input, output, session) {
+  # session mahp object
+  smahp = mahp$new()
+  
   # server side reactive data store ----
   dataValues <- reactiveValues(
     wide = list(),

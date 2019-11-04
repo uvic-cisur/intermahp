@@ -27,36 +27,75 @@ tagList(
         ),
         accept = c("text/csv", "text/comma-separated-values", "text/plain", ".csv")
       ),
-      fileInput(
-        inputId = "datasets_upload_rr",
-        label = div(
-          "Relative risk data",
-          br(),
-          downloadLink(
-            outputId = "sampleRR",
-            label = "Sample relative risk data sheet"
-          )
-        ),
-        accept = c("text/csv", "text/comma-separated-values", "text/plain", ".csv")
+      selectInput(
+        inputId = "datasets_choose_rr",
+        label = "Relative risk source",
+        choices = c(GBD = 'ihme', CSUCH = 'csuch')
       ),
-      fileInput(
-        inputId = "datasets_upload_mm",
-        label = div(
-          "Morbidity and mortality data",
-          downloadLink(
-            "sampleMM",
-            div(
-              "Sample morbidity and mortality data sheet"
+
+      div(
+        br(),
+        tags$b("Morbidity and mortality options"),
+        checkboxInput(
+          inputId = "high_level_flag",
+          label = "Produce high level results"
+        ),
+        checkboxInput(
+          inputId = "calibrate_wac_flag",
+          label = "Calibrate absolute risk curves for wholly attributable conditions"
+        )
+      ),
+      
+      hidden(
+        fileInput(
+          inputId = "datasets_upload_mm",
+          label = div(
+            br(),
+            "Morbidity and mortality data",
+            downloadLink(
+              "sampleMM",
+              div(
+                "Sample morbidity and mortality data sheet"
+              )
             )
-          )
-        ),
-        accept = c("text/csv", "text/comma-separated-values", "text/plain", ".csv")
+          ),
+          accept = c("text/csv", "text/comma-separated-values", "text/plain", ".csv")
+        )
       ),
-      withBusyIndicator(
-        actionButton(
-          "datasets_new_upload_btn",
-          "Upload data",
-          class = "btn-primary"
+      
+      
+      # fileInput(
+      #   inputId = "datasets_upload_rr",
+      #   label = div(
+      #     "Relative risk data",
+      #     br(),
+      #     downloadLink(
+      #       outputId = "sampleRR",
+      #       label = "Sample relative risk data sheet"
+      #     )
+      #   ),
+      #   accept = c("text/csv", "text/comma-separated-values", "text/plain", ".csv")
+      # ),
+      # fileInput(
+      #   inputId = "datasets_upload_mm",
+      #   label = div(
+      #     "Morbidity and mortality data",
+      #     downloadLink(
+      #       "sampleMM",
+      #       div(
+      #         "Sample morbidity and mortality data sheet"
+      #       )
+      #     )
+      #   ),
+      #   accept = c("text/csv", "text/comma-separated-values", "text/plain", ".csv")
+      # ),
+      disabled(
+        withBusyIndicator(
+          actionButton(
+            "datasets_new_upload_btn",
+            "Upload data",
+            class = "btn-primary"
+          )
         )
       )
     ),
