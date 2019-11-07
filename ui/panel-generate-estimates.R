@@ -4,7 +4,7 @@
 # --- Generate Estimates UI --- #
 
 conditionalPanel(
-  condition = "output.dataChosen",
+  condition = "output.dataChosen & output.settingsConfirmed",
   
   wellPanel(
     div(id = "generate_estimates_content",

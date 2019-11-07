@@ -65,7 +65,11 @@ function(input, output, session) {
   # Adapted from the ddPCR R package written by Dean Attali
   output$dataChosen <- reactive({ FALSE })
   outputOptions(output, 'dataChosen', suspendWhenHidden = FALSE)
-  
+
+  # similar to above, indicates whether settings have been confirmed
+  output$settingsConfirmed <- reactive({ FALSE })
+  outputOptions(output, 'settingsConfirmed', suspendWhenHidden = FALSE)
+    
   # similar to above, indicates whether estimates have been generated
   output$estimatesGenerated <- reactive({ FALSE })
   outputOptions(output, 'estimatesGenerated', suspendWhenHidden = FALSE)

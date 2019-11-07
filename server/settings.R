@@ -136,6 +136,11 @@ current_settings <- reactive({
   )
 })
 
+## Confirm settings button ----
+observeEvent(input$settings_confirm_btn, {
+  show("settings_nextMsg")
+  output$settingsConfirmed <- reactive({ TRUE })
+})
 
 # nextMsg links ----
 observeEvent(input$settings_to_generate_estimates, set_nav("generate_estimates"))

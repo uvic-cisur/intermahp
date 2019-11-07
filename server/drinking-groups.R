@@ -196,3 +196,8 @@ include_groups <- reactive({
 
 #* Make sure the previous renders always exist ----
 outputOptions(output, 'drinking_groups_bounds_render', suspendWhenHidden = FALSE)
+
+# nextMsg links ----
+observeEvent(input$drinking_groups_to_new_scenarios, set_nav("new_scenarios"))
+observeEvent(input$drinking_groups_to_high, set_nav("high"))
+observeEvent(input$drinking_groups_to_analyst, set_nav("analyst"))

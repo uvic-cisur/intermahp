@@ -187,8 +187,6 @@ tagList(
     id = "datasets_nextMsg", 
     class = "next-msg",
     "Next, ",
-    actionLink("datasets_to_settings", "review and tweak settings"),
-    " or ",
-    actionLink("datasets_to_generate_estimates", "generate estimates.")
+    actionLink("datasets_to_settings", "review and confirm settings.")
   )
 )

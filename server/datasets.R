@@ -143,8 +143,8 @@ observeEvent(input$datasets_new_upload_btn, {
     output$dataChosen <- reactive({ TRUE })
     
     shinyjs::enable("nav_settings")
-    shinyjs::enable("nav_generate_estimates")
-    shinyjs::enable("generate_estimates")
+    # shinyjs::enable("nav_generate_estimates")
+    # shinyjs::enable("generate_estimates")
   })
 })
 

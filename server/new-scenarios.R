@@ -130,3 +130,8 @@ processNewScenario <- function(name, scale)
   
   message("Done")
 }
+
+# nextMsg links ----
+observeEvent(input$new_scenarios_to_drinking_groups, set_nav("drinking_groups"))
+observeEvent(input$new_scenarios_to_high, set_nav("high"))
+observeEvent(input$new_scenarios_to_analyst, set_nav("analyst"))
