@@ -49,16 +49,18 @@ tagList(
         
         div(id = "header", source(file.path("ui", "header.R"), local = TRUE)$value),
         
+        div(id = "panel_about", source(file.path("ui", "panel-about.R"), local = TRUE)$value),
+        
         div(id = "panel_datasets", source(file.path("ui", "panel-datasets.R"), local = TRUE)$value),
         div(id = "panel_settings", source(file.path("ui", "panel-settings.R"), local = TRUE)$value),
 
         div(id = "panel_generate_estimates", source(file.path("ui", "panel-generate-estimates.R"), local = TRUE)$value),
         div(id = "panel_new_scenarios", source(file.path("ui", "panel-new-scenarios.R"), local = TRUE)$value),
-
+        div(id = "panel_drinking_groups", source(file.path("ui", "panel-drinking-groups.R"), local = TRUE)$value),
+        
         div(id = "panel_high", source(file.path("ui", "panel-high.R"), local = TRUE)$value),
         div(id = "panel_analyst", source(file.path("ui", "panel-analyst.R"), local = TRUE)$value),
         
-        div(id = "panel_about", source(file.path("ui", "panel-about.R"), local = TRUE)$value),
         
         # Error messages ----
         fluidRow(column(12, hidden(div(id = "errorDiv", div(icon("exclamation-circle"), tags$b("Error: "), span(id = "errorMsg"))))))

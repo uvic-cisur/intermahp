@@ -120,5 +120,6 @@ generateEstimates <- function() {
 
 # nextMsg links ----
 observeEvent(input$generate_estimates_to_new_scenarios, set_nav("new_scenarios"))
+observeEvent(input$generate_estimates_to_drinking_groups, set_nav("drinking_groups"))
 observeEvent(input$generate_estimates_to_high, set_nav("high"))
 observeEvent(input$generate_estimates_to_analyst, set_nav("analyst"))

@@ -8,6 +8,10 @@ wellPanel(
   
   # InterMAHP Logo ----
   uiOutput("logo_img"),
+   
+  hr(),
+  
+  actionButton(inputId = "nav_about", label = "About", icon = icon("info-circle"), class = "btn-primary btn-block"),
   
   hr(),
   
@@ -18,13 +22,11 @@ wellPanel(
   
   actionButton(inputId = "nav_generate_estimates", label = "Generate Estimates", icon = icon("calculator"), class = "btn-primary btn-block"),
   actionButton(inputId = "nav_new_scenarios", label = "New Scenarios", icon = icon("plus"), class = "btn-primary btn-block"),
+  actionButton(inputId = "nav_drinking_groups", label = "Drinking Groups", icon = icon("users"), class = "btn-primary btn-block"),
   
   hr(),
   
   actionButton(inputId = "nav_high", label = "High Level Results", icon = icon("bar-chart"), class = "btn-primary btn-block"),
-  actionButton(inputId = "nav_analyst", label = "Analyst Level Results", icon = icon("table"), class = "btn-primary btn-block"),
-  
-  hr(),
-  
-  actionButton(inputId = "nav_about", label = "About", icon = icon("info-circle"), class = "btn-primary btn-block")
+  actionButton(inputId = "nav_analyst", label = "Analyst Level Results", icon = icon("table"), class = "btn-primary btn-block")
+
 )

@@ -32,6 +32,8 @@ conditionalPanel(
     class = "next-msg",
     "Finally, add ",
     actionLink("generate_estimates_to_new_scenarios", "new scenarios"),
+    " and ",
+    actionLink("generate_estimates_to_drinking_groups", "drinking groups"),
     " or examine the ",
     actionLink("generate_estimates_to_high", "high level"),
     " and ",

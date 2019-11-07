@@ -4,25 +4,27 @@
 # navigation buttons ----
 
 nav_ids <- c(
+  "about",
   "datasets",
   "settings",
   "generate_estimates",
   "new_scenarios",
+  "drinking_groups",
   "high",
-  "analyst",
-  "about"
+  "analyst"
 )
+
+observeEvent(input$nav_about, set_nav("about"))
 
 observeEvent(input$nav_datasets, set_nav("datasets"))
 observeEvent(input$nav_settings, set_nav("settings"))
 
 observeEvent(input$nav_generate_estimates, set_nav("generate_estimates"))
 observeEvent(input$nav_new_scenarios, set_nav("new_scenarios"))
+observeEvent(input$nav_drinking_groups, set_nav("drinking_groups"))
 
 observeEvent(input$nav_high, set_nav("high"))
 observeEvent(input$nav_analyst, set_nav("analyst"))
-
-observeEvent(input$nav_about, set_nav("about"))
 
 set_nav <- function(id) {
   for(for_id in setdiff(nav_ids, id)) {

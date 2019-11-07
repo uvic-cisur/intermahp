@@ -97,12 +97,13 @@ function(input, output, session) {
   source(file.path("server", "settings.R"), local = TRUE)$value
   source(file.path("server", "generate-estimates.R"), local = TRUE)$value
   source(file.path("server", "new-scenarios.R"), local = TRUE)$value
+  source(file.path("server", "drinking-groups.R"), local = TRUE)$value
   source(file.path("server", "set-tables.R"), local = TRUE)$value
   source(file.path("server", "high.R"), local = TRUE)$value
   source(file.path("server", "analyst.R"), local = TRUE)$value
   
   # Initialize nav
-  set_nav("datasets")
+  set_nav("about")
   hide("datasets_nextMsg")
   hide("generate_estimates_nextMsg")
   hide("new_scenarios_nextMsg")
