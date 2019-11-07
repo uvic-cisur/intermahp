@@ -23,16 +23,25 @@ conditionalPanel(
       
       column(
         6,
-        uiOutput("settings_unit_render"),
-        uiOutput("settings_global_upper_limit"),
+        uiOutput("settings_unit_render")
+      ),
+      column(
+        6,
+        uiOutput("settings_global_upper_limit")
+      ),
+      column(12, tags$b("Binge definitions")),
+      # br(),br(),
+      uiOutput("settings_global_binge_barrier_render"),
+      br(),
+      column(12, tags$b("Squamous cell carcinoma proportions")),
+      # br(),br(),
+      uiOutput("settings_global_scc_proportions_render"),
+
+      column(
+        12,
         selectInput(
           inputId = "ext", label = "Dose response extrapolation method",
           c("Linear" = T, "Capped" = F), selected = T)
-      ),
-      
-      column(
-        6,
-        uiOutput("settings_global_binge_barrier_render")
       )
     ),
     

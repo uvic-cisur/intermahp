@@ -188,12 +188,16 @@ output$settings_global_binge_barrier_render <- renderUI({
       if(grepl("^[Ff]", gender)) value = 50
       tagList(
         # hr(),
-        numericInput(
-          inputId = paste0(gender, " binge barrier"),
-          label = paste0(gender, " binge barrier"),
-          min = 0,
-          value = round(value/drinking_unit(), 2),
-          max = 1000
+        column(
+          6,
+          numericInput(
+            inputId = paste0(gender, " binge barrier"),
+            label = gender, #paste0(gender, " binge barrier"),
+            min = 10,
+            value = round(value/drinking_unit(), 2),
+            max = 100,
+            step = 1
+          )
         )
       )
     }
@@ -201,6 +205,36 @@ output$settings_global_binge_barrier_render <- renderUI({
   
   tagList(inputs)
 })
+
+
+#* Dynamic scc proportions barriers ----
+output$settings_global_scc_proportions_render <- renderUI({
+  inputs <- lapply(
+    dataValues$genders,
+    function(gender) {
+      value = 0.5
+      if(grepl("^[Mm]", gender)) value = .33
+      if(grepl("^[Ff]", gender)) value = .66
+      tagList(
+        # hr(),
+        column(
+          6,
+          numericInput(
+            inputId = paste0(gender, " scc proportion"),
+            label = gender, #paste0(gender, " binge barrier"),
+            min = 0,
+            value = value,
+            max = 1,
+            step = 0.01
+          )
+        )
+      )
+    }
+  )
+  
+  tagList(inputs)
+})
+
 
 #* Global upper bound ----
 output$settings_global_upper_limit <- renderUI({
