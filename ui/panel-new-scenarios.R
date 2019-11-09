@@ -60,17 +60,15 @@ conditionalPanel(
     )
   ),
   # Next step message ----
-  fluidRow(
-    div(
-      id = "new_scenarios_nextMsg",
-      class = "next-msg",
-      "Finally, add ",
-      actionLink("new_scenarios_to_drinking_groups", "drinking groups"),
-      " or examine the ",
-      actionLink("new_scenarios_to_high", "high level"),
-      " and ",
-      actionLink("new_scenarios_to_analyst", "analyst level"),
-      " results."
-    )
+  div(
+    id = "new_scenarios_nextMsg",
+    class = "next-msg",
+    "Finally, add ",
+    actionLink("new_scenarios_to_drinking_groups", "drinking groups"),
+    " or examine the ",
+    actionLink("new_scenarios_to_high", "high level"),
+    " and ",
+    actionLink("new_scenarios_to_analyst", "analyst level"),
+    " results."
   )
 )

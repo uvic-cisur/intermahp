@@ -109,8 +109,8 @@ function(input, output, session) {
   # Initialize nav
   set_nav("about")
   hide("datasets_nextMsg")
+  hide("settings_nextMsg")
   hide("generate_estimates_nextMsg")
-  hide("new_scenarios_nextMsg")
   
   # hide the loading message ----
   hide("loading-content", TRUE, "fade") 

@@ -11,7 +11,7 @@ conditionalPanel(
     br(),
     column(
       8,
-      wellPanel(
+      # wellPanel(
         h3("New groups"),
         textInput(
           inputId = "new_group_name",
@@ -47,7 +47,7 @@ conditionalPanel(
         uiOutput("drinking_groups_bounds_render"),
         hr(),
         actionButton(inputId = "add_group_btn", label = "Add new group", icon = icon("plus"), class = "btn-danger btn-block")
-      )
+      # )
     ),
     
     column(4, h3("Existing groups"), uiOutput("drinking_groups_checkboxes"))
@@ -68,6 +68,5 @@ conditionalPanel(
       actionLink("drinking_groups_to_analyst", "analyst level"),
       " results."
     )
-    # )
   )
 )

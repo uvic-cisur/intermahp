@@ -28,7 +28,7 @@ conditionalPanel(
     6,
     selectInput(
       inputId = "ext", label = "Dose response extrapolation method",
-      c("Linear" = T, "Capped" = F), selected = T)
+      c("Linear" = "linear", "Capped" = "capped"), selected = T)
   ),
   column(12, tags$b(tags$i("Binge definitions"))),
   uiOutput("settings_global_binge_barrier_render"),
@@ -52,15 +52,14 @@ conditionalPanel(
   
   
   # Next step message ----
-  hidden(
-    column(
-      12,
-      div(
-        id = "settings_nextMsg",
-        class = "next-msg",
-        "Now that you've confirmed settings, proceed to ",
-        actionLink("settings_to_generate_estimates", "generate estimates.")
-      )
+  column(
+    12,
+    div(
+      id = "settings_nextMsg",
+      class = "next-msg",
+      "Now that you've confirmed settings, proceed to ",
+      actionLink("settings_to_generate_estimates", "generate estimates.")
     )
   )
+  
 )

@@ -27,6 +27,9 @@ tagList(
         ),
         accept = c("text/csv", "text/comma-separated-values", "text/plain", ".csv")
       ),
+      div(
+        id = "datatsets_pc_error_alert"
+      ),
       selectInput(
         inputId = "datasets_choose_rr",
         label = "Relative risk source",
