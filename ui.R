@@ -18,6 +18,7 @@ library(magrittr)
 library(rCharts)
 library(gtools)
 library(rmarkdown)
+library(stringr) ## add to documentation
 
 source(file.path("ui", "helpers.R"))
 source("js-utils.R")

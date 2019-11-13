@@ -18,16 +18,21 @@ library(magrittr)
 library(rCharts)
 library(gtools)
 library(rmarkdown)
+library(stringr) ## add to documentation
 
 source(file.path("server", "helpers.R"))
 source("js-utils.R")
 
 function(input, output, session) {
   # session mahp object
-  smahp = mahp$new()
+  smahp = reactive({mahp$new()})
+  gold_pc = reactive({FALSE})
   
   # server side reactive data store ----
   dataValues <- reactiveValues(
+    # smahp = mahp$new(),
+    gender_dict = list(),
+    scenario_dict = list(),
     wide = list(),
     long = list())
   

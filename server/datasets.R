@@ -3,12 +3,26 @@
 
 # --- datasets server --- #
 
+# Use uploaded PC dataset if possible, otherwise return imahp3 warnings  ----
 observeEvent(
   input$datasets_upload_pc,
   {
-    pc_in <- readr::read_csv(input$datasets_upload_pc$datapath)
+    .data <- readr::read_csv(input$datasets_upload_pc$datapath)
+    ## If the supplied pc sheet has old gender values ('Male' and 'Female') we'll
+    ## switch them to 'm' and 'w' 
+    ## names(.data) is already put to_lower in imahp3 screen_vars method, but
+    ## we've gotta check gender values before attempting to add pc
+    names(.data) = str_to_lower(names(.data))
+    if('gender' %in% names(.data)) {
+      if(setequal(unique(.data$gender), c('Male', 'Female'))) {
+        .data$gender[.data$gender == 'Male'] <- 'm'
+        .data$gender[.data$gender == 'Female'] <- 'w'
+        gold_pc <- TRUE
+      } 
+    }
+  
     tryCatch(
-      smahp$add_pc(pc_in),
+      smahp()$add_pc(.data),
       warning = function(w) {
         # browser()
         
@@ -31,31 +45,29 @@ observeEvent(
 )
 
 
-
-# only enable the upload buttons when their corresponding input has a file selected ----
+# only enable the confirmation buttons when input is acceptable ----
 # Adapted from the ddPCR R package written by Dean Attali
-# observeEvent(
-#   {
-#     input$datasets_upload_pc
-#     input$high_level_flag
-#     input$calibrate_wac_flag
-#     input$datasets_upload_mm
-#   },
-#   ignoreNULL = FALSE,
-#   {
-#     if(
-#       input$datasets_upload_pc
-#       
-#       
-#     )
-#     
-#     toggleState(
-#       "upload_files_btn",
-#       !is.null(input$upload_pc) && !is.null(input$upload_rr) && !is.null(input$upload_dh)
-#     )
-#   }
-# )
+observeEvent(
+  {
+    input$datasets_upload_pc
+    input$high_level_flag
+    input$calibrate_wac_flag
+    input$datasets_upload_mm
+  },
+  ignoreNULL = FALSE,
+  {
+    if(
+      is.null(smahp()$pc) |
+      ((input$high_level_flag | input$calibrate_wac_flag) & is.null(smahp()$mm))
+    ) {
+      disable("datasets_confirm_data_btn")
+    } else {
+      enable("datasets_confirm_data_btn")
+    }
+  }
+)
 
+# only enable the morb/mort upload when wanted ----
 observeEvent(
   {
     input$high_level_flag

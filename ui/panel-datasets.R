@@ -95,8 +95,8 @@ tagList(
       disabled(
         withBusyIndicator(
           actionButton(
-            "datasets_new_upload_btn",
-            "Upload data",
+            "datasets_confirm_data_btn",
+            "Confirm data",
             class = "btn-primary"
           )
         )

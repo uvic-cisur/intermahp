@@ -138,8 +138,8 @@ current_settings <- reactive({
 
 ## Confirm settings button ----
 observeEvent(input$settings_confirm_btn, {
-  smahp$set_ext(input$ext)
-  smahp$set_ub(input$settings_ub_in_units * drinking_unit())
+  smahp()$set_ext(input$ext)
+  smahp()$set_ub(input$settings_ub_in_units * drinking_unit())
   # smahp$set_bb(list('w' = , 'm' = ))
   # smahp$set_scc()
   
