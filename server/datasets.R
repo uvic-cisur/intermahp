@@ -9,7 +9,8 @@ observeEvent(
   {
     .data <- readr::read_csv(input$datasets_upload_pc$datapath)
     ## If the supplied pc sheet has old gender values ('Male' and 'Female') we'll
-    ## switch them to 'm' and 'w' 
+    ## switch them to 'm' and 'w'
+    ## THIS IS INVISIBLE BACKCOMPATIBILITY
     ## names(.data) is already put to_lower in imahp3 screen_vars method, but
     ## we've gotta check gender values before attempting to add pc
     names(.data) = str_to_lower(names(.data))
@@ -60,9 +61,9 @@ observeEvent(
       is.null(smahp()$pc) |
       ((input$high_level_flag | input$calibrate_wac_flag) & is.null(smahp()$mm))
     ) {
-      disable("datasets_confirm_data_btn")
+      disable("datasets_confirm_data_switch")
     } else {
-      enable("datasets_confirm_data_btn")
+      enable("datasets_confirm_data_switch")
     }
   }
 )
@@ -77,13 +78,56 @@ observeEvent(
   {
     if(input$high_level_flag || input$calibrate_wac_flag) {
       enable("datasets_upload_mm")
-      show("datasets_upload_mm")
+      show("datasets_mm_needed")
     } else {
       disable("datasets_upload_mm")
-      hide("datasets_upload_mm")
+      hide("datasets_mm_needed")
     }
   }
 )
+
+# Use uploaded PC dataset if possible, otherwise return imahp3 warnings  ----
+observeEvent(
+  input$datasets_upload_mm,
+  {
+    .data <- readr::read_csv(input$datasets_upload_mm$datapath)
+    ## If the supplied mm sheet has old gender values ('Male' and 'Female') we'll
+    ## switch them to 'm' and 'w'
+    ## THIS IS INVISIBLE BACKCOMPATIBILITY
+    ## names(.data) is already put to_lower in imahp3 screen_vars method, but
+    ## we've gotta check gender values before attempting to add pc
+    names(.data) = str_to_lower(names(.data))
+    if('gender' %in% names(.data)) {
+      if(setequal(unique(.data$gender), c('Male', 'Female'))) {
+        .data$gender[.data$gender == 'Male'] <- 'm'
+        .data$gender[.data$gender == 'Female'] <- 'w'
+        gold_mm <- TRUE
+      } 
+    }
+    
+    tryCatch(
+      smahp()$add_mm(.data),
+      warning = function(w) {
+        # browser()
+        
+        # Adds the received warning to the datasets tab
+        html(
+          id = "datatsets_mm_error_alert",
+          paste0(
+            '
+            <div class="alert alert-warning alert-dismissible">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Warning:</strong> ',
+            gsub('\\t', '&emsp;', gsub('\\n', '<br>', w$message)),
+            '</div>   
+            '
+          )
+        )
+      }
+    )
+  }
+)
+
 
 # New data upload button ----
 # observeEvent(input$datasets_new_upload_btn, {

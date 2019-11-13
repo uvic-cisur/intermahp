@@ -27,12 +27,11 @@ function(input, output, session) {
   # session mahp object
   smahp = reactive({mahp$new()})
   gold_pc = reactive({FALSE})
+  gold_mm = reactive({FALSE})
   
   # server side reactive data store ----
   dataValues <- reactiveValues(
-    # smahp = mahp$new(),
-    gender_dict = list(),
-    scenario_dict = list(),
+    grps_dict = list(),
     wide = list(),
     long = list())
   

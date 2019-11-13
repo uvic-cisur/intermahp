@@ -50,19 +50,25 @@ tagList(
       ),
       
       hidden(
-        fileInput(
-          inputId = "datasets_upload_mm",
-          label = div(
-            br(),
-            "Morbidity and mortality data",
-            downloadLink(
-              "sampleMM",
-              div(
-                "Sample morbidity and mortality data sheet"
+        div(
+          id = "datasets_mm_needed",
+          fileInput(
+            inputId = "datasets_upload_mm",
+            label = div(
+              br(),
+              "Morbidity and mortality data",
+              downloadLink(
+                "sampleMM",
+                div(
+                  "Sample morbidity and mortality data sheet"
+                )
               )
-            )
+            ),
+            accept = c("text/csv", "text/comma-separated-values", "text/plain", ".csv")
           ),
-          accept = c("text/csv", "text/comma-separated-values", "text/plain", ".csv")
+          div(
+            id = "datatsets_mm_error_alert"
+          )
         )
       ),
       
@@ -93,13 +99,21 @@ tagList(
       #   accept = c("text/csv", "text/comma-separated-values", "text/plain", ".csv")
       # ),
       disabled(
-        withBusyIndicator(
-          actionButton(
-            "datasets_confirm_data_btn",
-            "Confirm data",
-            class = "btn-primary"
-          )
+        materialSwitch(
+          inputId = "datasets_confirm_data_switch",
+          label = "Confirm data", 
+          value = FALSE,
+          status = "primary"
         )
+        
+        
+        # withBusyIndicator(
+        #   actionButton(
+        #     "datasets_confirm_data_btn",
+        #     "Confirm data",
+        #     class = "btn-primary"
+        #   )
+        # )
       )
     ),
 
