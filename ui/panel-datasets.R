@@ -7,28 +7,40 @@ tagList(
   tabsetPanel(
     id = "tabset_datasets",
     tabPanel(
-      title = "Upload new datasets",
+      title = "Choose datasets",
       value = "tabset_datasets_new",
       br(),
       p("Upload datasets that satisfy the specifications outlined in the InterMAHP user guide."),
       p("The sample datasets provided satisfy these specfications (see guide for more details)."),
-      br(),
-      fileInput(
-        inputId = "datasets_upload_pc",
-        label = div(
-          "Prevalence and consumption data",
-          br(),
-          downloadLink(
-            "samplePC",
-            div(
-              "Sample prevalence and consumption data sheet"
-            )
-          )
-        ),
-        accept = c("text/csv", "text/comma-separated-values", "text/plain", ".csv")
+      # br(),
+      checkboxInput(
+        inputId = "datasets_use_sample",
+        label = "Use sample data",
+        value = FALSE
       ),
       div(
-        id = "datatsets_pc_error_alert"
+        id = "datasets_sample_pc_div",
+        uiOutput("datasets_sample_years_render")
+      ),
+      div(
+        id = "datasets_upload_pc_div",
+        fileInput(
+          inputId = "datasets_upload_pc",
+          label = div(
+            "Prevalence and consumption data",
+            br(),
+            downloadLink(
+              "samplePC",
+              div(
+                "Sample prevalence and consumption data sheet"
+              )
+            )
+          ),
+          accept = c("text/csv", "text/comma-separated-values", "text/plain", ".csv")
+        )
+      ),
+      div(
+        id = "datasets_pc_error_alert"
       ),
       selectInput(
         inputId = "datasets_choose_rr",
@@ -41,11 +53,13 @@ tagList(
         tags$b("Morbidity and mortality options"),
         checkboxInput(
           inputId = "high_level_flag",
-          label = "Produce high level results"
+          label = "Produce high level results",
+          value = FALSE
         ),
         checkboxInput(
           inputId = "calibrate_wac_flag",
-          label = "Calibrate absolute risk curves for wholly attributable conditions"
+          label = "Calibrate absolute risk curves for wholly attributable conditions",
+          value = FALSE
         )
       ),
       
@@ -67,7 +81,7 @@ tagList(
             accept = c("text/csv", "text/comma-separated-values", "text/plain", ".csv")
           ),
           div(
-            id = "datatsets_mm_error_alert"
+            id = "datasets_mm_error_alert"
           )
         )
       ),
@@ -104,7 +118,11 @@ tagList(
           label = "Confirm data", 
           value = FALSE,
           status = "primary"
+        ),
+        div(
+          id = "datasets_est_switch_warn"
         )
+        
         
         
         # withBusyIndicator(
@@ -117,52 +135,52 @@ tagList(
       )
     ),
 
-    tabPanel(
-      title = "Use sample datasets",
-      value = "tabsets_datasets_sample",
-      br(),
-      
-      p("Use sample data to explore Canadian mortality between 2007 and 2016."),
-      
-      p("To begin, select years of study and ischaemic heart disease treatment."),
-      
-      br(),
-      
-      uiOutput("datasets_sample_years_render"),
-      
-      
-      selectInput(
-        inputId = "datasets_sample_rr",
-        label = div(
-          "Ischaemic heart disease treatment",
-          popover(
-            content = "Ischaemic heart disease relative risk is stratified at the meta-analysis level by treatment of abstainer bias.
-            <br /><br />
-            Zhao explicitly controls for abstainer bias by selecting studies with no bias and other methods.
-            <br /><br />
-            Roerecke reweights relative risk results from studies which pooled former and never drinkers as abstainers using a standard methodology.
-            <br /><br />
-            For more information, refer to the articles themselves:<br />
-            <a href=https://www.jsad.com/doi/abs/10.15288/jsad.2017.78.375>Zhao</a>
-            <br />
-            <a href=https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1360-0443.2012.03780.x>Roerecke</a>
-            ",
-            pos = "right",
-            icon("info-circle")
-            
-          )
-        ),
-        choices = c("Zhao", "Roerecke") 
-      ),
-      
-      withBusyIndicator(
-        actionButton(
-          "datasets_sample_load_btn",
-          "Load data",
-          class = "btn-primary"
-        )
-      )
-    ),
+    # tabPanel(
+    #   title = "Use sample datasets",
+    #   value = "tabsets_datasets_sample",
+    #   br(),
+    #   
+    #   p("Use sample data to explore Canadian mortality between 2007 and 2016."),
+    #   
+    #   p("To begin, select years of study and ischaemic heart disease treatment."),
+    #   
+    #   br(),
+    #   
+    #   # uiOutput("datasets_sample_years_render"),
+    #   
+    #   
+    #   selectInput(
+    #     inputId = "datasets_sample_rr",
+    #     label = div(
+    #       "Ischaemic heart disease treatment",
+    #       popover(
+    #         content = "Ischaemic heart disease relative risk is stratified at the meta-analysis level by treatment of abstainer bias.
+    #         <br /><br />
+    #         Zhao explicitly controls for abstainer bias by selecting studies with no bias and other methods.
+    #         <br /><br />
+    #         Roerecke reweights relative risk results from studies which pooled former and never drinkers as abstainers using a standard methodology.
+    #         <br /><br />
+    #         For more information, refer to the articles themselves:<br />
+    #         <a href=https://www.jsad.com/doi/abs/10.15288/jsad.2017.78.375>Zhao</a>
+    #         <br />
+    #         <a href=https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1360-0443.2012.03780.x>Roerecke</a>
+    #         ",
+    #         pos = "right",
+    #         icon("info-circle")
+    #         
+    #       )
+    #     ),
+    #     choices = c("Zhao", "Roerecke") 
+    #   ),
+    #   
+    #   withBusyIndicator(
+    #     actionButton(
+    #       "datasets_sample_load_btn",
+    #       "Load data",
+    #       class = "btn-primary"
+    #     )
+    #   )
+    # ),
     
     tabPanel(
       title = "Review loaded data",

@@ -4,7 +4,7 @@
 # --- Settings UI --- #
 
 conditionalPanel(
-  condition = "output.dataChosen",
+  condition = "output.dataConfirmed",
   conditionalPanel(
     condition = "output.estimatesGenerated",
     div(
@@ -16,6 +16,7 @@ conditionalPanel(
   
   
   column(12, tags$b(tags$i("Global settings"))),
+  div(id = ""),
   column(
     12,
     uiOutput("settings_unit_render")

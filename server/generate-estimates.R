@@ -13,8 +13,24 @@ observeEvent(
     tryCatch(
       smahp()$init_fractions(),
       message = function(msg) {
-        html_msg = gsub('\\t', '&emsp;', gsub('\\n', '<br>', msg$message))
-        html(id = "model_progress", html_msg, TRUE)
+        html(id = "model_progress", htmlmsg(msg$message), TRUE)
+      },
+      warning = function(w) {
+        # browser()
+        
+        # Adds the received warning to the datasets tab
+        html(
+          id = "generate_estimates_error_alert",
+          paste0(
+            '
+            <div class="alert alert-warning alert-dismissible">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Warning:</strong> ',
+            htmlmsg(w$message),
+            '</div>   
+            '
+          )
+        )
       }
     )
     

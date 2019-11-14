@@ -67,8 +67,8 @@ function(input, output, session) {
   # we need to have a quasi-variable flag to indicate whether or not
   # we have data to work with or if we're waiting for data to be chosen
   # Adapted from the ddPCR R package written by Dean Attali
-  output$dataChosen <- reactive({ FALSE })
-  outputOptions(output, 'dataChosen', suspendWhenHidden = FALSE)
+  output$dataConfirmed <- reactive({ FALSE })
+  outputOptions(output, 'dataConfirmed', suspendWhenHidden = FALSE)
 
   # similar to above, indicates whether settings have been confirmed
   output$settingsConfirmed <- reactive({ FALSE })

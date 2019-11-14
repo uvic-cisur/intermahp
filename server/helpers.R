@@ -202,3 +202,8 @@ errorFunc <- function(err) {
 errorHide <- function() {
   showNotification("errorHide() called")
 }
+
+# formats messages for html by replacing \n and \t with <br> and emsp; respectively. ----
+htmlmsg = function(.char) {
+  gsub('\\t', '&emsp;', gsub('\\n', '<br>', .char))
+}

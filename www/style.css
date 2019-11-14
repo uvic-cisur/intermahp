@@ -122,3 +122,6 @@ table {
   font-weight: normal;
 }
 
+#datasets_sample_pc_div {
+  padding-bottom: 40px;
+}

@@ -25,17 +25,16 @@ observeEvent(
     tryCatch(
       smahp()$add_pc(.data),
       warning = function(w) {
-        # browser()
         
         # Adds the received warning to the datasets tab
         html(
-          id = "datatsets_pc_error_alert",
+          id = "datasets_pc_error_alert",
           paste0(
             '
              <div class="alert alert-warning alert-dismissible">
                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                <strong>Warning:</strong> ',
-            gsub('\\t', '&emsp;', gsub('\\n', '<br>', w$message)),
+            htmlmsg(w$message),
                '</div>   
                '
           )
@@ -57,13 +56,14 @@ observeEvent(
   },
   ignoreNULL = FALSE,
   {
+    # browser()
     if(
       is.null(smahp()$pc) |
       ((input$high_level_flag | input$calibrate_wac_flag) & is.null(smahp()$mm))
     ) {
-      disable("datasets_confirm_data_switch")
+      disable("datasets_confirm_switch")
     } else {
-      enable("datasets_confirm_data_switch")
+      enable("datasets_confirm_switch")
     }
   }
 )
@@ -71,12 +71,13 @@ observeEvent(
 # only enable the morb/mort upload when wanted ----
 observeEvent(
   {
+    input$datasets_use_sample
     input$high_level_flag
     input$calibrate_wac_flag
   },
   ignoreNULL = FALSE,
   {
-    if(input$high_level_flag || input$calibrate_wac_flag) {
+    if(!input$datasets_use_sample & (input$high_level_flag || input$calibrate_wac_flag)) {
       enable("datasets_upload_mm")
       show("datasets_mm_needed")
     } else {
@@ -112,13 +113,13 @@ observeEvent(
         
         # Adds the received warning to the datasets tab
         html(
-          id = "datatsets_mm_error_alert",
+          id = "datasets_mm_error_alert",
           paste0(
             '
             <div class="alert alert-warning alert-dismissible">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
             <strong>Warning:</strong> ',
-            gsub('\\t', '&emsp;', gsub('\\n', '<br>', w$message)),
+            htmlmsg(w$message),
             '</div>   
             '
           )
@@ -134,8 +135,18 @@ observeEvent(
   {
     if(input$datasets_confirm_switch == TRUE) {
       shinyjs::enable("nav_settings")
-    } else {
-       # warn... 
+    } else if(!is.null(smahp()$af)) {
+      html(
+        id = "datasets_est_switch_warn",
+        paste0(
+          '
+            <div class="alert alert-warning alert-dismissible">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Note:</strong> Estimates must be re-generated for dataset changes to take effect.
+            </div>   
+            '
+        )
+      )
     }
   }
 )
@@ -265,7 +276,7 @@ observeEvent(input$datasets_saved_upload_btn, {
 output$datasets_sample_years_render <- renderUI({
   pickerInput(
     inputId = "datasets_sample_years",
-    label = "Years of study",
+    label = "Prevalence and consumption data",
     choices = unique(preloaded_dataset_pc$year),
     selected = unique(preloaded_dataset_pc$year)[1],
     multiple = T,
@@ -276,7 +287,6 @@ output$datasets_sample_years_render <- renderUI({
     )
   )  
 })
-
 
 observe({
   if(
@@ -291,6 +301,20 @@ observe({
 #* Update samples when not visible
 outputOptions(output, "datasets_sample_years_render", suspendWhenHidden = FALSE)
 
+
+# Use sample data checkbox ----
+observeEvent(
+  input$datasets_use_sample,
+  {
+    if(input$datasets_use_sample == TRUE) {
+      hide("datasets_upload_pc_div")
+      show("datasets_sample_pc_div")
+    } else {
+      hide("datasets_sample_pc_div")
+      show("datasets_upload_pc_div")
+    }
+  }
+)
 
 # * Button ----
 observeEvent(input$datasets_sample_load_btn, {

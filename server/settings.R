@@ -154,5 +154,6 @@ observeEvent(input$settings_confirm_switch, {
   
 })
 
+
 # nextMsg links ----
 observeEvent(input$settings_to_generate_estimates, set_nav("generate_estimates"))

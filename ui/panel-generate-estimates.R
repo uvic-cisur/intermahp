@@ -4,7 +4,7 @@
 # --- Generate Estimates UI --- #
 
 conditionalPanel(
-  condition = "output.dataChosen & output.settingsConfirmed",
+  condition = "output.dataConfirmed & output.settingsConfirmed",
   
   wellPanel(
     div(id = "generate_estimates_content",
@@ -21,6 +21,9 @@ conditionalPanel(
         )
     ),
     br(),
+    div(
+      id = "generate_estimates_error_alert"
+    ),
     div(
       id = "model_progress_content",
       pre(id = "model_progress")
