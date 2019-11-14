@@ -37,13 +37,20 @@ conditionalPanel(
   uiOutput("settings_global_scc_proportions_render"),
   column(
     12,
-    withBusyIndicator(
-      actionButton(
-        "settings_confirm_btn",
-        "Confirm settings",
-        class = "btn-primary"
-      )
+    materialSwitch(
+      inputId = "settings_confirm_switch",
+      label = "Confirm settings", 
+      value = FALSE,
+      status = "primary"
     )
+    
+    # withBusyIndicator(
+    #   actionButton(
+    #     "settings_confirm_btn",
+    #     "Confirm settings",
+    #     class = "btn-primary"
+    #   )
+    # )
   ),
   
   

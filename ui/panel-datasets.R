@@ -100,7 +100,7 @@ tagList(
       # ),
       disabled(
         materialSwitch(
-          inputId = "datasets_confirm_data_switch",
+          inputId = "datasets_confirm_switch",
           label = "Confirm data", 
           value = FALSE,
           status = "primary"

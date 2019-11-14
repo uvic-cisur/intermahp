@@ -13,7 +13,7 @@ output$settings_global_binge_barrier_render <- renderUI({
     function(gender) {
       value = 60
       if(grepl("^[Mm]", gender)) value = 65
-      if(grepl("^[Ff]", gender)) value = 50
+      if(grepl("^[Ffw]", gender)) value = 50
       tagList(
         # hr(),
         column(
@@ -42,7 +42,7 @@ output$settings_global_scc_proportions_render <- renderUI({
     function(gender) {
       value = 0.5
       if(grepl("^[Mm]", gender)) value = .33
-      if(grepl("^[Ff]", gender)) value = .66
+      if(grepl("^[Ffw]", gender)) value = .66
       tagList(
         # hr(),
         column(
@@ -70,8 +70,8 @@ output$settings_global_upper_limit <- renderUI({
     inputId = "settings_ub_in_units",
     label = "Upper limit of consumption",
     value = round(250/drinking_unit(), 2),
-    min = 0,
-    max = 1000
+    min = 10,
+    max = 250
   )
 })
 
@@ -137,16 +137,21 @@ current_settings <- reactive({
 })
 
 ## Confirm settings button ----
-observeEvent(input$settings_confirm_btn, {
-  smahp()$set_ext(input$ext)
-  smahp()$set_ub(input$settings_ub_in_units * drinking_unit())
-  # smahp$set_bb(list('w' = , 'm' = ))
-  # smahp$set_scc()
+observeEvent(input$settings_confirm_switch, {
+  if(input$settings_confirm_switch == TRUE){
+    smahp()$set_ext(input$ext)
+    smahp()$set_ub(input$settings_ub_in_units * drinking_unit())
+    # smahp()$set_bb(list('w' = , 'm' = ))
+    # smahp$set_scc()
+    
+    
+    
+    show("settings_nextMsg")
+    output$settingsConfirmed <- reactive({ TRUE })
+  } else {
+    # warn...
+  }
   
-  
-  
-  show("settings_nextMsg")
-  output$settingsConfirmed <- reactive({ TRUE })
 })
 
 # nextMsg links ----

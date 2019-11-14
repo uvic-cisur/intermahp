@@ -128,6 +128,18 @@ observeEvent(
   }
 )
 
+# New data confirmation switch behaviour ----
+observeEvent(
+  input$datasets_confirm_switch,
+  {
+    if(input$datasets_confirm_switch == TRUE) {
+      shinyjs::enable("nav_settings")
+    } else {
+       # warn... 
+    }
+  }
+)
+
 
 # New data upload button ----
 # observeEvent(input$datasets_new_upload_btn, {

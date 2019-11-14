@@ -7,33 +7,59 @@
 shinyjs::hide(id = "model_progress_content")
 
 # Script when a new model is generated ----
-observeEvent(input$generate_estimates, {
-  if(!is.null(dataValues$model)) {
-    shinyalert(
-      title = "Estimates already generated",
-      text = "You've already generated estimates. Clear data and generate new estimates?",
-      type = "warning",
-      closeOnEsc = T,
-      closeOnClickOutside = T,
-      showCancelButton = T,
-      showConfirmButton = T,
-      confirmButtonText = "Yes",
-      cancelButtonText = "No",
-      callbackR = function(continue) {
-        if(continue) {
-          dataValues$model <- NULL
-          dataValues$wide <- NULL
-          dataValues$long <- NULL
-          generateEstimates()
-        } else {
-          return()
-        }
+observeEvent(
+  input$generate_estimates,
+  {
+    tryCatch(
+      smahp()$init_fractions(),
+      message = function(msg) {
+        html_msg = gsub('\\t', '&emsp;', gsub('\\n', '<br>', msg$message))
+        html(id = "model_progress", html_msg, TRUE)
       }
     )
-  } else {
-    generateEstimates()
+    
+    # Adds a warning to the settings tab
+    html(id = "header_settings_changed_alert",
+         '
+         <div class="alert alert-warning alert-dismissible">
+         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+         <strong>Note:</strong> Estimates must be re-generated for setting changes to take effect.
+         </div>   
+         ')
+    
+    show("generate_estimates_nextMsg")
   }
-})
+)
+
+
+# OLD Script when a new model is generated ----
+# observeEvent(input$generate_estimates, {
+#   if(!is.null(dataValues$model)) {
+#     shinyalert(
+#       title = "Estimates already generated",
+#       text = "You've already generated estimates. Clear data and generate new estimates?",
+#       type = "warning",
+#       closeOnEsc = T,
+#       closeOnClickOutside = T,
+#       showCancelButton = T,
+#       showConfirmButton = T,
+#       confirmButtonText = "Yes",
+#       cancelButtonText = "No",
+#       callbackR = function(continue) {
+#         if(continue) {
+#           dataValues$model <- NULL
+#           dataValues$wide <- NULL
+#           dataValues$long <- NULL
+#           generateEstimates()
+#         } else {
+#           return()
+#         }
+#       }
+#     )
+#   } else {
+#     generateEstimates()
+#   }
+# })
 
 last_settings <- list()
   
