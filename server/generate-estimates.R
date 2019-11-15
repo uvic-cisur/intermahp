@@ -10,42 +10,50 @@ shinyjs::hide(id = "model_progress_content")
 observeEvent(
   input$generate_estimates,
   {
-    tryCatch(
-      smahp()$init_fractions(),
-      message = function(msg) {
-        html(id = "model_progress", htmlmsg(msg$message), TRUE)
-      },
-      warning = function(w) {
-        # browser()
-        
-        # Adds the received warning to the datasets tab
-        html(
-          id = "generate_estimates_error_alert",
-          paste0(
-            '
+    withBusyIndicator(
+      "generate_estimates",
+      {
+        withCallingHandlers(
+          {
+            # show("model_progress_content")
+            smahp()$init_fractions()
+          },
+          message = function(msg) {
+            html(id = "model_progress", htmlmsg(msg$message), add = TRUE)
+          },
+          warning = function(w) {
+            # browser()
+            
+            # Adds the received warning to the datasets tab
+            html(
+              id = "generate_estimates_error_alert",
+              paste0(
+                '
             <div class="alert alert-warning alert-dismissible">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
             <strong>Warning:</strong> ',
-            htmlmsg(w$message),
-            '</div>   
+                htmlmsg(w$message),
+                '</div>   
             '
-          )
+              )
+            )
+          }
         )
+        
+        # Adds a warning to the settings tab
+        if(!is.null(smahp()$af)) output$estimatesGenerated <- reactive({TRUE})
+        
+        # html(id = "header_settings_changed_alert",
+        #      '
+        #      <div class="alert alert-warning alert-dismissible">
+        #      <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        #      <strong>Note:</strong> Estimates must be re-generated for setting changes to take effect.
+        #      </div>   
+        #      ')
+        
+        show("generate_estimates_nextMsg")
       }
     )
-    
-    # Adds a warning to the settings tab
-    if(!is.null(smahp()$af)) output$estimatesGenerated <- reactive({TRUE})
-    
-    # html(id = "header_settings_changed_alert",
-    #      '
-    #      <div class="alert alert-warning alert-dismissible">
-    #      <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-    #      <strong>Note:</strong> Estimates must be re-generated for setting changes to take effect.
-    #      </div>   
-    #      ')
-    
-    show("generate_estimates_nextMsg")
   }
 )
 
@@ -80,7 +88,7 @@ observeEvent(
 # })
 
 last_settings <- list()
-  
+
 generateEstimates <- function() {
   withBusyIndicator("generate_estimates", {
     show("model_progress_content")
@@ -89,7 +97,7 @@ generateEstimates <- function() {
       {
         last_settings <<- current_settings()
         html(id = "model_progress", "Stage 1/3 (dataset preparation)<br />&emsp;", TRUE)
-          pc <- intermahpr::preparePC(
+        pc <- intermahpr::preparePC(
           dataValues$pc_in, 
           bb = current_settings()$bb,
           lb = current_settings()$lb, 
@@ -141,7 +149,7 @@ generateEstimates <- function() {
         
         # Adds a warning to the settings tab
         html(id = "header_settings_changed_alert",
-          '
+             '
             <div class="alert alert-warning alert-dismissible">
               <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
               <strong>Note:</strong> Estimates must be re-generated for setting changes to take effect.

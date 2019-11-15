@@ -147,8 +147,8 @@ observeEvent(input$settings_confirm_switch, {
 
     smahp()$set_bb(
       list(
-        'w' = input[['w scc proportion']],
-        'm' = input[['m scc proportion']]
+        'w' = input[['w binge barrier']],
+        'm' = input[['m binge barrier']]
       )
     )
     
