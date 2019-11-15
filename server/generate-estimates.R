@@ -37,13 +37,13 @@ observeEvent(
     # Adds a warning to the settings tab
     if(!is.null(smahp()$af)) output$estimatesGenerated <- reactive({TRUE})
     
-    html(id = "header_settings_changed_alert",
-         '
-         <div class="alert alert-warning alert-dismissible">
-         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-         <strong>Note:</strong> Estimates must be re-generated for setting changes to take effect.
-         </div>   
-         ')
+    # html(id = "header_settings_changed_alert",
+    #      '
+    #      <div class="alert alert-warning alert-dismissible">
+    #      <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    #      <strong>Note:</strong> Estimates must be re-generated for setting changes to take effect.
+    #      </div>   
+    #      ')
     
     show("generate_estimates_nextMsg")
   }

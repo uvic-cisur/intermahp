@@ -5,37 +5,39 @@
 
 conditionalPanel(
   condition = "output.dataConfirmed",
-  conditionalPanel(
-    condition = "output.estimatesGenerated",
-    div(
-      id = "header_settings_changed_alert"
-    )
-  ),
+  # conditionalPanel(
+  #   condition = "output.estimatesGenerated",
+  #   div(
+  #     id = "header_settings_changed_alert"
+  #   )
+  # ),
   
   br(),
   
   
   column(12, tags$b(tags$i("Global settings"))),
-  div(id = ""),
-  column(
-    12,
-    uiOutput("settings_unit_render")
+  div(
+    id = "settings_input",
+    column(
+      12,
+      uiOutput("settings_unit_render")
+    ),
+    column(
+      6,
+      uiOutput("settings_global_upper_limit")
+    ),
+    column(
+      6,
+      selectInput(
+        inputId = "ext", label = "Dose response extrapolation method",
+        c("Linear" = "linear", "Capped" = "capped"), selected = T)
+    ),
+    column(12, tags$b(tags$i("Binge definitions"))),
+    uiOutput("settings_global_binge_barrier_render"),
+    br(),
+    column(12, tags$b(tags$i("Squamous cell carcinoma proportions"))),
+    uiOutput("settings_global_scc_proportions_render")
   ),
-  column(
-    6,
-    uiOutput("settings_global_upper_limit")
-  ),
-  column(
-    6,
-    selectInput(
-      inputId = "ext", label = "Dose response extrapolation method",
-      c("Linear" = "linear", "Capped" = "capped"), selected = T)
-  ),
-  column(12, tags$b(tags$i("Binge definitions"))),
-  uiOutput("settings_global_binge_barrier_render"),
-  br(),
-  column(12, tags$b(tags$i("Squamous cell carcinoma proportions"))),
-  uiOutput("settings_global_scc_proportions_render"),
   column(
     12,
     materialSwitch(
@@ -43,6 +45,9 @@ conditionalPanel(
       label = "Confirm settings", 
       value = FALSE,
       status = "primary"
+    ),
+    div(
+      id = "settings_est_switch_warn"
     )
     
     # withBusyIndicator(

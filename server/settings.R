@@ -141,6 +141,7 @@ current_settings <- reactive({
 ## Confirm settings switch ----
 observeEvent(input$settings_confirm_switch, {
   if(input$settings_confirm_switch == TRUE){
+    ## Add the settings to the mahp
     smahp()$set_ext(input$ext)
     smahp()$set_ub(input$settings_ub_in_units * drinking_unit())
 
@@ -150,6 +151,7 @@ observeEvent(input$settings_confirm_switch, {
         'm' = input[['m scc proportion']]
       )
     )
+    
     smahp()$set_scc(
       list(
         'w' = input[['w scc proportion']],
@@ -157,12 +159,32 @@ observeEvent(input$settings_confirm_switch, {
         )
       )
     
+    ## disable all input elements while settings are confirmed
+    disable(selector = "#settings_input")
     
-    
+    ## Prompt to continue
     show("settings_nextMsg")
+    
+    ## Raise settings confirmation flag
     output$settingsConfirmed <- reactive({ TRUE })
   } else {
-    # warn...
+    ## Always re-enable the input
+    enable(selector = "#settings_input")
+    
+    ## If AFs exist warn that changing settings requires re-generation
+    if(!is.null(smahp()$af)) {
+      html(
+        id = "settings_est_switch_warn",
+        paste0(
+          '
+            <div class="alert alert-warning alert-dismissible">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Note:</strong> Estimates must be re-generated for setting changes to take effect.
+            </div>   
+            '
+        )
+      )
+    }
   }
   
 })

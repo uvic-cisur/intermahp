@@ -42,6 +42,6 @@ set_nav <- function(id) {
 observeEvent(
   input$debug,
   {
-    browser()  
+    browser()
   }
 )

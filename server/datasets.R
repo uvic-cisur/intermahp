@@ -22,7 +22,7 @@ observeEvent(
         dataValues$genders <- c('Male', 'Female')
       } 
     }
-  
+    
     tryCatch(
       smahp()$add_pc(.data),
       warning = function(w) {
@@ -36,7 +36,7 @@ observeEvent(
                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                <strong>Warning:</strong> ',
             htmlmsg(w$message),
-               '</div>   
+            '</div>   
                '
           )
         )
@@ -138,26 +138,41 @@ observeEvent(
   input$datasets_confirm_switch,
   {
     if(input$datasets_confirm_switch == TRUE) {
+      ## Add last setting to smahp
       smahp()$choose_rr(input$datasets_choose_rr)
       
+      ## disable all input elements while datasets are confirmed
+      disable(selector = "#datasets_input")
+      
+      ## Allow navigation to Settings
       shinyjs::enable("nav_settings")
       
+      ## Prompt to continue
       show("datasets_nextMsg")
       
+      ## Raise data confirmation flag
       output$dataConfirmed <- reactive({ TRUE })
       
-    } else if(!is.null(smahp()$af)) {
-      html(
-        id = "datasets_est_switch_warn",
-        paste0(
-          '
+      
+      
+    } else {
+      ## Always re-enable the input
+      enable(selector = "#datasets_input")
+      
+      ## If AFs exist warn that changing datasets requires re-generation
+      if(!is.null(smahp()$af)) {
+        html(
+          id = "datasets_est_switch_warn",
+          paste0(
+            '
             <div class="alert alert-warning alert-dismissible">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
             <strong>Note:</strong> Estimates must be re-generated for dataset changes to take effect.
             </div>   
             '
+          )
         )
-      )
+      }
     }
   }
 )
@@ -398,7 +413,7 @@ output$rr_metadata <- renderUI({
   
   obs <- nrow(rr)
   conditions <- length(unique(rr$im))
-
+  
   div(
     class = "data-info",
     paste0("Relative risks:"),
@@ -427,7 +442,7 @@ output$mm_metadata <- renderUI({
   conditions <- length(unique(mm$im))
   morbidities <- nrow(filter(mm, grepl("Morb", outcome)))
   mortalities <- nrow(filter(mm, grepl("Mort", outcome)))
-    
+  
   div(
     class = "data-info",
     paste0("Morbidity and mortality:"),

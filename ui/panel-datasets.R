@@ -13,75 +13,78 @@ tagList(
       p("Upload datasets that satisfy the specifications outlined in the InterMAHP user guide."),
       p("The sample datasets provided satisfy these specfications (see guide for more details)."),
       # br(),
-      checkboxInput(
-        inputId = "datasets_use_sample",
-        label = "Use sample data",
-        value = FALSE
-      ),
       div(
-        id = "datasets_sample_pc_div",
-        uiOutput("datasets_sample_years_render")
-      ),
-      div(
-        id = "datasets_upload_pc_div",
-        fileInput(
-          inputId = "datasets_upload_pc",
-          label = div(
-            "Prevalence and consumption data",
-            br(),
-            downloadLink(
-              "samplePC",
-              div(
-                "Sample prevalence and consumption data sheet"
-              )
-            )
-          ),
-          accept = c("text/csv", "text/comma-separated-values", "text/plain", ".csv")
-        )
-      ),
-      div(
-        id = "datasets_pc_error_alert"
-      ),
-      selectInput(
-        inputId = "datasets_choose_rr",
-        label = "Relative risk source",
-        choices = c(GBD = 'ihme', CSUCH = 'csuch')
-      ),
-
-      div(
-        br(),
-        tags$b("Morbidity and mortality options"),
+        id = "datasets_input",
         checkboxInput(
-          inputId = "high_level_flag",
-          label = "Produce high level results",
+          inputId = "datasets_use_sample",
+          label = "Use sample data",
           value = FALSE
         ),
-        checkboxInput(
-          inputId = "calibrate_wac_flag",
-          label = "Calibrate absolute risk curves for wholly attributable conditions",
-          value = FALSE
-        )
-      ),
-      
-      hidden(
         div(
-          id = "datasets_mm_needed",
+          id = "datasets_sample_pc_div",
+          uiOutput("datasets_sample_years_render")
+        ),
+        div(
+          id = "datasets_upload_pc_div",
           fileInput(
-            inputId = "datasets_upload_mm",
+            inputId = "datasets_upload_pc",
             label = div(
+              "Prevalence and consumption data",
               br(),
-              "Morbidity and mortality data",
               downloadLink(
-                "sampleMM",
+                "samplePC",
                 div(
-                  "Sample morbidity and mortality data sheet"
+                  "Sample prevalence and consumption data sheet"
                 )
               )
             ),
             accept = c("text/csv", "text/comma-separated-values", "text/plain", ".csv")
+          )
+        ),
+        div(
+          id = "datasets_pc_error_alert"
+        ),
+        selectInput(
+          inputId = "datasets_choose_rr",
+          label = "Relative risk source",
+          choices = c(GBD = 'ihme', CSUCH = 'csuch')
+        ),
+        
+        div(
+          br(),
+          tags$b("Morbidity and mortality options"),
+          checkboxInput(
+            inputId = "high_level_flag",
+            label = "Produce high level results",
+            value = FALSE
           ),
+          checkboxInput(
+            inputId = "calibrate_wac_flag",
+            label = "Calibrate absolute risk curves for wholly attributable conditions",
+            value = FALSE
+          )
+        ),
+        
+        hidden(
           div(
-            id = "datasets_mm_error_alert"
+            id = "datasets_mm_needed",
+            fileInput(
+              inputId = "datasets_upload_mm",
+              label = div(
+                br(),
+                "Morbidity and mortality data",
+                downloadLink(
+                  "sampleMM",
+                  div(
+                    "Sample morbidity and mortality data sheet"
+                  )
+                )
+              ),
+              accept = c("text/csv", "text/comma-separated-values", "text/plain", ".csv")
+            ),
+            div(
+              id = "datasets_mm_error_alert"
+            )
           )
         )
       ),
@@ -134,7 +137,7 @@ tagList(
         # )
       )
     ),
-
+    
     # tabPanel(
     #   title = "Use sample datasets",
     #   value = "tabsets_datasets_sample",
