@@ -27,6 +27,10 @@ wellPanel(
   hr(),
   
   actionButton(inputId = "nav_high", label = "High Level Results", icon = icon("bar-chart"), class = "btn-primary btn-block"),
-  actionButton(inputId = "nav_analyst", label = "Analyst Level Results", icon = icon("table"), class = "btn-primary btn-block")
+  actionButton(inputId = "nav_analyst", label = "Analyst Level Results", icon = icon("table"), class = "btn-primary btn-block"),
+  
+  hr(),
+  
+  actionButton("debug", "Debug", class = "btn-primary btn-block")
 
 )

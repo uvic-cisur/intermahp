@@ -12,14 +12,15 @@ output$settings_global_binge_barrier_render <- renderUI({
     dataValues$genders,
     function(gender) {
       value = 60
-      if(grepl("^[Mm]", gender)) value = 65
-      if(grepl("^[Ffw]", gender)) value = 50
+      ig = if(grepl("^[Fw]", gender)) {'w'} else if(grepl("^[Mm]", gender)) {'m'}
+      if(ig == 'm') value = 65
+      if(ig == 'w') value = 50
       tagList(
         # hr(),
         column(
           6,
           numericInput(
-            inputId = paste0(gender, " binge barrier"),
+            inputId = paste0(ig, " binge barrier"),
             label = gender, #paste0(gender, " binge barrier"),
             min = 10,
             value = round(value/drinking_unit(), 2),
@@ -41,14 +42,15 @@ output$settings_global_scc_proportions_render <- renderUI({
     dataValues$genders,
     function(gender) {
       value = 0.5
-      if(grepl("^[Mm]", gender)) value = .33
-      if(grepl("^[Ffw]", gender)) value = .66
+      ig = if(grepl("^[Fw]", gender)) {'w'} else if(grepl("^[Mm]", gender)) {'m'}
+      if(ig == 'm') value = .33
+      if(ig == 'w') value = .66
       tagList(
         # hr(),
         column(
           6,
           numericInput(
-            inputId = paste0(gender, " scc proportion"),
+            inputId = paste0(ig, " scc proportion"),
             label = gender, #paste0(gender, " binge barrier"),
             min = 0,
             value = value,
@@ -136,13 +138,24 @@ current_settings <- reactive({
   )
 })
 
-## Confirm settings button ----
+## Confirm settings switch ----
 observeEvent(input$settings_confirm_switch, {
   if(input$settings_confirm_switch == TRUE){
     smahp()$set_ext(input$ext)
     smahp()$set_ub(input$settings_ub_in_units * drinking_unit())
-    # smahp()$set_bb(list('w' = , 'm' = ))
-    # smahp$set_scc()
+
+    smahp()$set_bb(
+      list(
+        'w' = input[['w scc proportion']],
+        'm' = input[['m scc proportion']]
+      )
+    )
+    smahp()$set_scc(
+      list(
+        'w' = input[['w scc proportion']],
+        'm' = input[['m scc proportion']]
+        )
+      )
     
     
     

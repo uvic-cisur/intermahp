@@ -38,3 +38,10 @@ set_nav <- function(id) {
   hide("errorDiv")  
 }
 
+## Debug button is on the nav ----
+observeEvent(
+  input$debug,
+  {
+    browser()  
+  }
+)

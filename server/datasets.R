@@ -19,6 +19,7 @@ observeEvent(
         .data$gender[.data$gender == 'Male'] <- 'm'
         .data$gender[.data$gender == 'Female'] <- 'w'
         gold_pc <- TRUE
+        dataValues$genders <- c('Male', 'Female')
       } 
     }
   
@@ -103,7 +104,10 @@ observeEvent(
         .data$gender[.data$gender == 'Male'] <- 'm'
         .data$gender[.data$gender == 'Female'] <- 'w'
         gold_mm <- TRUE
-      } 
+        dataValues$genders <- c('Male', 'Female')
+      } else {
+        dataValues$genders <- c('m', 'w')
+      }
     }
     
     tryCatch(
@@ -134,7 +138,14 @@ observeEvent(
   input$datasets_confirm_switch,
   {
     if(input$datasets_confirm_switch == TRUE) {
+      smahp()$choose_rr(input$datasets_choose_rr)
+      
       shinyjs::enable("nav_settings")
+      
+      show("datasets_nextMsg")
+      
+      output$dataConfirmed <- reactive({ TRUE })
+      
     } else if(!is.null(smahp()$af)) {
       html(
         id = "datasets_est_switch_warn",

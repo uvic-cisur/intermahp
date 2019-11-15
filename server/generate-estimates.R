@@ -35,6 +35,8 @@ observeEvent(
     )
     
     # Adds a warning to the settings tab
+    if(!is.null(smahp()$af)) output$estimatesGenerated <- reactive({TRUE})
+    
     html(id = "header_settings_changed_alert",
          '
          <div class="alert alert-warning alert-dismissible">
