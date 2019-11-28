@@ -37,18 +37,18 @@ function(input, output, session) {
   
   # preloaded data initialization ----
   # RR
-  preloaded_dataset_rr_zhao <- read_rds(file.path("data", "zhao.rds"))
-  preloaded_dataset_rr_roerecke <- read_rds(file.path("data", "roerecke.rds"))
-  preloaded_dataset_rr_sample <- read_rds(file.path("data", "intermahpr_sample_rr.rds"))
-  output$sampleRR <- downloadHandler(
-    filename = "intermahpr_sample_rr.csv",
-    content = function(fname) {
-      write_csv(preloaded_dataset_rr_sample, fname)
-    }
-  )
+  # preloaded_dataset_rr_zhao <- read_rds(file.path("data", "zhao.rds"))
+  # preloaded_dataset_rr_roerecke <- read_rds(file.path("data", "roerecke.rds"))
+  # preloaded_dataset_rr_sample <- read_rds(file.path("data", "intermahpr_sample_rr.rds"))
+  # output$sampleRR <- downloadHandler(
+  #   filename = "intermahpr_sample_rr.csv",
+  #   content = function(fname) {
+  #     write_csv(preloaded_dataset_rr_sample, fname)
+  #   }
+  # )
   
   # PC & MM
-  preloaded_dataset_pc <- read_rds(file.path("data", "intermahpr_sample_pc.rds"))
+  preloaded_dataset_pc <- read_rds(file.path("data", "intermahp3_sample_pc.rds"))
   output$samplePC <- downloadHandler(
     filename = "intermahpr_sample_pc.csv",
     content = function(fname) {
@@ -56,7 +56,7 @@ function(input, output, session) {
     }
   )
   
-  preloaded_dataset_mm <- read_rds(file.path("data", "intermahpr_sample_mm.rds"))
+  preloaded_dataset_mm <- read_rds(file.path("data", "intermahp3_sample_mm.rds"))
   output$sampleMM <- downloadHandler(
     filename = "intermahpr_sample_mm.csv",
     content = function(fname) {

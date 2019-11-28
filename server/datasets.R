@@ -50,6 +50,7 @@ observeEvent(
 # Adapted from the ddPCR R package written by Dean Attali
 observeEvent(
   {
+    input$datasets_use_sample
     input$datasets_upload_pc
     input$high_level_flag
     input$calibrate_wac_flag
@@ -58,13 +59,25 @@ observeEvent(
   ignoreNULL = FALSE,
   {
     # browser()
+    ## If (using sample) OR (((have pc) AND (don't need MM)) OR ((have PC) AND (have MM)))
+    ## second conditional = (have pc) AND ((don't need MM) OR (have MM))
+    ## enable
+    ## else
+    ## disable 
+    
     if(
-      is.null(smahp()$pc) |
-      ((input$high_level_flag | input$calibrate_wac_flag) & is.null(smahp()$mm))
+      (input$datasets_use_sample) |
+      (
+        (!is.null(smahp()$pc)) &
+        (
+          (!(input$high_level_flag | input$calibrate_wac_flag)) |
+          !is.null(smahp()$mm)
+        )
+      )
     ) {
-      disable("datasets_confirm_switch")
-    } else {
       enable("datasets_confirm_switch")
+    } else {
+      disable("datasets_confirm_switch")
     }
   }
 )
@@ -138,6 +151,29 @@ observeEvent(
   input$datasets_confirm_switch,
   {
     if(input$datasets_confirm_switch == TRUE) {
+      if(input$datasets_use_sample == TRUE) {
+        ## Add the PC and MM values
+        smahp()$add_pc(
+          dplyr::filter(
+            preloaded_dataset_pc,
+            year %in% input$datasets_sample_years
+          )
+        )
+        smahp()$add_mm(
+          dplyr::filter(
+            preloaded_dataset_mm,
+            year %in% input$datasets_sample_years
+          )
+        )
+        
+        ## Set the gender values and flags
+        gold_pc <- TRUE
+        dataValues$genders <- c('Male', 'Female')
+        gold_mm <- TRUE
+        dataValues$genders <- c('Male', 'Female')
+      }
+      
+      
       ## Add last setting to smahp
       smahp()$choose_rr(input$datasets_choose_rr)
       
