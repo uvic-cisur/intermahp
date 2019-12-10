@@ -77,7 +77,7 @@ observeEvent(
     ## disable 
     
     if(
-      (input$datasets_use_sample) |
+      (!is.null(input$datasets_use_sample)) |
       (
         (!is.null(smahp()$pc)) &
         (
@@ -102,7 +102,7 @@ observeEvent(
   },
   ignoreNULL = FALSE,
   {
-    if(!input$datasets_use_sample & (input$high_level_flag || input$calibrate_wac_flag)) {
+    if(is.null(input$datasets_use_sample) & (input$high_level_flag || input$calibrate_wac_flag)) {
       enable("datasets_upload_mm")
       show("datasets_mm_needed")
     } else {
@@ -170,7 +170,7 @@ observeEvent(
   input$datasets_confirm_switch,
   {
     if(input$datasets_confirm_switch == TRUE) {
-      if(input$datasets_use_sample == TRUE) {
+      if(!is.null(input$datasets_use_sample)) {
         ## Add the PC and MM values
         smahp()$add_pc(
           dplyr::filter(
@@ -226,6 +226,14 @@ observeEvent(
             '
           )
         )
+      }
+      
+      ## If we were using sample data, purge PC and MM, they will be repopulated
+      ## when switch is hit again if still using sample data, and still must be
+      ## supplied otherwise
+      if(!is.null(input$datasets_use_sample)) {
+        smahp()$rm_pc()
+        smahp()$rm_mm()
       }
     }
   }
@@ -384,9 +392,12 @@ outputOptions(output, "datasets_sample_years_render", suspendWhenHidden = FALSE)
 
 # Use sample data checkbox ----
 observeEvent(
-  input$datasets_use_sample,
   {
-    if(input$datasets_use_sample == TRUE) {
+    input$datasets_use_sample
+  },
+  ignoreNULL = FALSE,
+  {
+    if(!is.null(input$datasets_use_sample)) {
       hide("datasets_upload_pc_div")
       show("datasets_sample_pc_div")
     } else {

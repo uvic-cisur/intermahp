@@ -50,7 +50,7 @@ conditionalPanel(
       # )
     ),
     
-    column(4, h3("Existing groups"), uiOutput("drinking_groups_checkboxes"))
+    column(4, h3("Existing groups"), uiOutput("drinking_groups_active"))
     
   ),
   

@@ -24,39 +24,94 @@ base_groups <- list(
     .command = function(.data) {
       intermahpr::computeTotalFraction(.data)
     },
-    .popover = paste(
+    .popover =
       "The entire population stratified by gender and age subgrouping.
       <br />
       <br />
       Metrics for this group are always computed."
-    )
   ),
   "Current Drinkers" = list(
     .label = "Current Drinkers",
     .command = function(.data) {
       intermahpr::computeCurrentFraction(.data)
     },
-    .popover = paste(
+    .popover = 
       "Current drinkers are people who have consumed at least one standard drink in the past year.
       <br />
       <br />
       Metrics for this group are always computed."
-    )
   ),
   "Former Drinkers" = list(
     .label = "Former Drinkers",
     .command = function(.data) {
       intermahpr::computeFormerFraction(.data)
     },
-    .popover = paste(
-      "Former drinkers are people who have consumed at least one standard",
-      "in their lifetime, but have not consumed one or more standard drinks in",
-      "the past year."
-    )
+    .popover =
+      "Former drinkers are people who have consumed at least one standard drink
+      in their lifetime, but have not consumed one or more standard drinks in
+      the past year.
+      <br />
+      <br />
+      Metrics for this group are always computed."
   )
 )
 
 dataValues$drinking_groups <- base_groups
+
+#* Render active group list ----
+output$drinking_groups_active <- renderUI({
+  group_list = lapply(
+    dataValues$drinking_groups,
+    function(group) {
+      .name = group$.label
+      .rm_id = paste('rm', .name)
+      element =
+        div(
+          actionLink(
+            inputId = .rm_id,
+            label = NULL,
+            icon = icon('times-circle'),
+            style = if(
+              .name %in% c(
+                "Entire Population",
+                "Current Drinkers",
+                "Former Drinkers")
+            ) {'visibility: hidden;'} else {''}
+          ),
+          .name,
+          popover(content = group$.popover, pos = 'right', icon("info-circle"))
+        )
+    }
+  )
+  
+  
+  tagList(group_list)
+})
+
+observeEvent(
+  lapply(
+    dataValues$drinking_groups,
+    function(group) {
+      input[[paste('rm', group$.label)]]
+    }
+  ),
+  ignoreNULL = FALSE,
+  {
+    lapply(
+      dataValues$drinking_groups,
+      function(group) {
+        if(!is.null(input[[paste('rm', group$.label)]]))
+        {
+          if(input[[paste('rm', group$.label)]] > 0) {
+            smahp()$rm_group(group$.label)
+            dataValues$drinking_groups[[group$.label]] <- NULL
+          }
+        }
+      } 
+    )
+  }
+)
+
 
 #* Render current group checkboxes ----
 output$drinking_groups_checkboxes <- renderUI({
@@ -85,6 +140,7 @@ output$drinking_groups_checkboxes <- renderUI({
 
 #* Make sure the drinking group checkboxes and their values always exist ----
 outputOptions(output, 'drinking_groups_checkboxes', suspendWhenHidden = FALSE)
+outputOptions(output, 'drinking_groups_active', suspendWhenHidden = FALSE)
 
 #* Logic when a new drinking group is added ----
 observeEvent(input$add_group_btn, {
@@ -122,6 +178,13 @@ observeEvent(input$add_group_btn, {
     },
     .popover = popover_text
   )
+  
+  # smahp()$def_group(
+  #   input$new_group_name,
+  #   list(
+  #     m = 
+  #   )
+  # )
 })
 
 

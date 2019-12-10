@@ -15,11 +15,19 @@ tagList(
       # br(),
       div(
         id = "datasets_input",
-        checkboxInput(
+        checkboxGroupButtons(
           inputId = "datasets_use_sample",
-          label = "Use sample data",
-          value = FALSE
+          label = '',
+          choices = c("Use sample data"),
+          selected = c()
         ),
+        
+        
+        # checkboxInput(
+        #   inputId = "datasets_use_sample",
+        #   label = "Use sample data",
+        #   value = FALSE
+        # ),
         div(
           id = "datasets_sample_pc_div",
           uiOutput("datasets_sample_years_render")
