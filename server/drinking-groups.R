@@ -37,7 +37,10 @@ base_groups <- list(
       intermahpr::computeCurrentFraction(.data)
     },
     .popover = paste(
-      "Current drinkers are people who have consumed at least one standard drink in the past year."
+      "Current drinkers are people who have consumed at least one standard drink in the past year.
+      <br />
+      <br />
+      Metrics for this group are always computed."
     )
   ),
   "Former Drinkers" = list(
@@ -73,7 +76,7 @@ output$drinking_groups_checkboxes <- renderUI({
         )
       )
       
-      if(id == "Include Entire Population") shinyjs::disabled(element) else element
+      if(id == "Include Entire Population" | id == "Include Current Drinkers") shinyjs::disabled(element) else element
     }
   )
   

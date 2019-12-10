@@ -46,8 +46,23 @@ tagList(
         ),
         selectInput(
           inputId = "datasets_choose_rr",
-          label = "Relative risk source",
-          choices = c(GBD = 'ihme', CSUCH = 'csuch')
+          label = div(
+            "Relative risk source",
+            popover(
+              content =
+              "
+              Choices are:<br />
+              Relative risks used for the 2016 Global Burden of Disease compiled by the Institute for Health Metrics and Evaluation<br /><br />
+              Relative risks used for the 2016 Global Status Report on Alcohol and Health compiled by the World Health Organizaion<br /><br />
+              Relative risks used for the 2017 Canadian Substance Use Costs and Harms compiled by the Canadian Centre on Substance Use and Addiction and the Canadian Institute for Substance Use Research
+              ",
+              pos = "right", 
+              icon("info-circle"))
+          ),
+          choices = c(
+            `IHME 2016 GBD` = 'ihme',
+            `WHO 2016 GSRAH` = 'who',
+            `CCSA/CISUR 2017 CSUCH` = 'cisur')
         ),
         
         div(

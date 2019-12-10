@@ -8,19 +8,30 @@ observeEvent(
   input$datasets_upload_pc,
   {
     .data <- readr::read_csv(input$datasets_upload_pc$datapath)
-    ## If the supplied pc sheet has old gender values ('Male' and 'Female') we'll
-    ## switch them to 'm' and 'w'
-    ## THIS IS INVISIBLE BACKCOMPATIBILITY
+    ## We will accept, any case, m[ea]n, male, convert to an internal 'm',
+    ##   display & return 'Men'
+    ## We will accept wom[ea]n, female, convert to an internal 'w',
+    ##   display & return 'Women'
     ## names(.data) is already put to_lower in imahp3 screen_vars method, but
     ## we've gotta check gender values before attempting to add pc
     names(.data) = str_to_lower(names(.data))
     if('gender' %in% names(.data)) {
-      if(setequal(unique(.data$gender), c('Male', 'Female'))) {
-        .data$gender[.data$gender == 'Male'] <- 'm'
-        .data$gender[.data$gender == 'Female'] <- 'w'
+      .data$gender <- str_to_lower(.data$gender)
+      ug = unique(.data$gender)
+      if(
+        setequal(ug, c('male', 'female')) |
+        setequal(ug, c('men', 'women')) |
+        setequal(ug, c('man', 'woman'))
+        ) {
+        .data = .data %>%
+          mutate(gender = gsub('f', 'w', gender)) %>%
+          mutate(gender = str_sub(gender, 1, 1))
+
         gold_pc <- TRUE
-        dataValues$genders <- c('Male', 'Female')
-      } 
+        dataValues$genders <- c('Men', 'Women')
+      } else {
+        dataValues$genders <- c('m', 'w')
+      }
     }
     
     tryCatch(
@@ -113,11 +124,19 @@ observeEvent(
     ## we've gotta check gender values before attempting to add pc
     names(.data) = str_to_lower(names(.data))
     if('gender' %in% names(.data)) {
-      if(setequal(unique(.data$gender), c('Male', 'Female'))) {
-        .data$gender[.data$gender == 'Male'] <- 'm'
-        .data$gender[.data$gender == 'Female'] <- 'w'
+      .data$gender <- str_to_lower(.data$gender)
+      ug = unique(.data$gender)
+      if(
+        setequal(ug, c('male', 'female')) |
+        setequal(ug, c('men', 'women')) |
+        setequal(ug, c('man', 'woman'))
+      ) {
+        .data = .data %>%
+          mutate(gender = gsub('f', 'w', gender)) %>%
+          mutate(gender = str_sub(gender, 1, 1))
+        
         gold_mm <- TRUE
-        dataValues$genders <- c('Male', 'Female')
+        dataValues$genders <- c('Men', 'Women')
       } else {
         dataValues$genders <- c('m', 'w')
       }
@@ -168,9 +187,8 @@ observeEvent(
         
         ## Set the gender values and flags
         gold_pc <- TRUE
-        dataValues$genders <- c('Male', 'Female')
         gold_mm <- TRUE
-        dataValues$genders <- c('Male', 'Female')
+        dataValues$genders <- c('Men', 'Women')
       }
       
       

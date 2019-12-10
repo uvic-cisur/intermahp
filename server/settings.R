@@ -8,62 +8,85 @@
 # Global Parameter Server Logic ----
 #* Dynamic binge barriers ----
 output$settings_global_binge_barrier_render <- renderUI({
-  inputs <- lapply(
-    dataValues$genders,
-    function(gender) {
-      value = 60
-      ig = if(grepl("^[Fw]", gender)) {'w'} else if(grepl("^[Mm]", gender)) {'m'}
-      if(ig == 'm') value = 65
-      if(ig == 'w') value = 50
-      tagList(
-        # hr(),
-        column(
-          6,
-          numericInput(
-            inputId = paste0(ig, " binge barrier"),
-            label = gender, #paste0(gender, " binge barrier"),
-            min = 10,
-            value = round(value/drinking_unit(), 2),
-            max = 100,
-            step = 1
-          )
-        )
-      )
-    }
-  )
+  # inputs <- lapply(
+  #   dataValues$genders,
+  #   function(gender) {
+  #     value = 60
+  #     ig = if(grepl("^[Fw]", gender)) {'w'} else if(grepl("^[Mm]", gender)) {'m'}
+  #     if(ig == 'm') value = 65
+  #     if(ig == 'w') value = 50
+  #     tagList(
+  #       # hr(),
+  #       column(
+  #         6,
+  #         numericInput(
+  #           inputId = paste0(ig, " binge barrier"),
+  #           label = gender, #paste0(gender, " binge barrier"),
+  #           min = 10,
+  #           value = round(value/drinking_unit(), 2),
+  #           max = 100,
+  #           step = 1
+  #         )
+  #       )
+  #     )
+  #   }
+  # )
   
-  tagList(inputs)
+  tagList(
+    column(
+      6,
+      numericInput(
+        inputId = 'm binge barrier',
+        label = 'Men',
+        min = 0,
+        value = round(65/drinking_unit(), 2),
+        max = 100,
+        step = 1
+      )
+    ),
+    column(
+      6,
+      numericInput(
+        inputId = 'w binge barrier',
+        label = 'Women',
+        min = 0,
+        value = round(50/drinking_unit(), 2),
+        max = 100,
+        step = 1
+      )
+    )
+  )
 })
 
 
 #* Dynamic scc proportions barriers ----
-output$settings_global_scc_proportions_render <- renderUI({
-  inputs <- lapply(
-    dataValues$genders,
-    function(gender) {
-      value = 0.5
-      ig = if(grepl("^[Fw]", gender)) {'w'} else if(grepl("^[Mm]", gender)) {'m'}
-      if(ig == 'm') value = .33
-      if(ig == 'w') value = .66
-      tagList(
-        # hr(),
-        column(
-          6,
-          numericInput(
-            inputId = paste0(ig, " scc proportion"),
-            label = gender, #paste0(gender, " binge barrier"),
-            min = 0,
-            value = value,
-            max = 1,
-            step = 0.01
-          )
-        )
-      )
-    }
-  )
-  
-  tagList(inputs)
-})
+# output$settings_global_scc_proportions_render <- renderUI({
+#   inputs <- lapply(
+#     dataValues$genders,
+#     function(gender) {
+#       value = 0.5
+#       ig = if(grepl("^[Fw]", gender)) {'w'} else if(grepl("^[Mm]", gender)) {'m'}
+#       if(ig == 'm') value = .33
+#       if(ig == 'w') value = .66
+#       tagList(
+#         # hr(),
+#         column(
+#           6,
+#           numericInput(
+#             inputId = paste0(ig, " scc proportion"),
+#             label = gender, #paste0(gender, " binge barrier"),
+#             min = 0,
+#             value = value,
+#             max = 1,
+#             step = 0.01
+#           )
+#         )
+#       )
+#     }
+#   )
+#   
+#   tagList(inputs)
+# })
 
 
 #* Global upper bound ----
@@ -71,7 +94,7 @@ output$settings_global_upper_limit <- renderUI({
   numericInput(
     inputId = "settings_ub_in_units",
     label = "Upper limit of consumption",
-    value = round(250/drinking_unit(), 2),
+    value = round(150/drinking_unit(), 2),
     min = 10,
     max = 250
   )
@@ -144,7 +167,7 @@ observeEvent(input$settings_confirm_switch, {
     ## Add the settings to the mahp
     smahp()$set_ext(input$ext)
     smahp()$set_ub(input$settings_ub_in_units * drinking_unit())
-
+    
     smahp()$set_bb(
       list(
         'w' = input[['w binge barrier']],
@@ -156,8 +179,8 @@ observeEvent(input$settings_confirm_switch, {
       list(
         'w' = input[['w scc proportion']],
         'm' = input[['m scc proportion']]
-        )
       )
+    )
     
     ## disable all input elements while settings are confirmed
     disable(selector = "#settings_input")
