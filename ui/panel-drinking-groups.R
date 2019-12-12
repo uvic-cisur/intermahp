@@ -11,8 +11,8 @@ conditionalPanel(
     br(),
     column(
       8,
-      # wellPanel(
-        h3("New groups"),
+      wellPanel(
+        # h3("New groups"),
         textInput(
           inputId = "new_group_name",
           label = div(
@@ -46,8 +46,13 @@ conditionalPanel(
         hr(),
         uiOutput("drinking_groups_bounds_render"),
         hr(),
-        actionButton(inputId = "add_group_btn", label = "Add new group", icon = icon("plus"), class = "btn-danger btn-block")
-      # )
+        actionButton(
+          inputId = "add_group_btn",
+          label = "Add new group",
+          icon = icon("plus"),
+          class = "btn-danger btn-block"
+        )
+      )
     ),
     
     column(4, h3("Existing groups"), uiOutput("drinking_groups_active"))
@@ -60,8 +65,8 @@ conditionalPanel(
     div(
       id = "drinking_groups_nextMsg",
       class = "next-msg",
-      "Finally, add ",
-      actionLink("drinking_groups_to_new_scenarios", "new scenarios"),
+      "Finally, add new ",
+      actionLink("drinking_groups_to_scenarios", "scenarios"),
       " or examine the ",
       actionLink("drinking_groups_to_high", "high level"),
       " and ",

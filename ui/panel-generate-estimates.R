@@ -33,8 +33,8 @@ conditionalPanel(
   div(
     id = "generate_estimates_nextMsg",
     class = "next-msg",
-    "Finally, add ",
-    actionLink("generate_estimates_to_new_scenarios", "new scenarios"),
+    "Finally, add new ",
+    actionLink("generate_estimates_to_scenarios", "scenarios"),
     " and ",
     actionLink("generate_estimates_to_drinking_groups", "drinking groups"),
     " or examine the ",

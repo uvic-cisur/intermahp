@@ -4,28 +4,61 @@
 # hide model progress initially
 shinyjs::hide(id = "scenario_progress_content")
 
-# Monitor "add new scenario" button
-observeEvent(input$new_scenario, {
-  withBusyIndicator("new_scenario", {
-    show("scenario_progress_content")
-    withCallingHandlers(
+#* New scenario
+observeEvent(
+  input$add_scenario,
+  {
+    withBusyIndicator(
+      "add_scenario",
       {
-        scale <- 1 + (0.01 * input$new_scenarios_rescale_percent)
-        scenario_name <- paste0(scale*100, "% Consumption")
-        
-        html("scenario_progress", paste0("Adding Scenario: ", scenario_name, "<br />"), add = FALSE)
-        
-        processNewScenario(name = scenario_name, scale = scale)
-        message("Scenario added.")
-      }, message = function(m) {
-        html("scenario_progress", m$message, TRUE)
-      },
-      warning = function(m) {
-        html("scenario_progress", paste0(m$message, "\n"), TRUE)
+        scale = 1 + (0.01 * input$scenarios_rescale_percent)
+        tryCatch(
+          smahp()$def_scenario(scale),
+          warning = function(w) {
+            # browser()
+            
+            # Adds the received warning to the datasets tab
+            html(
+              id = "scenarios_error_alert",
+              paste0(
+                '
+            <div class="alert alert-warning alert-dismissible">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Warning:</strong> ',
+                htmlmsg(w$message),
+                '</div>   
+            '
+              )
+            )
+          }
+        )
       }
     )
-  })
-})
+  }
+)
+
+# Monitor "add new scenario" button
+# observeEvent(input$new_scenario, {
+#   withBusyIndicator("new_scenario", {
+#     show("scenario_progress_content")
+#     withCallingHandlers(
+#       {
+#         scale <- 1 + (0.01 * input$new_scenarios_rescale_percent)
+#         scenario_name <- paste0(scale*100, "% Consumption")
+#         
+#         html("scenario_progress", paste0("Adding Scenario: ", scenario_name, "<br />"), add = FALSE)
+#         
+#         processNewScenario(name = scenario_name, scale = scale)
+#         message("Scenario added.")
+#       }, message = function(m) {
+#         html("scenario_progress", m$message, TRUE)
+#       },
+#       warning = function(m) {
+#         html("scenario_progress", paste0(m$message, "\n"), TRUE)
+#       }
+#     )
+#   })
+# })
 
 cleanTableForSetting <- function(.data) {
   .data[c("current_fraction", "former_fraction")] <- NULL
@@ -132,6 +165,6 @@ processNewScenario <- function(name, scale)
 }
 
 # nextMsg links ----
-observeEvent(input$new_scenarios_to_drinking_groups, set_nav("drinking_groups"))
-observeEvent(input$new_scenarios_to_high, set_nav("high"))
-observeEvent(input$new_scenarios_to_analyst, set_nav("analyst"))
+observeEvent(input$scenarios_to_drinking_groups, set_nav("drinking_groups"))
+observeEvent(input$scenarios_to_high, set_nav("high"))
+observeEvent(input$scenarios_to_analyst, set_nav("analyst"))

@@ -21,7 +21,7 @@ wellPanel(
   hr(),
   
   actionButton(inputId = "nav_generate_estimates", label = "Generate Estimates", icon = icon("calculator"), class = "btn-primary btn-block"),
-  actionButton(inputId = "nav_new_scenarios", label = "New Scenarios", icon = icon("plus"), class = "btn-primary btn-block"),
+  actionButton(inputId = "nav_scenarios", label = "Scenarios", icon = icon("plus"), class = "btn-primary btn-block"),
   actionButton(inputId = "nav_drinking_groups", label = "Drinking Groups", icon = icon("users"), class = "btn-primary btn-block"),
   
   hr(),

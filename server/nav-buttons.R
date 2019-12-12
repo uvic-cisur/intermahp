@@ -8,7 +8,7 @@ nav_ids <- c(
   "datasets",
   "settings",
   "generate_estimates",
-  "new_scenarios",
+  "scenarios",
   "drinking_groups",
   "high",
   "analyst"
@@ -20,7 +20,7 @@ observeEvent(input$nav_datasets, set_nav("datasets"))
 observeEvent(input$nav_settings, set_nav("settings"))
 
 observeEvent(input$nav_generate_estimates, set_nav("generate_estimates"))
-observeEvent(input$nav_new_scenarios, set_nav("new_scenarios"))
+observeEvent(input$nav_scenarios, set_nav("scenarios"))
 observeEvent(input$nav_drinking_groups, set_nav("drinking_groups"))
 
 observeEvent(input$nav_high, set_nav("high"))

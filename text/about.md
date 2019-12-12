@@ -8,7 +8,7 @@ Select **<i class="fa fa-cogs"></i> Settings** to customize alcohol consumption 
 
 Select **<i class="fa fa-calculator"></i> Generate Estimates** to construct a model of alcohol harms and evaluate that model at baseline (i.e. 100% consumption).
 
-Select **<i class="fa fa-plus"></i> New Scenarios** to evaluate the model at additional consumption scenarios (i.e. consumption levels different from 100%).
+Select **<i class="fa fa-plus"></i> Scenarios** to evaluate the model at additional consumption scenarios (i.e. consumption levels different from 100%).
 
 Select **<i class="fa fa-users"></i> Drinking Groups** to add consumption-defined drinking groups to your analysis.
 

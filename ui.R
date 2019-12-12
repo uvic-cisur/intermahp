@@ -56,7 +56,7 @@ tagList(
         div(id = "panel_settings", source(file.path("ui", "panel-settings.R"), local = TRUE)$value),
 
         div(id = "panel_generate_estimates", source(file.path("ui", "panel-generate-estimates.R"), local = TRUE)$value),
-        div(id = "panel_new_scenarios", source(file.path("ui", "panel-new-scenarios.R"), local = TRUE)$value),
+        div(id = "panel_scenarios", source(file.path("ui", "panel-scenarios.R"), local = TRUE)$value),
         div(id = "panel_drinking_groups", source(file.path("ui", "panel-drinking-groups.R"), local = TRUE)$value),
         
         div(id = "panel_high", source(file.path("ui", "panel-high.R"), local = TRUE)$value),

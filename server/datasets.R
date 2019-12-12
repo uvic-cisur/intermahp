@@ -26,11 +26,6 @@ observeEvent(
         .data = .data %>%
           mutate(gender = gsub('f', 'w', gender)) %>%
           mutate(gender = str_sub(gender, 1, 1))
-
-        gold_pc <- TRUE
-        dataValues$genders <- c('Men', 'Women')
-      } else {
-        dataValues$genders <- c('m', 'w')
       }
     }
     
@@ -134,11 +129,6 @@ observeEvent(
         .data = .data %>%
           mutate(gender = gsub('f', 'w', gender)) %>%
           mutate(gender = str_sub(gender, 1, 1))
-        
-        gold_mm <- TRUE
-        dataValues$genders <- c('Men', 'Women')
-      } else {
-        dataValues$genders <- c('m', 'w')
       }
     }
     
@@ -184,11 +174,6 @@ observeEvent(
             year %in% input$datasets_sample_years
           )
         )
-        
-        ## Set the gender values and flags
-        gold_pc <- TRUE
-        gold_mm <- TRUE
-        dataValues$genders <- c('Men', 'Women')
       }
       
       

@@ -143,49 +143,54 @@ outputOptions(output, 'drinking_groups_checkboxes', suspendWhenHidden = FALSE)
 outputOptions(output, 'drinking_groups_active', suspendWhenHidden = FALSE)
 
 #* Logic when a new drinking group is added ----
-observeEvent(input$add_group_btn, {
-  lower_strata <- c()
-  upper_strata <- c()
-  
-  popover_text <- paste(
-    "Membership in the user-defined group",
-    input$new_group_name,
-    "is specified by the following consumption ranges in average daily grams-ethanol:<br /> "
-  )
-  
-  for(gender in dataValues$genders) {
-    lower_strata[[gender]] = input[[gsub(" ","_", paste0(gender, " lower bound"))]]
-    upper_strata[[gender]] = input[[gsub(" ","_", paste0(gender, " upper bound"))]]
-    popover_text <- paste0(
-      popover_text,
-      gender,
-      ": ",
-      round(input[[gsub(" ","_", paste0(gender, " lower bound"))]] * drinking_unit(), 2),
-      " to ",
-      round(input[[gsub(" ","_", paste0(gender, " upper bound"))]] * drinking_unit(), 2),
-      "<br />"
+observeEvent(
+  input$add_group_btn,
+  {
+    
+    lower_strata <- c()
+    upper_strata <- c()
+    
+    popover_text <- paste(
+      "Membership in the user-defined group",
+      input$new_group_name,
+      "is specified by the following consumption ranges in average daily grams-ethanol:<br /> "
+    )
+    
+    for(gender in c('Men', 'Women')) {
+      lower_strata[[gender]] = input[[gsub(" ","_", paste0(gender, " lower bound"))]]
+      upper_strata[[gender]] = input[[gsub(" ","_", paste0(gender, " upper bound"))]]
+      popover_text <- paste0(
+        popover_text,
+        gender,
+        ": ",
+        round(input[[gsub(" ","_", paste0(gender, " lower bound"))]] * drinking_unit(), 2),
+        " to ",
+        round(input[[gsub(" ","_", paste0(gender, " upper bound"))]] * drinking_unit(), 2),
+        "<br />"
+      )
+    }
+    
+    dataValues$drinking_groups[[input$new_group_name]] <- list(
+      .label = input$new_group_name,
+      .command = function(.data) {
+        intermahpr::computeGenderStratifiedIntervalFraction(
+          .data, 
+          lower_strata = lower_strata * drinking_unit(),
+          upper_strata = upper_strata * drinking_unit()
+        )
+      },
+      .popover = popover_text
+    )
+    
+    smahp()$def_group(
+      input$new_group_name,
+      list(
+        m = c(lower_strata[['Men']], upper_strata[['Men']]),
+        w = c(lower_strata[['Women']], upper_strata[['Women']])
+      )
     )
   }
-  
-  dataValues$drinking_groups[[input$new_group_name]] <- list(
-    .label = input$new_group_name,
-    .command = function(.data) {
-      intermahpr::computeGenderStratifiedIntervalFraction(
-        .data, 
-        lower_strata = lower_strata * drinking_unit(),
-        upper_strata = upper_strata * drinking_unit()
-      )
-    },
-    .popover = popover_text
-  )
-  
-  # smahp()$def_group(
-  #   input$new_group_name,
-  #   list(
-  #     m = 
-  #   )
-  # )
-})
+)
 
 
 truncated_group_div <- function(.label) {
@@ -197,7 +202,7 @@ truncated_group_div <- function(.label) {
 #* Produce a dynamic lower/upper bound input for each gender for drinking group addition ----
 output$drinking_groups_bounds_render <- renderUI({
   inputs <- lapply(
-    dataValues$genders,
+    c("Men", "Women"),
     function(gender) {
       tagList(
         fluidRow(
@@ -244,6 +249,9 @@ observeEvent(input$drinking_groups_max_ub, {
   }
 })
 
+#* shift buttons functionality
+
+
 #* group inclusion logic names
 include_group <- function(group) {
   input[[paste("Include", group)]]
@@ -264,6 +272,6 @@ include_groups <- reactive({
 outputOptions(output, 'drinking_groups_bounds_render', suspendWhenHidden = FALSE)
 
 # nextMsg links ----
-observeEvent(input$drinking_groups_to_new_scenarios, set_nav("new_scenarios"))
+observeEvent(input$drinking_groups_to_scenarios, set_nav("scenarios"))
 observeEvent(input$drinking_groups_to_high, set_nav("high"))
 observeEvent(input$drinking_groups_to_analyst, set_nav("analyst"))
