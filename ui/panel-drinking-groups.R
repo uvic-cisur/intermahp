@@ -55,7 +55,10 @@ conditionalPanel(
       )
     ),
     
-    column(4, h3("Existing groups"), uiOutput("drinking_groups_active"))
+    column(4, h3("Existing groups"), uiOutput("drinking_groups_active")),
+    div(
+      id = "drinking_groups_error_alert"
+    )
     
   ),
   

@@ -11,13 +11,14 @@ observeEvent(
     withBusyIndicator(
       "add_scenario",
       {
-        scale = 1 + (0.01 * input$scenarios_rescale_percent)
+        scale = round(1 + (0.01 * input$scenarios_rescale_percent), 4)
         tryCatch(
-          smahp()$def_scenario(scale),
+          {
+            smahp()$def_scenario(scale)
+            dataValues$sn = c(1, smahp()$sn)
+          },
           warning = function(w) {
-            # browser()
-            
-            # Adds the received warning to the datasets tab
+            # Adds the received warning to the open tab
             html(
               id = "scenarios_error_alert",
               paste0(
@@ -32,6 +33,70 @@ observeEvent(
             )
           }
         )
+      }
+    )
+  }
+)
+
+dataValues$sn = 1
+
+#* Render active scenario list ----
+output$scenarios_active <- renderUI({
+  sn_list = lapply(
+    dataValues$sn,
+    function(sn) {
+      .suffix = sprintf("%01.4f", sn)
+      .rm_id = paste('rm', .suffix)
+      .name = if(sn == 1) {
+        'Baseline'
+      } else {
+        paste0(sprintf('%02.2+f', 100 * (sn - 1)), '%')
+      }
+      
+      element =
+        div(
+          actionLink(
+            inputId = .rm_id,
+            label = NULL,
+            icon = icon('times-circle'),
+            style = if(
+              sn == 1
+            ) {'visibility: hidden;'} else {''}
+          ),
+          .name
+          # popover(content = group$.popover, pos = 'right', icon("info-circle"))
+        )
+    }
+  )
+  
+  
+  tagList(sn_list)
+})
+
+#* remove scenario buttons ----
+observeEvent(
+  lapply(
+    dataValues$sn,
+    function(sn) {
+      .suffix = sprintf("%01.4f", sn)
+      .rm_id = paste('rm', .suffix)
+      input[[.rm_id]]
+    }
+  ),
+  ignoreNULL = FALSE,
+  {
+    lapply(
+      dataValues$sn,
+      function(sn) {
+        .suffix = sprintf("%01.4f", sn)
+        .rm_id = paste('rm', .suffix)
+        if(!is.null(input[[.rm_id]]))
+        {
+          if(input[[.rm_id]] > 0) {
+            smahp()$rm_scenario(sn)
+            dataValues$sn = dataValues$sn[dataValues$sn != sn]
+          }
+        }
       }
     )
   }
@@ -102,7 +167,7 @@ processNewScenario <- function(name, scale)
       1 / dataValues$base_total,
       (1 - dataValues$base_total) / (1 - this_total)
     )
-
+  
   ## Wide will display 1 as AAFs for wholly attributable conditions, and the adjustments
   ## are performed via the intermahpr distill_model.
   wide_adjuster <-
@@ -135,10 +200,10 @@ processNewScenario <- function(name, scale)
   for(group in dataValues$model$settings$include_groups) {
     message(paste0("&emsp;&emsp;", group, "... "), appendLF = FALSE)
     aafs <- if(group == "Entire Population") {
-        this_total
-      } else {
-        dataValues$drinking_groups[[group]]$.command(.data)
-      }
+      this_total
+    } else {
+      dataValues$drinking_groups[[group]]$.command(.data)
+    }
     long_table[[paste0("AAF: ", group)]] <- aafs * long_adjuster
     wide_table[[paste0("AAF: ", group)]] <- aafs * wide_adjuster
     message("Done")

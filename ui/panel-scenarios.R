@@ -6,13 +6,13 @@
 conditionalPanel(
   condition = "output.estimatesGenerated",
   column(
-    9,
+    8,
     wellPanel(
       div(
         id = "scenarios_content",
-        p("Evaluate estimates under a new consumption scenario.",
+        # p("Evaluate estimates under a new consumption scenario.",
           br(),
-          "This may take several minutes depending on the number of population subgroups."),
+          # "This may take several minutes depending on the number of population subgroups."),
         
         tagList(
           singleton(proxyclickInit()),
@@ -62,7 +62,7 @@ conditionalPanel(
       )
     )
   ),
-  column(3),
+  column(4, h3("Existing scenarios"), uiOutput("scenarios_active")),
   column(
     12,
     div(

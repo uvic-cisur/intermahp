@@ -107,7 +107,7 @@ observeEvent(
             dataValues$drinking_groups[[group$.label]] <- NULL
           }
         }
-      } 
+      }
     )
   }
 )
@@ -182,12 +182,31 @@ observeEvent(
       .popover = popover_text
     )
     
-    smahp()$def_group(
-      input$new_group_name,
-      list(
-        m = c(lower_strata[['Men']], upper_strata[['Men']]),
-        w = c(lower_strata[['Women']], upper_strata[['Women']])
-      )
+    tryCatch(
+      {
+        smahp()$def_group(
+          input$new_group_name,
+          list(
+            m = c(lower_strata[['Men']], upper_strata[['Men']]),
+            w = c(lower_strata[['Women']], upper_strata[['Women']])
+          )
+        )
+      },
+      warning = function(w) {
+        # Adds the received warning to the open tab
+        html(
+          id = "drinking_groups_error_alert",
+          paste0(
+            '
+            <div class="alert alert-warning alert-dismissible">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Warning:</strong> ',
+            htmlmsg(w$message),
+            '</div>   
+            '
+          )
+        )
+      }
     )
   }
 )
