@@ -8,7 +8,7 @@ conditionalPanel(
   # wellPanel(
   div(
     id = "drinking_groups_content",
-    br(),
+    # br(),
     column(
       8,
       wellPanel(
@@ -56,9 +56,7 @@ conditionalPanel(
     ),
     
     column(4, h3("Existing groups"), uiOutput("drinking_groups_active")),
-    div(
-      id = "drinking_groups_error_alert"
-    )
+    column(12, div(id = "drinking_groups_error_alert"))
     
   ),
   

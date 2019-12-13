@@ -13,9 +13,27 @@ checkGroupNameValidity <- function(string) {
   !(grepl("[^[:alnum:] ]", string) || nchar(string) == 0 || string %in% c("Entire Population", "Current Drinkers", "Former Drinkers"))
 }
 
-observe({
-  if(!is.null(input$new_group_name) && checkGroupNameValidity(input$new_group_name)) shinyjs::enable(id = "add_group_btn") else shinyjs::disable(id = "add_group_btn")
-})
+observeEvent(
+  {
+    input$new_group_name
+    input$Men_upper_bound
+    input$Men_lower_bound
+    input$Women_upper_bound
+    input$Women_lower_bound
+  },
+  {
+    if(
+      !is.null(input$new_group_name) &&
+      checkGroupNameValidity(input$new_group_name) &&
+      input$Men_upper_bound >= input$Men_lower_bound &&
+      input$Women_upper_bound >= input$Women_lower_bound
+    ) {
+      shinyjs::enable(id = "add_group_btn")
+    } else {
+      shinyjs::disable(id = "add_group_btn")
+    }
+  }
+)
 
 #* drinking group reactive list ----
 base_groups <- list(

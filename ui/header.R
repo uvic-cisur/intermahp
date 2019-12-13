@@ -20,7 +20,7 @@ div(
     )
   ),
   conditionalPanel(
-    condition = "output.dataConfirmed & output.settingsConfirmed",
+    condition = "output.dataConfirmed & output.settingsConfirmed & !output.estimatesGenerated",
     div(
       id = "header_to_generate_estimates_instruction",
       class = "slidedown",

@@ -11,7 +11,7 @@ conditionalPanel(
       div(
         id = "scenarios_content",
         # p("Evaluate estimates under a new consumption scenario.",
-          br(),
+          # br(),
           # "This may take several minutes depending on the number of population subgroups."),
         
         tagList(
