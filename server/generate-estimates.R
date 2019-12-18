@@ -18,9 +18,6 @@ observeEvent(
             # show("model_progress_content")
             smahp()$init_fractions()
           },
-          message = function(msg) {
-            html(id = "model_progress", htmlmsg(msg$message), add = TRUE)
-          },
           warning = function(w) {
             # browser()
             
@@ -41,7 +38,12 @@ observeEvent(
         )
         
         # Adds a warning to the settings tab
-        if(!is.null(smahp()$af)) output$estimatesGenerated <- reactive({TRUE})
+        if(!is.null(smahp()$af)) {
+          output$estimatesGenerated <- reactive({TRUE})
+          enable(selector = '#estimates_dep')
+          if('high_level_flag' %in% input$mm_flags) {enable('nav_high')} else {disable('nav_high')}
+          show('generate_estimates_nextMsg')
+        }
         
         # html(id = "header_settings_changed_alert",
         #      '

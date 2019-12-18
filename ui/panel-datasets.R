@@ -58,7 +58,7 @@ tagList(
             "Relative risk source",
             popover(
               content =
-              "
+                "
               Choices are:<br />
               Relative risks used for the 2016 Global Burden of Disease compiled by the Institute for Health Metrics and Evaluation<br /><br />
               Relative risks used for the 2016 Global Status Report on Alcohol and Health compiled by the World Health Organizaion<br /><br />
@@ -76,14 +76,17 @@ tagList(
         div(
           br(),
           tags$b("Morbidity and mortality options"),
-          checkboxGroupButtons(
-            inputId = "mm_flags",
-            label = '',
-            choices = c(
-              "Produce high level results" = "high_level_flag",
-              "Calibrate absolute risk curves" = "calibrate_wac_flag"),
-            selected = c(),
-            direction = 'vertical'
+          div(
+            checkboxGroupButtons(
+              inputId = "mm_flags",
+              label = '',
+              choices = c(
+                "Produce high level results" = "high_level_flag",
+                "Calibrate absolute risk curves" = "calibrate_wac_flag"),
+              selected = c(),
+              direction = 'vertical'
+            ),
+            style = 'text-align:left;'
           )
           # ,
           # 
@@ -255,10 +258,12 @@ tagList(
     )
   ),
   # Next step message ----
-  div(
-    id = "datasets_nextMsg", 
-    class = "next-msg",
-    "Next, ",
-    actionLink("datasets_to_settings", "review and confirm settings.")
-  )
+  hidden(uiOutput('datasets_nextMsg_render'))
+  
+  # div(
+  #   id = "datasets_nextMsg", 
+  #   class = "next-msg",
+  #   "Next, ",
+  #   actionLink("datasets_to_settings", "review and confirm settings.")
+  # )
 )

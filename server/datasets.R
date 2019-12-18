@@ -51,18 +51,18 @@ observeEvent(
   }
 )
 
-# Disable high level settings unless checkbox is checked ----
-observeEvent(
-  input$mm_flags,
-  ignoreNULL = FALSE,
-  {
-    if('high_level_flag' %in% input$mm_flags) {
-      enable('nav_high')
-    } else {
-      disable('nav_high')
-    }
-  }
-)
+# Disable high level results unless checkbox is checked ----
+# observeEvent(
+#   input$mm_flags,
+#   ignoreNULL = FALSE,
+#   {
+#     if('high_level_flag' %in% input$mm_flags) {
+#       enable('nav_high')
+#     } else {
+#       disable('nav_high')
+#     }
+#   }
+# )
 
 
 # only enable the confirmation buttons when input is acceptable ----
@@ -203,7 +203,11 @@ observeEvent(
       ## Raise data confirmation flag
       output$dataConfirmed <- reactive({ TRUE })
       
+      ## Show the next msg link
+      show('datasets_nextMsg')
       
+      ## Enable the settings nav button
+      enable('nav_settings')
       
     } else {
       ## Always re-enable the input
@@ -231,6 +235,14 @@ observeEvent(
         smahp()$rm_pc()
         smahp()$rm_mm()
       }
+      
+      ## Hide the next msg link
+      hide('datasets_nextMsg')
+      
+      ## Disable all other nav buttons
+      disable(selector = '#datasets_dep')
+      updateMaterialSwitch(session, "settings_confirm_switch", FALSE)
+      
     }
   }
 )
@@ -546,6 +558,16 @@ datasets_summary_dt <- reactive({
 })
 
 output$datasets_summary_dt_render <- DT::renderDataTable(datasets_summary_dt())
+
+#* next message render ----
+output$datasets_nextMsg_render = renderUI({
+  div(
+    id = "datasets_nextMsg",
+    class = "next-msg",
+      "Next, ",
+      actionLink("datasets_to_settings", "review and confirm settings.")
+  )
+})
 
 # nextMsg links ----
 observeEvent(input$datasets_to_settings, set_nav("settings"))

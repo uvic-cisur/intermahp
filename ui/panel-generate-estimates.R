@@ -30,10 +30,10 @@ conditionalPanel(
     )
   ),
   # Next step message ----
-  conditionalPanel(
-    "output.estimatesGenerated", 
-    uiOutput("generate_estimates_nextMsg_render", inline = TRUE)
-  )
+  # conditionalPanel(
+  #   "output.estimatesGenerated", 
+  hidden(uiOutput("generate_estimates_nextMsg_render", inline = TRUE))
+  # )
   
 # 
 # 

@@ -188,6 +188,9 @@ observeEvent(input$settings_confirm_switch, {
     ## Prompt to continue
     show("settings_nextMsg")
     
+    ## Enable the generate estimates nav
+    enable('nav_generate_estimates')
+    
     ## Raise settings confirmation flag
     output$settingsConfirmed <- reactive({ TRUE })
   } else {
@@ -208,9 +211,30 @@ observeEvent(input$settings_confirm_switch, {
         )
       )
     }
+    
+    # Hide continue prompt
+    hide('settings_nextMsg')
+    
+    # Disable dependent nav
+    disable(selector = '#settings_dep')
+    
   }
   
 })
+
+#* next message render ----
+output$datasets_nextMsg_render = renderUI({
+  column(
+    12,
+    div(
+      id = "settings_nextMsg",
+      class = "next-msg",
+      "Now that you've confirmed settings, proceed to ",
+      actionLink("settings_to_generate_estimates", "generate estimates.")
+    )
+  )
+})
+
 
 
 # nextMsg links ----

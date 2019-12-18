@@ -109,14 +109,15 @@ conditionalPanel(
   
   
   # Next step message ----
-  column(
-    12,
-    div(
-      id = "settings_nextMsg",
-      class = "next-msg",
-      "Now that you've confirmed settings, proceed to ",
-      actionLink("settings_to_generate_estimates", "generate estimates.")
-    )
-  )
+  uiOutput('settings_nextMsg_render')
+  # column(
+  #   12,
+  #   div(
+  #     id = "settings_nextMsg",
+  #     class = "next-msg",
+  #     "Now that you've confirmed settings, proceed to ",
+  #     actionLink("settings_to_generate_estimates", "generate estimates.")
+  #   )
+  # )
   
 )

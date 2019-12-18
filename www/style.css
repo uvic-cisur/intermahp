@@ -132,3 +132,7 @@ button[disabled]{
   background-color: #cccccc;
   color: #666666;
 }
+
+.btn-nav {
+  border-radius: 0;
+}
