@@ -69,16 +69,17 @@ conditionalPanel(
       id = "scenarios_error_alert"
     ),
     # Next step message ----
-    div(
-      id = "scenarios_nextMsg",
-      class = "next-msg",
-      "Finally, add ",
-      actionLink("scenarios_to_drinking_groups", "drinking groups"),
-      " or examine the ",
-      actionLink("scenarios_to_high", "high level"),
-      " and ",
-      actionLink("scenarios_to_analyst", "analyst level"),
-      " results."
-    )
+    uiOutput("scenarios_nextMsg_render", inline = TRUE)
+    # div(
+    #   id = "scenarios_nextMsg",
+    #   class = "next-msg",
+    #   "Finally, add ",
+    #   actionLink("scenarios_to_drinking_groups", "drinking groups"),
+    #   " or examine the ",
+    #   actionLink("scenarios_to_high", "high level"),
+    #   " and ",
+    #   actionLink("scenarios_to_analyst", "analyst level"),
+    #   " results."
+    # )
   )
 )

@@ -125,3 +125,10 @@ table {
 #datasets_sample_pc_div {
   padding-bottom: 40px;
 }
+
+button:disabled,
+button[disabled]{
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+}

@@ -95,6 +95,7 @@ observeEvent(
           if(input[[.rm_id]] > 0) {
             smahp()$rm_scenario(sn)
             dataValues$sn = dataValues$sn[dataValues$sn != sn]
+            runjs(paste0('Shiny.onInputChange("', .rm_id,'" , 0)'))
           }
         }
       }
@@ -228,6 +229,25 @@ processNewScenario <- function(name, scale)
   
   message("Done")
 }
+
+#* next message render ----
+output$scenarios_nextMsg_render = renderUI({
+  div(
+    id = "scenarios_nextMsg",
+    class = "next-msg",
+    "Finally, add ",
+    actionLink("scenarios_to_drinking_groups", "drinking groups"),
+    " or examine the ",
+    if('high_level_flag' %in% input$mm_flags) {
+      div(
+        actionLink("generate_estimates_to_high", "high level"),
+        " and "
+      )
+    },
+    actionLink("scenarios_to_analyst", "analyst level"),
+    " results."
+  )
+})
 
 # nextMsg links ----
 observeEvent(input$scenarios_to_drinking_groups, set_nav("drinking_groups"))

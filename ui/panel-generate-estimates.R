@@ -30,17 +30,24 @@ conditionalPanel(
     )
   ),
   # Next step message ----
-  div(
-    id = "generate_estimates_nextMsg",
-    class = "next-msg",
-    "Finally, add new ",
-    actionLink("generate_estimates_to_scenarios", "scenarios"),
-    " and ",
-    actionLink("generate_estimates_to_drinking_groups", "drinking groups"),
-    " or examine the ",
-    actionLink("generate_estimates_to_high", "high level"),
-    " and ",
-    actionLink("generate_estimates_to_analyst", "analyst level"),
-    " results."
+  conditionalPanel(
+    "output.estimatesGenerated", 
+    uiOutput("generate_estimates_nextMsg_render", inline = TRUE)
   )
+  
+# 
+# 
+#   div(
+#     id = "generate_estimates_nextMsg",
+#     class = "next-msg",
+#     "Finally, add new ",
+#     actionLink("generate_estimates_to_scenarios", "scenarios"),
+#     " and ",
+#     actionLink("generate_estimates_to_drinking_groups", "drinking groups"),
+#     " or examine the ",
+#     actionLink("generate_estimates_to_high", "high level"),
+#     " and ",
+#     actionLink("generate_estimates_to_analyst", "analyst level"),
+#     " results."
+#   )
 )

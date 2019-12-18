@@ -51,6 +51,19 @@ observeEvent(
   }
 )
 
+# Disable high level settings unless checkbox is checked ----
+observeEvent(
+  input$mm_flags,
+  ignoreNULL = FALSE,
+  {
+    if('high_level_flag' %in% input$mm_flags) {
+      enable('nav_high')
+    } else {
+      disable('nav_high')
+    }
+  }
+)
+
 
 # only enable the confirmation buttons when input is acceptable ----
 # Adapted from the ddPCR R package written by Dean Attali
@@ -58,8 +71,7 @@ observeEvent(
   {
     input$datasets_use_sample
     input$datasets_upload_pc
-    input$high_level_flag
-    input$calibrate_wac_flag
+    input$mm_flags
     input$datasets_upload_mm
   },
   ignoreNULL = FALSE,
@@ -76,7 +88,7 @@ observeEvent(
       (
         (!is.null(smahp()$pc)) &
         (
-          (!(input$high_level_flag | input$calibrate_wac_flag)) |
+          (is.null(input$mm_flags)) |
           !is.null(smahp()$mm)
         )
       )
@@ -92,12 +104,11 @@ observeEvent(
 observeEvent(
   {
     input$datasets_use_sample
-    input$high_level_flag
-    input$calibrate_wac_flag
+    input$mm_flags
   },
   ignoreNULL = FALSE,
   {
-    if(is.null(input$datasets_use_sample) & (input$high_level_flag || input$calibrate_wac_flag)) {
+    if(is.null(input$datasets_use_sample) & (!is.null(input$mm_flags))) {
       enable("datasets_upload_mm")
       show("datasets_mm_needed")
     } else {

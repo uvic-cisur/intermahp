@@ -76,16 +76,27 @@ tagList(
         div(
           br(),
           tags$b("Morbidity and mortality options"),
-          checkboxInput(
-            inputId = "high_level_flag",
-            label = "Produce high level results",
-            value = FALSE
-          ),
-          checkboxInput(
-            inputId = "calibrate_wac_flag",
-            label = "Calibrate absolute risk curves for wholly attributable conditions",
-            value = FALSE
+          checkboxGroupButtons(
+            inputId = "mm_flags",
+            label = '',
+            choices = c(
+              "Produce high level results" = "high_level_flag",
+              "Calibrate absolute risk curves" = "calibrate_wac_flag"),
+            selected = c(),
+            direction = 'vertical'
           )
+          # ,
+          # 
+          # checkboxInput(
+          #   inputId = "high_level_flag",
+          #   label = "Produce high level results",
+          #   value = FALSE
+          # ),
+          # checkboxInput(
+          #   inputId = "calibrate_wac_flag",
+          #   label = "Calibrate absolute risk curves for wholly attributable conditions",
+          #   value = FALSE
+          # )
         ),
         
         hidden(

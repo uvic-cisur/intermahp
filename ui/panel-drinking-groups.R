@@ -61,18 +61,20 @@ conditionalPanel(
   ),
   
   # Next step message ----
-  column(
-    12,
-    div(
-      id = "drinking_groups_nextMsg",
-      class = "next-msg",
-      "Finally, add new ",
-      actionLink("drinking_groups_to_scenarios", "scenarios"),
-      " or examine the ",
-      actionLink("drinking_groups_to_high", "high level"),
-      " and ",
-      actionLink("drinking_groups_to_analyst", "analyst level"),
-      " results."
-    )
-  )
+  uiOutput("drinking_groups_nextMsg_render", inline = TRUE)
+  
+  # column(
+  #   12,
+  #   div(
+  #     id = "drinking_groups_nextMsg",
+  #     class = "next-msg",
+  #     "Finally, add new ",
+  #     actionLink("drinking_groups_to_scenarios", "scenarios"),
+  #     " or examine the ",
+  #     actionLink("drinking_groups_to_high", "high level"),
+  #     " and ",
+  #     actionLink("drinking_groups_to_analyst", "analyst level"),
+  #     " results."
+  #   )
+  # )
 )

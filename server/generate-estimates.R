@@ -51,7 +51,7 @@ observeEvent(
         #      </div>   
         #      ')
         
-        show("generate_estimates_nextMsg")
+        # show("generate_estimates_nextMsg")
       }
     )
   }
@@ -169,6 +169,25 @@ generateEstimates <- function() {
     )
   })
 }
+
+#* next message render ----
+output$generate_estimates_nextMsg_render = renderUI({
+  div(
+    id = "generate_estimates_nextMsg",
+    class = "next-msg",
+    "Finally, add new ",
+    actionLink("generate_estimates_to_scenarios", "scenarios"),
+    " and ",
+    actionLink("generate_estimates_to_drinking_groups", "drinking groups"),
+    " or examine the ",
+    if('high_level_flag' %in% input$mm_flags) {
+      list(actionLink("generate_estimates_to_high", "high level"), " and ")
+    },
+    actionLink("generate_estimates_to_analyst", "analyst level"),
+    " results."
+  )
+})
+
 
 # nextMsg links ----
 observeEvent(input$generate_estimates_to_scenarios, set_nav("scenarios"))

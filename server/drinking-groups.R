@@ -106,6 +106,8 @@ output$drinking_groups_active <- renderUI({
   tagList(group_list)
 })
 
+
+#* Remove group buttons ----
 observeEvent(
   lapply(
     dataValues$drinking_groups,
@@ -118,11 +120,13 @@ observeEvent(
     lapply(
       dataValues$drinking_groups,
       function(group) {
-        if(!is.null(input[[paste('rm', group$.label)]]))
+        .rm_id = paste('rm', group$.label)
+        if(!is.null(input[[.rm_id]]))
         {
-          if(input[[paste('rm', group$.label)]] > 0) {
+          if(input[[.rm_id]] > 0) {
             smahp()$rm_group(group$.label)
             dataValues$drinking_groups[[group$.label]] <- NULL
+            runjs(paste0('Shiny.onInputChange("', .rm_id,'" , 0)'))
           }
         }
       }
@@ -307,6 +311,28 @@ include_groups <- reactive({
 
 #* Make sure the previous renders always exist ----
 outputOptions(output, 'drinking_groups_bounds_render', suspendWhenHidden = FALSE)
+
+#* next message render ----
+output$drinking_groups_nextMsg_render = renderUI({
+  column(
+    12,
+    div(
+      id = "drinking_groups_nextMsg",
+      class = "next-msg",
+      "Finally, add new ",
+      actionLink("drinking_groups_to_scenarios", "scenarios"),
+      " or examine the ",
+      if('high_level_flag' %in% input$mm_flags) {
+        div(
+          actionLink("generate_estimates_to_high", "high level"),
+          " and "
+        )
+      },
+      actionLink("drinking_groups_to_analyst", "analyst level"),
+      " results."
+    )
+  )
+})
 
 # nextMsg links ----
 observeEvent(input$drinking_groups_to_scenarios, set_nav("scenarios"))
