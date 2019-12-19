@@ -175,8 +175,6 @@ generateEstimates <- function() {
 #* next message render ----
 output$generate_estimates_nextMsg_render = renderUI({
   div(
-    id = "generate_estimates_nextMsg",
-    class = "next-msg",
     "Finally, add new ",
     actionLink("generate_estimates_to_scenarios", "scenarios"),
     " and ",

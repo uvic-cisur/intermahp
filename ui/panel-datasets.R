@@ -258,7 +258,14 @@ tagList(
     )
   ),
   # Next step message ----
-  hidden(uiOutput('datasets_nextMsg_render'))
+  hidden(
+    div(
+      id = "datasets_nextMsg",
+      class = "next-msg",
+      "Next, ",
+      actionLink("datasets_to_settings", "review and confirm settings.")
+    )
+  )
   
   # div(
   #   id = "datasets_nextMsg", 

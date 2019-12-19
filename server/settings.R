@@ -214,6 +214,7 @@ observeEvent(input$settings_confirm_switch, {
     
     # Hide continue prompt
     hide('settings_nextMsg')
+    hide('generate_estimates_nextMsg')
     
     # Disable dependent nav
     disable(selector = '#settings_dep')
@@ -223,7 +224,7 @@ observeEvent(input$settings_confirm_switch, {
 })
 
 #* next message render ----
-output$datasets_nextMsg_render = renderUI({
+output$settings_nextMsg_render = renderUI({
   column(
     12,
     div(

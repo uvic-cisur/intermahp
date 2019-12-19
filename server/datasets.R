@@ -197,9 +197,6 @@ observeEvent(
       ## Allow navigation to Settings
       shinyjs::enable("nav_settings")
       
-      ## Prompt to continue
-      show("datasets_nextMsg")
-      
       ## Raise data confirmation flag
       output$dataConfirmed <- reactive({ TRUE })
       
@@ -236,8 +233,10 @@ observeEvent(
         smahp()$rm_mm()
       }
       
-      ## Hide the next msg link
+      ## Hide relevant the next msg links
       hide('datasets_nextMsg')
+      hide('settings_nextMsg')
+      hide('generate_estimates_nextMsg')
       
       ## Disable all other nav buttons
       disable(selector = '#datasets_dep')
@@ -560,14 +559,14 @@ datasets_summary_dt <- reactive({
 output$datasets_summary_dt_render <- DT::renderDataTable(datasets_summary_dt())
 
 #* next message render ----
-output$datasets_nextMsg_render = renderUI({
-  div(
-    id = "datasets_nextMsg",
-    class = "next-msg",
-      "Next, ",
-      actionLink("datasets_to_settings", "review and confirm settings.")
-  )
-})
+# output$datasets_nextMsg_render = renderUI({
+#   div(
+#     id = "datasets_nextMsg",
+#     class = "next-msg",
+#       "Next, ",
+#       actionLink("datasets_to_settings", "review and confirm settings.")
+#   )
+# })
 
 # nextMsg links ----
 observeEvent(input$datasets_to_settings, set_nav("settings"))

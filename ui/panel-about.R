@@ -6,6 +6,6 @@ wellPanel(
   # tagList(
     includeMarkdown(file.path("text", "about.md")),
     h2("Version"),
-    "InterMAHP version", as.character(utils::packageVersion("intermahpr"))
+    "InterMAHP version", as.character(utils::packageVersion("intermahp3"))
   # )
 )

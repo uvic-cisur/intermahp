@@ -32,7 +32,13 @@ conditionalPanel(
   # Next step message ----
   # conditionalPanel(
   #   "output.estimatesGenerated", 
-  hidden(uiOutput("generate_estimates_nextMsg_render", inline = TRUE))
+  hidden(
+    div(
+      id = "generate_estimates_nextMsg",
+      class = "next-msg",
+      uiOutput("generate_estimates_nextMsg_render", inline = TRUE)
+    )
+  )
   # )
   
 # 
