@@ -219,6 +219,9 @@ observeEvent(input$settings_confirm_switch, {
     # Disable dependent nav
     disable(selector = '#settings_dep')
     
+    # Reset attributable fraction computations
+    smahp()$rm_af()
+    
   }
   
 })

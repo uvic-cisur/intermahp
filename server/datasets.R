@@ -231,6 +231,7 @@ observeEvent(
       if(!is.null(input$datasets_use_sample)) {
         smahp()$rm_pc()
         smahp()$rm_mm()
+        smahp()$rm_af()
       }
       
       ## Hide relevant the next msg links
