@@ -129,6 +129,8 @@ observeEvent(
             runjs(paste0('Shiny.onInputChange("', .rm_id,'" , 0)'))
           }
         }
+        # Renew long counts if applicable
+        if(!is.null(smahp()$mm)) dataValues$long = smahp()$get_long_counts()
       }
     )
   }
@@ -213,6 +215,9 @@ observeEvent(
             w = c(lower_strata[['Women']], upper_strata[['Women']])
           )
         )
+        
+        # Renew long counts if applicable
+        if(!is.null(smahp()$mm)) dataValues$long = smahp()$get_long_counts()
       },
       warning = function(w) {
         # Adds the received warning to the open tab
@@ -323,10 +328,10 @@ output$drinking_groups_nextMsg_render = renderUI({
       actionLink("drinking_groups_to_scenarios", "scenarios"),
       " or examine the ",
       if('high_level_flag' %in% input$mm_flags) {
-        div(
-          actionLink("generate_estimates_to_high", "high level"),
-          " and "
-        )
+        # div(
+          list(actionLink("drinking_groups_to_high", "high level"),
+          " and ")
+        # )
       },
       actionLink("drinking_groups_to_analyst", "analyst level"),
       " results."

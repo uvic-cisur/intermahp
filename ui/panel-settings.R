@@ -74,7 +74,7 @@ column(
       column(
         6,
         numericInput(
-          inputId = "m scc proportion",
+          inputId = "w scc proportion",
           label = "Women",
           min = 0,
           value = 0.66,

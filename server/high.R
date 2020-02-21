@@ -64,8 +64,8 @@ output$high_outcome_filter_render <- renderUI({
   selectInput(
     inputId = "high_outcome_filter",
     label = truncated_filtration_div("Outcome"),
-    choices = unique(dataValues$model$mm$outcome),
-    selected = unique(dataValues$model$mm$outcome)[1]
+    choices = unique(smahp()$mm$outcome),
+    selected = unique(smahp()$mm$outcome)[1]
   )
 })
 
@@ -77,11 +77,13 @@ filtered_scenario_names <- reactive({
 
 # Filter by scenario (dependent on grouping)
 output$high_scenario_filter_render <- renderUI({
+  smahp()$sn
   pickerInput(
     inputId = "high_scenario_filter",
     label = truncated_filtration_div("Scenario"),
-    choices = filtered_scenario_names(),
-    selected = if(is_grouped_by_scenario()) filtered_scenario_names() else "Base",
+    choices = c('1.0000', sprintf("%01.4f", smahp()$sn)),
+    # choices = filtered_scenario_names(),
+    # selected = if(is_grouped_by_scenario()) filtered_scenario_names() else "Base",
     multiple = is_grouped_by_scenario(),
     options = list(
       `actions-box` = TRUE, 
@@ -124,8 +126,10 @@ output$high_status_filter_render <- renderUI({
     pickerInput(
       inputId = "high_status_filter",
       label = div(class = "truncate", "Drinking Status"),
-      choices = current_var("status"),
-      selected = if(is_grouped_by_status()) current_var("status") else "Entire Population",
+      choices = gsub('^...?_([[:alnum:]]*).*', '\\1', unique(dataValues$long$af_key)),
+        
+        # current_var("status"),
+      # selected = if(is_grouped_by_status()) current_var("status") else "Entire Population",
       multiple = is_grouped_by_status(),
       options = list(
         `actions-box` = TRUE, 
@@ -141,17 +145,21 @@ output$high_status_filter_render <- renderUI({
 high_selected_outcomes <- reactive({
   input$high_outcome_filter
   
-  if(length(dataValues$long) == 0) return(NULL)
-  scenario_names <- names(dataValues$long)
-  valid_scenarios <- scenario_names[grep(input$high_outcome_filter, scenario_names)]
-  if(length(valid_scenarios) > 0) {
-    .data <- reduce(.x = dataValues$long[valid_scenarios], .f = inner_join)
-    .data <- gather(.data, key = "scenario", value = "aaf", valid_scenarios)
-    .data$scenario <- gsub('.{10}$', '', .data$scenario)
-    return(.data)
-  } else {
+  if(is.null(dataValues$long)) {
     return(NULL)
+  } else {
+    return(filter(dataValues$long, outcome %in% input$high_outcome_filter))
   }
+  # scenario_names <- smahp()$sn #names(dataValues$long)
+  # # valid_scenarios <- scenario_names[grep(input$high_outcome_filter, scenario_names)]
+  # if(length(scenario_names) > 0) {
+  #   .data <- reduce(.x = dataValues$long[valid_scenarios], .f = inner_join)
+  #   .data <- gather(.data, key = "scenario", value = "aaf", valid_scenarios)
+  #   .data$scenario <- gsub('.{10}$', '', .data$scenario)
+  #   return(.data)
+  # } else {
+  #   return(NULL)
+  # }
 })
 
 #* reactive dataset after outcome filtering
@@ -161,9 +169,15 @@ high_selected_scenarios <- reactive({
   .data <- high_selected_outcomes()
   if(is.null(.data)) return(NULL)
   
-  filtered <- filter(.data, scenario %in% gtools::mixedsort(input$high_scenario_filter))
-  
-  filtered
+  filter(
+    .data,
+    grepl(
+      paste0('(', paste0(input$high_scenario_filter, collapse = '|'), ')$'),
+      af_key
+    )
+  )
+
+  # scenario %in% gtools::mixedsort(input$high_scenario_filter))
   
 })
 

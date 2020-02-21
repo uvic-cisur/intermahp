@@ -16,7 +16,11 @@ observeEvent(
         withCallingHandlers(
           {
             # show("model_progress_content")
+            # Initialize the fractions
             smahp()$init_fractions()
+            
+            # Renew long counts if applicable
+            if(!is.null(smahp()$mm)) dataValues$long = smahp()$get_long_counts()
           },
           warning = function(w) {
             # browser()

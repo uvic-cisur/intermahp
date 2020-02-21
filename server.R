@@ -32,8 +32,8 @@ function(input, output, session) {
   # server side reactive data store ----
   dataValues <- reactiveValues(
     grps_dict = list(),
-    wide = list(),
-    long = list())
+    wide = NULL,
+    long = NULL)
   
   # preloaded data initialization ----
   # RR
