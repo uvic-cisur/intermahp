@@ -4,7 +4,13 @@
 # --- High server --- #
 
 # zzz utility functions ----
-current_var <- function(var) unique(high_selected_scenarios()[[var]])
+current_var <- function(var) {
+  if(var == 'gender') {
+    return(c('Women' = 'w', 'Men' = 'm'))
+  } else {
+    return(unique(high_selected_scenarios()[[var]]))
+  }
+} 
 
 truncated_filtration_div <- function(.label) {
   div(class = "truncate",
@@ -77,18 +83,64 @@ filtered_scenario_names <- reactive({
 
 # Filter by scenario (dependent on grouping)
 output$high_scenario_filter_render <- renderUI({
-  smahp()$sn
+  choices = vapply(
+    sort(dataValues$sn),
+    function(sn) {
+      .suffix = sprintf("%01.4f", sn)
+      .rm_id = paste('rm', .suffix)
+      .name = if(sn == 1) {
+        'Baseline'
+      } else {
+        paste0(sprintf('%02.2+f', 100 * (sn - 1)), '%')
+      }
+    },
+    '0'
+  )
   pickerInput(
     inputId = "high_scenario_filter",
     label = truncated_filtration_div("Scenario"),
-    choices = c('1.0000', sprintf("%01.4f", smahp()$sn)),
+    choices = choices,
     # choices = filtered_scenario_names(),
-    # selected = if(is_grouped_by_scenario()) filtered_scenario_names() else "Base",
+    selected = if(is_grouped_by_scenario()) choices else "Baseline",
     multiple = is_grouped_by_scenario(),
     options = list(
       `actions-box` = TRUE, 
       `selected-text-format` = "count > 2",
       `count-selected-text` = paste("{0}/{1}", "scenarios")
+    )
+  )
+})
+
+# Filter by condition category
+high_cc_present <- reactive({
+  if(is.null(smahp())) {
+    return(NULL)
+  } else {
+    return(as.factor(condition_category_vec[as.integer(unique(str_sub(smahp()$mm$im, 2, 2)))]))
+  }
+})
+
+output$high_cc_filter_render <- renderUI({
+  
+  .categories = if(is.null(smahp())) {
+    NULL
+  } else {
+    condition_category_vec[as.integer(unique(str_sub(smahp()$mm$im, 2, 2)))]
+  }
+  
+  column(
+    4,
+    pickerInput(
+      inputId = 'high_condition_category_filter',
+      label = truncated_filtration_div('Condition Category'),
+      choices = .categories,
+      selected = .categories,
+      multiple = TRUE,
+      options = list(
+        `actions-box` = TRUE, 
+        `selected-text-format` = "count > 2",
+        `count-selected-text` = paste("{0}/{1}", 'categories')
+      )
     )
   )
 })
@@ -126,7 +178,7 @@ output$high_status_filter_render <- renderUI({
     pickerInput(
       inputId = "high_status_filter",
       label = div(class = "truncate", "Drinking Status"),
-      choices = gsub('^...?_([[:alnum:]]*).*', '\\1', unique(dataValues$long$af_key)),
+      choices = unique(gsub('^...?_([[:alnum:]]*).*', '\\1', dataValues$long$af_key)),
         
         # current_var("status"),
       # selected = if(is_grouped_by_status()) current_var("status") else "Entire Population",

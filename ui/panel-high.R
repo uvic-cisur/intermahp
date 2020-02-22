@@ -15,6 +15,7 @@ conditionalPanel(
           style = "border-right-style: solid; border-right-width: thin;"),
         column(
           9,
+          uiOutput("high_cc_filter_render"),
           uiOutput("high_simple_filters_render"),
           uiOutput("high_status_filter_render")
         )

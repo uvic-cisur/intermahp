@@ -45,7 +45,7 @@ dataValues$sn = 1
 #* Render active scenario list ----
 output$scenarios_active <- renderUI({
   sn_list = lapply(
-    dataValues$sn,
+    sort(dataValues$sn),
     function(sn) {
       .suffix = sprintf("%01.4f", sn)
       .rm_id = paste('rm', .suffix)

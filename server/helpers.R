@@ -74,7 +74,7 @@ reformat <- function(tbl, type, col) {
 # * Dummy, grammar, and reference tables ----
 
 simple_analysis_vars <- c(
-  "Condition Category" = "condition_category",
+  # "Condition Category" = "condition_category",
   "Region" = "region",
   "Year" = "year",
   "Gender" = "gender",
@@ -82,7 +82,7 @@ simple_analysis_vars <- c(
 )
 
 simple_vars_analysis <- c(
-  "condition_category" = "Condition Category",
+  # "condition_category" = "Condition Category",
   "region" = "Region",
   "year" = "Year",
   "gender" = "Gender",
@@ -126,9 +126,7 @@ pluralise <- function(var) {
   )
 }
 
-condition_category_ref <- tibble(
-  cc = as.character(1:9),
-  condition_category = c(
+condition_category_vec <- c(
     "Communicable",
     "Cancer",
     "Endocrine",
@@ -138,8 +136,15 @@ condition_category_ref <- tibble(
     "Collisions",
     "Unintentional",
     "Intentional"
-  )
 )
+
+condition_category_ref <- tibble(
+  cc = as.character(1:9),
+  condition_category = condition_category_vec
+)
+
+
+
 
 dh_replacement <- tibble(
   im = "(0).(0)", 
