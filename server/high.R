@@ -178,9 +178,9 @@ output$high_status_filter_render <- renderUI({
     pickerInput(
       inputId = "high_status_filter",
       label = div(class = "truncate", "Drinking Status"),
-      choices = unique(gsub('^...?_([[:alnum:]]*).*', '\\1', dataValues$long$af_key)),
-        
-        # current_var("status"),
+      choices = unique(dataValues$long$status),
+      
+      # current_var("status"),
       # selected = if(is_grouped_by_status()) current_var("status") else "Entire Population",
       multiple = is_grouped_by_status(),
       options = list(
@@ -221,14 +221,14 @@ high_selected_scenarios <- reactive({
   .data <- high_selected_outcomes()
   if(is.null(.data)) return(NULL)
   
-  filter(
-    .data,
-    grepl(
-      paste0('(', paste0(input$high_scenario_filter, collapse = '|'), ')$'),
-      af_key
-    )
-  )
-
+  filter(.data, scenario %in% input$high_scenario_filter)
+  #   .data,
+  #   grepl(
+  #     paste0('(', paste0(input$high_scenario_filter, collapse = '|'), ')$'),
+  #     af_key
+  #   )
+  # )
+  
   # scenario %in% gtools::mixedsort(input$high_scenario_filter))
   
 })
@@ -241,17 +241,33 @@ high_filtered_data <- reactive({
   
   for(var in major_choices) {
     id <- paste("high", var, "filter", sep = "_")
-    var_sym <- rlang::sym(var)
-    if(!is.null(input[[id]])) {
+    if(var == 'condition_category') {
+      .data <- dplyr::filter(
+        .data,
+        grepl(
+          paste0(
+            '[',
+            paste0(
+              which(
+                condition_category_vec %in% input[[id]]
+              ),
+              collapse = ''),
+            ']')
+          ,
+          str_sub(im, 2, 2)
+        )
+      )
+    } else if(!is.null(input[[id]])) {
+      var_sym <- rlang::sym(var)
       .data <- dplyr::filter(.data, !!var_sym %in% input[[id]])
     }
   }
-
-  .data$metric = .data$count * .data$aaf
+  
+  # .data$metric = .data$count * .data$aaf
   
   dataValues$current_total <- .data %>%
     group_by(status, scenario) %>%
-    summarise(total = sum(metric, na.rm = TRUE))
+    summarise(total = sum(ac_value, na.rm = TRUE))
   
   # If including rate/10,000 people (drinkers?) as a metric, here is where we still
   # have the variables necessary to join with model$pc[c(key, population)]
@@ -273,7 +289,7 @@ high_chartable_data <- reactive({
   minor <- if(input$high_minor == "none") NULL else rlang::sym(input$high_minor)
   
   .data <- if(is.null(minor)) group_by(.data, !!major) else group_by(.data, !!major, !!minor)
-  .data <- summarise(.data, y = round(sum(metric, na.rm = T), 2)) %>% ungroup()
+  .data <- summarise(.data, y = round(sum(ac_value, na.rm = T), 2)) %>% ungroup()
   
   if(is.null(minor)) {
     .data$arrange_by <- if(major == "year") .data$year else rowSums(select(.data, -!!major))
@@ -287,10 +303,10 @@ high_chartable_data <- reactive({
     .data$arrange_by <- if(major == "year") .data$year else rowSums(select(.data, -c(!!major, !!minor)))
     .data %<>% arrange(!!minor) %>% arrange(arrange_by) %>% select(-arrange_by)
   }
-
+  
   
   if(!is.null(minor)) .data <- spread(.data, key = !!minor, value = y)
-    
+  
   .data$categories <- .data[[major]]
   .data[[major]] <- NULL
   
@@ -308,9 +324,9 @@ high_current_chart <- reactive({
   if(is.null(.data) || nrow(.data) == 0) {
     return(cc) 
   }
-
+  
   cc$xAxis(categories = .data$categories)
-
+  
   if(input$high_minor == "none") {
     cc$legend(enabled = F)
     .data[["Attributable count"]] <- .data$y
@@ -351,7 +367,7 @@ output$high_chart <- renderChart({
   chart <- high_current_chart()
   
   if(is.null(chart)) return(rCharts$new())
-
+  
   show("high_chart_div")
   return(chart)
 })
@@ -364,7 +380,7 @@ output$high_summary_render <- renderUI({
   .data <- high_chartable_data()
   
   if(is.null(.data)) return(NULL)
-
+  
   N <- ncol(.data)
   M <- nrow(.data)
   
@@ -377,7 +393,7 @@ output$high_summary_render <- renderUI({
     summable$`Attributable count` <- summable$y
     summable %<>% select(-y)
   }
-    
+  
   if(N > 2 && !(input$high_minor %in% c("status", "scenario")))
     summable %<>% mutate(Total = round(rowSums(.), 2))
   if(M > 1 && !(input$high_major %in% c("status", "scenario"))) {
@@ -386,7 +402,7 @@ output$high_summary_render <- renderUI({
   }
   
   .data <- cbind(cats, summable)
-
+  
   options <- list(
     dom = "Bfrtip",
     buttons = list("colvis", "pageLength", list(extend='csv', filename = "InterMAHP High Level Summary")),
