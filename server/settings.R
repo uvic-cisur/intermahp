@@ -182,6 +182,15 @@ observeEvent(input$settings_confirm_switch, {
       )
     )
     
+    # browser()
+    
+    ## This is the one and only place that update_rr() happens, as the update
+    ## can now involve calibration of whole-risk-curves
+    smahp()$update_rr()
+    
+    ## The computed population metrics for analyst level downloads
+    dataValues$pop_metrics = smahp()$compute_pm()
+    
     ## disable all input elements while settings are confirmed
     disable(selector = "#settings_input")
     

@@ -188,8 +188,11 @@ observeEvent(
       }
       
       
-      ## Add last setting to smahp
+      ## Signal RR choice
       smahp()$choose_rr(input$datasets_choose_rr)
+      
+      ## Signal calibration
+      smahp()$set_cal('calibrate_wac_flag' %in% input$mm_flags)
       
       ## disable all input elements while datasets are confirmed
       disable(selector = "#datasets_input")

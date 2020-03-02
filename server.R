@@ -32,6 +32,7 @@ function(input, output, session) {
   # server side reactive data store ----
   dataValues <- reactiveValues(
     grps_dict = list(),
+    pop_metrics = NULL,
     wide = NULL,
     long = NULL)
   

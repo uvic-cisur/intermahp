@@ -53,7 +53,7 @@ output$analyst_view_select_render <- renderUI({
 
 current_analyst_data <- reactive({
   if(is.null(input$analyst_view_select)) return(NULL)
-  dataValues$wide[[input$analyst_view_select]]
+  dataValues[[input$analyst_view_select]]
 })
 
 analyst_view_dt <- reactive({

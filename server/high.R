@@ -241,23 +241,24 @@ high_filtered_data <- reactive({
   
   for(var in major_choices) {
     id <- paste("high", var, "filter", sep = "_")
-    if(var == 'condition_category') {
-      .data <- dplyr::filter(
-        .data,
-        grepl(
-          paste0(
-            '[',
-            paste0(
-              which(
-                condition_category_vec %in% input[[id]]
-              ),
-              collapse = ''),
-            ']')
-          ,
-          str_sub(im, 2, 2)
-        )
-      )
-    } else if(!is.null(input[[id]])) {
+    # if(var == 'condition_category') {
+    #   .data <- dplyr::filter(
+    #     .data,
+    #     grepl(
+    #       paste0(
+    #         '[',
+    #         paste0(
+    #           which(
+    #             condition_category_vec %in% input[[id]]
+    #           ),
+    #           collapse = ''),
+    #         ']')
+    #       ,
+    #       str_sub(im, 2, 2)
+    #     )
+    #   )
+    # } else 
+    if(!is.null(input[[id]])) {
       var_sym <- rlang::sym(var)
       .data <- dplyr::filter(.data, !!var_sym %in% input[[id]])
     }
