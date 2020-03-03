@@ -213,6 +213,9 @@ observeEvent(
       ## Always re-enable the input
       enable(selector = "#datasets_input")
       
+      ## Lower data confirmation flag
+      output$dataConfirmed <- reactive({ FALSE })
+      
       ## If AFs exist warn that changing datasets requires re-generation
       if(!is.null(smahp()$af)) {
         html(
@@ -452,7 +455,7 @@ observeEvent(input$datasets_sample_load_btn, {
 #* 
 
 output$pc_metadata <- renderUI({
-  pc <- dataValues$pc_in
+  pc <- smahp()$pc
   if(is.null(pc)) return("")
   
   obs <- nrow(pc)
@@ -483,33 +486,33 @@ output$pc_metadata <- renderUI({
   )
 })
 
-output$rr_metadata <- renderUI({
-  rr <- dataValues$rr_in
-  if(is.null(rr)) return("")
-  
-  obs <- nrow(rr)
-  conditions <- length(unique(rr$im))
-  
-  div(
-    class = "data-info",
-    paste0("Relative risks:"),
-    div(
-      class = "padded-data-info",
-      paste0(
-        obs,
-        " function specification", if(obs >= 2) "s",
-        " across ",
-        conditions,
-        " condition", if(conditions >= 2) "s",
-        "."
-      )
-    )
-  )
-})
+# output$rr_metadata <- renderUI({
+#   rr <- dataValues$rr_in
+#   if(is.null(rr)) return("")
+#   
+#   obs <- nrow(rr)
+#   conditions <- length(unique(rr$im))
+#   
+#   div(
+#     class = "data-info",
+#     paste0("Relative risks:"),
+#     div(
+#       class = "padded-data-info",
+#       paste0(
+#         obs,
+#         " function specification", if(obs >= 2) "s",
+#         " across ",
+#         conditions,
+#         " condition", if(conditions >= 2) "s",
+#         "."
+#       )
+#     )
+#   )
+# })
 
 
 output$mm_metadata <- renderUI({
-  mm <- dataValues$mm_in
+  mm <- smahp()$mm
   if(is.null(mm)) return("")
   
   years <- length(unique(mm$year))
@@ -547,7 +550,7 @@ output$mm_metadata <- renderUI({
 })
 
 current_loaded_data <- reactive({
-  dataValues[[paste0(input$loaded_raw_data, "_raw")]]
+  smahp()[[input$loaded_raw_data]]
 })
 
 datasets_summary_dt <- reactive({
@@ -562,7 +565,7 @@ datasets_summary_dt <- reactive({
 
 output$datasets_summary_dt_render <- DT::renderDataTable(datasets_summary_dt())
 
-#* next message render ----
+# Next message render ----
 # output$datasets_nextMsg_render = renderUI({
 #   div(
 #     id = "datasets_nextMsg",
