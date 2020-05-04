@@ -244,7 +244,7 @@ output$scenarios_nextMsg_render = renderUI({
     " or examine the ",
     if('high_level_flag' %in% input$mm_flags) {
       # div(
-        list(actionLink("drinking_groups_to_high", "high level"),
+        list(actionLink("scenarios_to_high", "high level"),
         " and ")
       # )
     },

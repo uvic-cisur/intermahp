@@ -70,8 +70,9 @@ output$high_outcome_filter_render <- renderUI({
   selectInput(
     inputId = "high_outcome_filter",
     label = truncated_filtration_div("Outcome"),
-    choices = unique(smahp()$mm$outcome),
-    selected = unique(smahp()$mm$outcome)[1]
+    choices = unique(smahp()$mm$outcome)
+    # ,
+    # selected = unique(smahp()$mm$outcome)[1]
   )
 })
 
