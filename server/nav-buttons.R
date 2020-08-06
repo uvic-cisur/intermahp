@@ -39,9 +39,4 @@ set_nav <- function(id) {
 }
 
 ## Debug button is on the nav ----
-observeEvent(
-  input$debug,
-  {
-    browser()
-  }
-)
+# observeEvent(input$debug, {browser()})

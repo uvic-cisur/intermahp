@@ -42,8 +42,7 @@ wellPanel(
       
       hr()
     )
-  ),
+  )
   
-  actionButton("debug", "Debug", class = "btn-primary btn-block")
-  
+  # , actionButton("debug", "Debug", class = "btn-primary btn-block")
 )
