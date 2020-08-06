@@ -217,7 +217,12 @@ observeEvent(
         )
         
         # Renew long counts if applicable
-        if(!is.null(smahp()$mm)) dataValues$long = smahp()$get_long_counts()
+        if(!is.null(smahp()$mm))
+        {
+          dataValues$long = smahp()$get_long_counts()
+        } else {
+          dataValues$long = smahp()$get_long_afs()
+        }
       },
       warning = function(w) {
         # Adds the received warning to the open tab

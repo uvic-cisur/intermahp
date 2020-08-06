@@ -51,6 +51,13 @@ output$analyst_view_select_render <- renderUI({
   )
 })
 
+output$analyst_download <- downloadHandler(
+  filename = "InterMAHP.csv",
+  content = function(fname) {
+    write_csv(current_analyst_data(), fname)
+  }
+)
+
 current_analyst_data <- reactive({
   if(is.null(input$analyst_view_select)) return(NULL)
   dataValues[[input$analyst_view_select]]
@@ -64,7 +71,7 @@ analyst_view_dt <- reactive({
     extensions = "Buttons",
     options = list(
       dom = "Bfrtip",
-      buttons = c("colvis", "pageLength", "csv"),
+      buttons = c("colvis", "pageLength"),
       pageLength = 12,
       lengthMenu = c(12,18,36,72),
       scrollX = TRUE,

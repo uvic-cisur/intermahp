@@ -139,27 +139,27 @@ drinking_unit <- reactive({
 
 #* Reactive lists ----
 
-binge_barriers <- reactive({
-  barriers <- list()
-  
-  for(gender in dataValues$genders) {
-    barriers[[gender]] =input[[paste0(gender, " binge barrier")]] * drinking_unit()
-  }
-  
-  barriers
-})
-
-
-
-current_settings <- reactive({
-  list(
-    bb = binge_barriers(),
-    lb = 0.03,
-    ub = input$settings_ub_in_units * drinking_unit(),
-    ext = input$ext,
-    include_groups = include_groups()
-  )
-})
+# binge_barriers <- reactive({
+#   barriers <- list()
+#   
+#   for(gender in dataValues$genders) {
+#     barriers[[gender]] =input[[paste0(gender, " binge barrier")]] * drinking_unit()
+#   }
+#   
+#   barriers
+# })
+# 
+# 
+# 
+# current_settings <- reactive({
+#   list(
+#     bb = binge_barriers(),
+#     lb = 0.03,
+#     ub = input$settings_ub_in_units * drinking_unit(),
+#     ext = input$ext,
+#     include_groups = include_groups()
+#   )
+# })
 
 ## Confirm settings switch ----
 observeEvent(input$settings_confirm_switch, {

@@ -12,10 +12,13 @@ conditionalPanel(
     inputId = "analyst_view_select",
     label = "View data",
     choices = c(
-      "Computed Population Metrics" = 'pop_metrics',
-      "Results" = 'long'
+      "Results" = 'long',
+      "Computed Population Metrics" = 'pop_metrics'
     )
   ),
+  downloadButton(outputId = "analyst_download", class = "btn-primary"),
+  br(),
+  br(),
   # uiOutput("analyst_view_select_render"),
   DT::dataTableOutput("analyst_view_dt_render")
 )
