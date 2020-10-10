@@ -92,7 +92,7 @@ output$high_scenario_filter_render <- renderUI({
       .name = if(sn == 1) {
         'Baseline'
       } else {
-        paste0(sprintf('%02.2+f', 100 * (sn - 1)), '%')
+        paste0(if(sn > 1) {'+'}, sprintf('%02.2f', 100 * (sn - 1)), '%')
       }
     },
     '0'

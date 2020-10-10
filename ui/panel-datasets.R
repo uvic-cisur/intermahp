@@ -61,7 +61,7 @@ tagList(
                 "
               Choices are:<br />
               Relative risks used for the 2016 Global Burden of Disease compiled by the Institute for Health Metrics and Evaluation<br /><br />
-              Relative risks used for the 2016 Global Status Report on Alcohol and Health compiled by the World Health Organizaion<br /><br />
+              Relative risks used for the 2018 Global Status Report on Alcohol and Health compiled by the World Health Organizaion<br /><br />
               Relative risks used for the 2017 Canadian Substance Use Costs and Harms compiled by the Canadian Centre on Substance Use and Addiction and the Canadian Institute for Substance Use Research
               ",
               pos = "right", 
@@ -69,13 +69,42 @@ tagList(
           ),
           choices = c(
             `IHME 2016 GBD` = 'ihme',
-            `WHO 2016 GSRAH` = 'who',
+            `WHO 2018 GSRAH` = 'who',
             `CCSA/CISUR 2017 CSUCH` = 'cisur')
         ),
         
         div(
           br(),
-          tags$b("Morbidity and mortality options"),
+          div(
+            tags$b("Morbidity and mortality options"),
+            popover(
+              content =
+                "
+                The following options are only available if morbidity and/or
+                mortality data are uploaded. When morbidity/mortality data are
+                uploaded InterMAHP will produce attributable fractions and
+                counts only for the uploaded conditions counts.
+                
+                <br /><br />
+                
+                The high level results panel contains an interactive plot
+                builder with a variety of options.
+                
+                <br /><br />
+                
+                Calibrating absolute risk curves is an option available for
+                conditions wholly-attributable to alcohol, and these curves are
+                derived from population statistics and morbidity/mortality
+                counts following the methodology described
+                <a href='https://journals.sagepub.com/doi/10.1177/0962280220907113'>here</a>.
+                These curves are used to estimate attributable morbidity/mortality in
+                user-defined drinking groups and scenarios, so this option is
+                only necessary when drinking groups or scenarios are being
+                constructed.  Otherwise, the attributable fraction is exactly 1.
+                ",
+              pos = "right", 
+              icon("info-circle"))
+          ),
           div(
             checkboxGroupButtons(
               inputId = "mm_flags",
