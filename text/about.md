@@ -31,3 +31,7 @@ It contains a thorough discussion of the employed methodology and a complete lis
 
 This software was developed at the <a target="_blank" href="https://www.uvic.ca/research/centres/cisur/">Canadian Institute for Substance Use Research</a> and is available freely under the MIT license.
 For any comments or questions, please contact Samuel Churchill (samuelch (at) uvic (dot) ca) or Adam Sherk (asherk (at) uvic (dot) ca). 
+
+## New in V2.1
+
+Prior InterMAHP versions (<2.1) computed relative per *drinker* alcohol consumption rather than per *person* AC in each population subgroup, as stated in the InterMAHP user manual.  All subsequent versions (2.1+) compute relative per person alcohol consumption, as stated in InterMAHP user manual.
