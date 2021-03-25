@@ -287,32 +287,69 @@ high_chartable_data <- reactive({
     return(NULL)
   }
   
-  major <- rlang::sym(input$high_major)
-  minor <- if(input$high_minor == "none") NULL else rlang::sym(input$high_minor)
+  major_sym <- rlang::sym(input$high_major)
+  minor_sym <- rlang::sym(input$high_minor)
   
-  .data <- if(is.null(minor)) group_by(.data, !!major) else group_by(.data, !!major, !!minor)
-  .data <- summarise(.data, y = round(sum(ac_value, na.rm = T), 2)) %>% ungroup()
-  
-  if(is.null(minor)) {
-    .data$arrange_by <- if(major == "year") .data$year else rowSums(select(.data, -!!major))
+  if(minor_sym == "none") { ## Weird errors, try more explicitly
+    .data = .data %>%
+      rename(major = !!major_sym) %>%
+      group_by(major) %>%
+      summarise(y = round(sum(ac_value, na.rm = T), 2)) %>%
+      ungroup()
+    
+    .data$arrange_by <- if(major_sym == "year") .data$major else .data$y
     .data %<>% arrange(arrange_by) %>% select(-arrange_by)
+    
+    .data$categories <- .data$major
+    .data$major <- NULL
+    
+    return(.data)
   } else {
-    minor_order <- gtools::mixedsort(unique(.data[[minor]]))
-    .data %<>% mutate(minor_var = factor(!!minor, levels = minor_order))
-    .data[[minor]] <- .data$minor_var
+    .data = .data %>%
+      rename(major = !!major_sym, minor = !!minor_sym) %>%
+      group_by(major, minor) %>%
+      summarise(y = round(sum(ac_value, na.rm = T), 2)) %>%
+      ungroup()
+    
+    minor_order <- gtools::mixedsort(unique(.data$minor))
+    .data %<>% mutate(minor_var = factor(minor, levels = minor_order))
+    .data$minor <- .data$minor_var
     .data$minor_var <- NULL
     
-    .data$arrange_by <- if(major == "year") .data$year else rowSums(select(.data, -c(!!major, !!minor)))
-    .data %<>% arrange(!!minor) %>% arrange(arrange_by) %>% select(-arrange_by)
+    .data$arrange_by <- if(major_sym == "year") .data$major else .data$y
+    .data %<>% arrange(minor) %>% arrange(arrange_by) %>% select(-arrange_by)
+    
+    .data <- spread(.data, key = minor, value = y)
+    
+    .data$categories <- .data$major
+    .data$major <- NULL
+    
+    return(.data)
   }
   
+  # .data <- if(minor == "none") {group_by(.data, !!major)} else {group_by(.data, !!major, !!minor)}
+  # .data <- summarise(.data, y = round(sum(ac_value, na.rm = T), 2)) %>% ungroup()
   
-  if(!is.null(minor)) .data <- spread(.data, key = !!minor, value = y)
+  # if(minor == "none") {
+  #   .data$arrange_by <- if(major == "year") .data$year else rowSums(select(.data, -!!major))
+  #   .data %<>% arrange(arrange_by) %>% select(-arrange_by)
+  # } else {
+  #   minor_order <- gtools::mixedsort(unique(.data[[minor]]))
+  #   .data %<>% mutate(minor_var = factor(!!minor, levels = minor_order))
+  #   .data[[minor]] <- .data$minor_var
+  #   .data$minor_var <- NULL
+  #   
+  #   .data$arrange_by <- if(major == "year") .data$year else rowSums(select(.data, -c(!!major, !!minor)))
+  #   .data %<>% arrange(!!minor) %>% arrange(arrange_by) %>% select(-arrange_by)
+  # }
   
-  .data$categories <- .data[[major]]
-  .data[[major]] <- NULL
   
-  .data
+  # if(minor != "none") .data <- spread(.data, key = !!minor, value = y)
+  # 
+  # .data$categories <- .data[[major]]
+  # .data[[major]] <- NULL
+  # 
+  # .data
 })
 
 high_current_chart <- reactive({
